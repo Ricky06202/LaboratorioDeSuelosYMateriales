@@ -1,0 +1,106 @@
+﻿@page "/"
+@using frontend.Models
+@using frontend.Services
+@inject EquipmentService EquipmentService
+@inject ISnackbar Snackbar
+
+<PageTitle>Laboratorio - Alertas</PageTitle>
+
+<MudText Typo="Typo.h4" GutterBottom="true">Panel de Alertas de Calibración</MudText>
+
+@if (_loadFailed)
+{
+    <MudAlert Severity="Severity.Error" Variant="Variant.Filled" Class="my-4">
+        No se pudo conectar con el servidor. Verifique que el backend esté ejecutándose.
+        <MudButton Color="Color.Inherit" Variant="Variant.Outlined" Size="Size.Small" OnClick="LoadData" Class="ml-4">Reintentar</MudButton>
+    </MudAlert>
+}
+
+<MudGrid>
+    <MudItem xs="12">
+        <MudTable Items="@_alerts" Hover="true" Breakpoint="Breakpoint.Sm" Loading="@_loading" LoadingProgressColor="Color.Info">
+            <HeaderContent>
+                <MudTh>Equipo</MudTh>
+                <MudTh>Nº Serie</MudTh>
+                <MudTh>Estado</MudTh>
+                <MudTh>Vencimiento</MudTh>
+                <MudTh>Acción</MudTh>
+            </HeaderContent>
+            <RowTemplate>
+                <MudTd DataLabel="Equipo">@context.Nombre</MudTd>
+                <MudTd DataLabel="Nº Serie">@context.NumeroSerie</MudTd>
+                <MudTd DataLabel="Estado">
+                    <MudChip T="string" Color="@GetColor(context.Estado)">@context.Estado</MudChip>
+                </MudTd>
+                <MudTd DataLabel="Vencimiento">
+                    @if (context.Calibraciones != null && context.Calibraciones.Any())
+                    {
+                        var lastCal = context.Calibraciones.OrderByDescending(c => c.FechaVencimiento).First();
+                        <MudText Color="@GetExpirationColor(lastCal.FechaVencimiento)">
+                            @lastCal.FechaVencimiento.ToShortDateString()
+                        </MudText>
+                    }
+                    else
+                    {
+                        <MudText Color="Color.Default">Sin datos</MudText>
+                    }
+                </MudTd>
+                <MudTd>
+                    <MudButton Variant="Variant.Filled" Color="Color.Primary" StartIcon="@Icons.Material.Filled.Add" Size="Size.Small">Calibrar</MudButton>
+                </MudTd>
+            </RowTemplate>
+            <NoRecordsContent>
+                @if (!_loading && !_loadFailed)
+                {
+                    <MudAlert Severity="Severity.Success">No hay alertas pendientes. Todos los equipos están al día.</MudAlert>
+                }
+            </NoRecordsContent>
+        </MudTable>
+    </MudItem>
+</MudGrid>
+
+@code {
+    private List<Equipo> _alerts = new();
+    private bool _loading = true;
+    private bool _loadFailed = false;
+
+    protected override async Task OnInitializedAsync()
+    {
+        await LoadData();
+    }
+
+    private async Task LoadData()
+    {
+        _loading = true;
+        _loadFailed = false;
+        try 
+        {
+            _alerts = await EquipmentService.GetAlertsAsync();
+        } 
+        catch (Exception ex)
+        {
+            _loadFailed = true;
+            Snackbar.Add("Error al conectar con la API", Severity.Error);
+        } 
+        finally 
+        {
+            _loading = false;
+        }
+    }
+
+    private Color GetColor(string estado) => estado switch
+    {
+        "Activo" => Color.Success,
+        "Danado" => Color.Error,
+        "Mantenimiento" => Color.Warning,
+        _ => Color.Default
+    };
+
+    private Color GetExpirationColor(DateTime? dueDate)
+    {
+        if (!dueDate.HasValue) return Color.Default;
+        if (dueDate.Value < DateTime.Now) return Color.Error;
+        if (dueDate.Value < DateTime.Now.AddDays(30)) return Color.Warning;
+        return Color.Success;
+    }
+}

@@ -1,0 +1,113 @@
+@using frontend.Models
+@using frontend.Services
+@inject EquipmentService EquipmentService
+@inject ISnackbar Snackbar
+
+<MudDialog>
+    <TitleContent>
+        <MudText Typo="Typo.h6">
+            <MudIcon Icon="@Icons.Material.Filled.History" Class="mr-3 mb-n1" />
+            Nueva Calibración
+        </MudText>
+    </TitleContent>
+    <DialogContent>
+        <MudForm @ref="_form" @bind-IsValid="@_isValid">
+            <MudGrid>
+                <MudItem xs="12">
+                    <MudText Typo="Typo.subtitle1">Equipo: <b>@EquipoNombre</b></MudText>
+                </MudItem>
+                <MudItem xs="12" sm="6">
+                    <MudDatePicker Label="Fecha Calibración" @bind-Date="_fechaCal" Required="true" />
+                </MudItem>
+                <MudItem xs="12" sm="6">
+                    <MudDatePicker Label="Fecha Vencimiento" @bind-Date="_fechaVen" Required="true" />
+                </MudItem>
+                <MudItem xs="12">
+                    <MudTextField T="string" Label="Empresa Certificadora" Required="true" @bind-Value="_model.EmpresaCertificadora" />
+                </MudItem>
+                <MudItem xs="12">
+                    <div class="d-flex flex-column gap-2">
+                        <InputFile id="certInput" OnChange="HandleFileSelected" hidden accept=".pdf,.jpg,.png" />
+                        <MudButton HtmlTag="label"
+                                   Variant="Variant.Outlined"
+                                   Color="Color.Info"
+                                   StartIcon="@Icons.Material.Filled.AttachFile"
+                                   for="certInput">
+                            @(string.IsNullOrEmpty(_certFileName) ? "Adjuntar Certificado" : "Cambiar Certificado")
+                        </MudButton>
+                        @if (!string.IsNullOrEmpty(_certFileName))
+                        {
+                            <MudText Typo="Typo.caption">Certificado: @_certFileName</MudText>
+                        }
+                    </div>
+                </MudItem>
+            </MudGrid>
+        </MudForm>
+    </DialogContent>
+    <DialogActions>
+        <MudButton OnClick="Cancel">Cancelar</MudButton>
+        <MudButton Color="Color.Primary" Disabled="@(!_isValid || _processing)" OnClick="Submit">
+            @if (_processing)
+            {
+                <MudProgressCircular Class="ms-n1" Size="Size.Small" Indeterminate="true" />
+                <MudText Class="ms-2">Guardando...</MudText>
+            }
+            else
+            {
+                <MudText>Guardar</MudText>
+            }
+        </MudButton>
+    </DialogActions>
+</MudDialog>
+
+@code {
+    [CascadingParameter] private MudBlazor.IMudDialogInstance MudDialog { get; set; } = null!;
+
+    [Parameter] public Guid EquipoId { get; set; }
+    [Parameter] public string EquipoNombre { get; set; } = string.Empty;
+
+    private MudForm _form = null!;
+    private bool _isValid;
+    private bool _processing;
+    private CalibracionCreate _model = new();
+    private DateTime? _fechaCal = DateTime.Today;
+    private DateTime? _fechaVen = DateTime.Today.AddYears(1);
+    private IBrowserFile? _file;
+    private string? _certFileName;
+
+    private void HandleFileSelected(InputFileChangeEventArgs e)
+    {
+        _file = e.File;
+        _certFileName = e.File.Name;
+    }
+
+    private async Task Submit()
+    {
+        await _form.Validate();
+        if (!_isValid || _fechaCal == null || _fechaVen == null) return;
+
+        _processing = true;
+        try
+        {
+            _model.EquipoId = EquipoId;
+            _model.FechaCalibracion = _fechaCal.Value;
+            _model.FechaVencimiento = _fechaVen.Value;
+
+            using var stream = _file?.OpenReadStream(maxAllowedSize: 1024 * 1024 * 10); // 10MB max for PDF
+            var result = await EquipmentService.CreateCalibracionAsync(_model, stream, _file?.Name);
+            
+            Snackbar.Add("Calibración registrada con éxito", Severity.Success);
+            MudDialog.Close(DialogResult.Ok(result));
+        }
+        catch (Exception ex)
+        {
+            Snackbar.Add($"Error: {ex.Message}", Severity.Error);
+        }
+        finally
+        {
+            _processing = false;
+        }
+    }
+
+    private void Cancel() => MudDialog.Cancel();
+}

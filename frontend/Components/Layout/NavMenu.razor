@@ -1,0 +1,11 @@
+﻿<MudNavMenu>
+    <MudNavLink href="" Match="NavLinkMatch.All" Icon="@Icons.Material.Filled.Home">Inicio (Alertas)</MudNavLink>
+    <MudNavLink href="inventario" Icon="@Icons.Material.Filled.Inventory">Inventario Equipos</MudNavLink>
+    <MudNavLink href="cotizaciones" Icon="@Icons.Material.Filled.RequestQuote">Cotizaciones</MudNavLink>
+    <MudNavLink href="informes" Icon="@Icons.Material.Filled.Description">Informes</MudNavLink>
+    <MudNavLink href="mapa" Icon="@Icons.Material.Filled.Map">Mapa GIS</MudNavLink>
+    <AuthorizeView Roles="Admin">
+        <MudNavLink href="usuarios" Icon="@Icons.Material.Filled.People">Usuarios</MudNavLink>
+    </AuthorizeView>
+</MudNavMenu>
+

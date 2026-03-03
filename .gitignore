@@ -1,0 +1,44 @@
+## [Visual Studio]
+.vs/
+[Bb]in/
+[Oo]bj/
+*.user
+*.userosscache
+*.sln.docstates
+
+## [C# / .NET]
+# NuGet Packages
+*.nupkg
+# Object files
+*.obj
+# User-specific files
+*.user
+*.userosscache
+*.suo
+*.userprefs
+# Built transitions
+publish/
+# BLAZOR
+/frontend/bin/
+/frontend/obj/
+
+## [Python]
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+# Distribution / packaging
+dist/
+build/
+*.egg-info/
+# Virtual environments
+venv/
+.venv/
+env/
+.env/
+
+## [OS / IDE]
+.DS_Store
+Thumbs.db
+.vscode/
+.history

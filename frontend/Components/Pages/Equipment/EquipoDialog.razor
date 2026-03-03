@@ -1,0 +1,160 @@
+@using frontend.Models
+@using frontend.Services
+@inject EquipmentService EquipmentService
+@inject ISnackbar Snackbar
+
+<MudDialog>
+    <TitleContent>
+        <MudText Typo="Typo.h6">
+            <MudIcon Icon="@(IsEdit ? Icons.Material.Filled.Edit : Icons.Material.Filled.Add)" Class="mr-3 mb-n1" />
+            @(IsEdit ? "Editar Equipo" : "Nuevo Equipo")
+        </MudText>
+    </TitleContent>
+    <DialogContent>
+        <MudForm @ref="_form" @bind-IsValid="@_isValid">
+            <MudGrid>
+                <MudItem xs="12" sm="6">
+                    <MudTextField T="string" Label="Nombre" Required="true" @bind-Value="_model.Nombre" />
+                </MudItem>
+                <MudItem xs="12" sm="6">
+                    <MudTextField T="string" Label="Nº Serie" Required="true" @bind-Value="_model.NumeroSerie" />
+                </MudItem>
+                <MudItem xs="12" sm="6">
+                    <MudTextField T="string" Label="Marca" @bind-Value="_model.Marca" />
+                </MudItem>
+                <MudItem xs="12" sm="6">
+                    <MudTextField T="string" Label="Modelo" @bind-Value="_model.Modelo" />
+                </MudItem>
+                <MudItem xs="12">
+                    <MudSelect T="string" Label="Estado" @bind-Value="_model.Estado">
+                        <MudSelectItem Value="@("Activo")">Activo</MudSelectItem>
+                        <MudSelectItem Value="@("Danado")">Dañado</MudSelectItem>
+                        <MudSelectItem Value="@("Mantenimiento")">Mantenimiento</MudSelectItem>
+                        <MudSelectItem Value="@("Baja")">Baja</MudSelectItem>
+                    </MudSelect>
+                </MudItem>
+                <MudItem xs="12">
+                    <div class="d-flex flex-column gap-2">
+                        <InputFile id="fileInput" OnChange="UploadFile" hidden accept=".jpg,.png,.jpeg" />
+                        <MudButton HtmlTag="label"
+                                   Variant="Variant.Filled"
+                                   Color="Color.Primary"
+                                   StartIcon="@Icons.Material.Filled.CloudUpload"
+                                   for="fileInput">
+                            @(string.IsNullOrEmpty(_fotoUrl) ? "Subir Foto" : "Cambiar Foto")
+                        </MudButton>
+                        @if (!string.IsNullOrEmpty(_fotoUrl))
+                        {
+                            <MudText Typo="Typo.caption">Foto cargada: @_fotoFileName</MudText>
+                        }
+                    </div>
+                </MudItem>
+            </MudGrid>
+        </MudForm>
+    </DialogContent>
+    <DialogActions>
+        <MudButton OnClick="Cancel">Cancelar</MudButton>
+        <MudButton Color="Color.Primary" Disabled="@(!_isValid || _processing)" OnClick="Submit">
+            @if (_processing)
+            {
+                <MudProgressCircular Class="ms-n1" Size="Size.Small" Indeterminate="true" />
+                <MudText Class="ms-2">Guardando...</MudText>
+            }
+            else
+            {
+                <MudText>Guardar</MudText>
+            }
+        </MudButton>
+    </DialogActions>
+</MudDialog>
+
+@code {
+    [CascadingParameter] private MudBlazor.IMudDialogInstance MudDialog { get; set; } = null!;
+
+    [Parameter] public Equipo? Equipo { get; set; }
+
+    private bool IsEdit => Equipo != null;
+    private MudForm _form = null!;
+    private bool _isValid;
+    private bool _processing;
+    private EquipoCreate _model = new();
+    private IBrowserFile? _file;
+    private string? _fotoUrl;
+    private string? _fotoFileName;
+
+    protected override void OnInitialized()
+    {
+        if (IsEdit && Equipo != null)
+        {
+            _model.Nombre = Equipo.Nombre;
+            _model.Marca = Equipo.Marca;
+            _model.Modelo = Equipo.Modelo;
+            _model.NumeroSerie = Equipo.NumeroSerie;
+            _model.Estado = Equipo.Estado;
+            _fotoUrl = Equipo.FotoUrl;
+        }
+    }
+
+    private void UploadFile(InputFileChangeEventArgs e)
+    {
+        _file = e.File;
+        _fotoFileName = e.File.Name;
+        _fotoUrl = "temp"; // Just to show something is selected
+    }
+
+    private async Task Submit()
+    {
+        await _form.Validate();
+        if (!_isValid) return;
+
+        _processing = true;
+        try
+        {
+            Equipo result;
+            if (IsEdit && Equipo != null)
+            {
+                var updateModel = new EquipoUpdate
+                {
+                    Nombre = _model.Nombre,
+                    Marca = _model.Marca,
+                    Modelo = _model.Modelo,
+                    NumeroSerie = _model.NumeroSerie,
+                    Estado = _model.Estado
+                };
+                result = await EquipmentService.UpdateEquipoAsync(Equipo.Id, updateModel);
+                Snackbar.Add("Equipo actualizado con éxito", Severity.Success);
+            }
+            else
+            {
+                result = await EquipmentService.CreateEquipoAsync(_model);
+                Snackbar.Add("Equipo creado con éxito", Severity.Success);
+            }
+
+            // Upload photo if selected
+            if (_file != null)
+            {
+                try 
+                {
+                    using var stream = _file.OpenReadStream(maxAllowedSize: 1024 * 1024 * 5); // 5MB max
+                    await EquipmentService.UploadPhotoAsync(result.Id, stream, _file.Name);
+                }
+                catch (Exception ex)
+                {
+                    Snackbar.Add($"Equipo guardado, pero falló la subida de foto: {ex.Message}", Severity.Warning);
+                }
+            }
+
+            MudDialog.Close(DialogResult.Ok(result));
+        }
+        catch (Exception ex)
+        {
+            Snackbar.Add($"Error: {ex.Message}", Severity.Error);
+        }
+        finally
+        {
+            _processing = false;
+        }
+    }
+
+    private void Cancel() => MudDialog.Cancel();
+}

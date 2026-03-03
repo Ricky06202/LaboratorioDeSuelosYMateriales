@@ -1,0 +1,161 @@
+@page "/inventario"
+@using frontend.Models
+@using frontend.Services
+@inject EquipmentService EquipmentService
+@inject ISnackbar Snackbar
+@inject IDialogService DialogService
+
+<MudText Typo="Typo.h4" GutterBottom="true">Inventario de Equipos</MudText>
+
+@if (_loadFailed)
+{
+    <MudAlert Severity="Severity.Error" Variant="Variant.Filled" Class="my-4">
+        No se pudieron cargar los datos del inventario.
+    </MudAlert>
+}
+
+<MudTable ServerData="ServerReload" Dense="true" Hover="true" @ref="_table">
+    <ToolBarContent>
+        <MudButton Variant="Variant.Filled" Color="Color.Primary" StartIcon="@Icons.Material.Filled.Add" OnClick="OnAddEquipment" Class="mr-4">Nuevo Equipo</MudButton>
+        <MudSpacer />
+        <MudTextField T="string" ValueChanged="@(s=>OnSearch(s))" Placeholder="Buscar por nombre o serie..." Adornment="Adornment.Start"
+                      AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium" Class="mt-0"></MudTextField>
+    </ToolBarContent>
+    <HeaderContent>
+        <MudTh>Nombre</MudTh>
+        <MudTh>Marca</MudTh>
+        <MudTh>Modelo</MudTh>
+        <MudTh>Nº Serie</MudTh>
+        <MudTh>Estado</MudTh>
+        <MudTh>Acciones</MudTh>
+    </HeaderContent>
+    <RowTemplate>
+        <MudTd DataLabel="Nombre">@context.Nombre</MudTd>
+        <MudTd DataLabel="Marca">@context.Marca</MudTd>
+        <MudTd DataLabel="Modelo">@context.Modelo</MudTd>
+        <MudTd DataLabel="Nº Serie">@context.NumeroSerie</MudTd>
+        <MudTd DataLabel="Estado">
+            <MudChip T="string" Color="@GetColor(context.Estado)" Size="Size.Small">@context.Estado</MudChip>
+        </MudTd>
+        <MudTd>
+            <MudIconButton Icon="@Icons.Material.Filled.History" Size="Size.Small" Color="Color.Info" OnClick="@(() => OnManageCalibrations(context))" Title="Calibraciones" />
+            <MudIconButton Icon="@Icons.Material.Filled.Edit" Size="Size.Small" OnClick="@(() => OnEditEquipment(context))" Title="Editar" />
+            <MudIconButton Icon="@Icons.Material.Filled.Delete" Size="Size.Small" Color="Color.Error" OnClick="@(() => OnDeleteEquipment(context))" Title="Eliminar" />
+        </MudTd>
+    </RowTemplate>
+    <NoRecordsContent>
+        <MudText>No se encontraron equipos.</MudText>
+    </NoRecordsContent>
+    <LoadingContent>
+        <MudText>Cargando...</MudText>
+    </LoadingContent>
+    <PagerContent>
+        <MudTablePager />
+    </PagerContent>
+</MudTable>
+
+@code {
+    private MudTable<Equipo> _table = null!;
+    private string _searchString = "";
+    private bool _loadFailed = false;
+
+    private async Task<TableData<Equipo>> ServerReload(TableState state, CancellationToken cancellationToken)
+    {
+        try
+        {
+            _loadFailed = false;
+            var response = await EquipmentService.GetEquiposAsync(state.Page * state.PageSize, state.PageSize, _searchString);
+            
+            if (response == null)
+            {
+                return new TableData<Equipo>() { TotalItems = 0, Items = Enumerable.Empty<Equipo>() };
+            }
+            
+            return new TableData<Equipo>() { TotalItems = response.Total, Items = response.Items };
+        }
+        catch (Exception ex)
+        {
+            _loadFailed = true;
+            Snackbar.Add($"Error al cargar inventario: {ex.Message}", Severity.Error);
+            return new TableData<Equipo>() { TotalItems = 0, Items = Enumerable.Empty<Equipo>() };
+        }
+    }
+
+    private void OnSearch(string text)
+    {
+        _searchString = text;
+        _table?.ReloadServerData();
+    }
+
+    private async Task OnAddEquipment()
+    {
+        var options = new DialogOptions { CloseOnEscapeKey = true, MaxWidth = MaxWidth.Small, FullWidth = true };
+        var dialog = await DialogService.ShowAsync<EquipoDialog>("Nuevo Equipo", options);
+        var result = await dialog.Result;
+
+        if (!result.Canceled)
+        {
+            await _table.ReloadServerData();
+        }
+    }
+
+    private async Task OnEditEquipment(Equipo equipo)
+    {
+        var parameters = new DialogParameters<EquipoDialog> { { x => x.Equipo, equipo } };
+        var options = new DialogOptions { CloseOnEscapeKey = true, MaxWidth = MaxWidth.Small, FullWidth = true };
+        var dialog = await DialogService.ShowAsync<EquipoDialog>("Editar Equipo", parameters, options);
+        var result = await dialog.Result;
+
+        if (!result.Canceled)
+        {
+            await _table.ReloadServerData();
+        }
+    }
+
+    private async Task OnManageCalibrations(Equipo equipo)
+    {
+        var parameters = new DialogParameters<CalibracionDialog> 
+        { 
+            { x => x.EquipoId, equipo.Id },
+            { x => x.EquipoNombre, equipo.Nombre }
+        };
+        var options = new DialogOptions { CloseOnEscapeKey = true, MaxWidth = MaxWidth.Small, FullWidth = true };
+        var dialog = await DialogService.ShowAsync<CalibracionDialog>("Gestionar Calibraciones", parameters, options);
+        var result = await dialog.Result;
+
+        if (!result.Canceled)
+        {
+            await _table.ReloadServerData();
+        }
+    }
+
+    private async Task OnDeleteEquipment(Equipo equipo)
+    {
+        bool? result = await DialogService.ShowMessageBoxAsync(
+            "Eliminar Equipo", 
+            $"¿Está seguro que desea eliminar el equipo {equipo.Nombre}?", 
+            yesText: "Eliminar", cancelText: "Cancelar");
+
+        if (result == true)
+        {
+            try
+            {
+                await EquipmentService.DeleteEquipoAsync(equipo.Id);
+                Snackbar.Add("Equipo eliminado", Severity.Success);
+                await _table.ReloadServerData();
+            }
+            catch (Exception ex)
+            {
+                Snackbar.Add($"Error al eliminar: {ex.Message}", Severity.Error);
+            }
+        }
+    }
+
+    private Color GetColor(string estado) => estado switch
+    {
+        "Activo" => Color.Success,
+        "Danado" => Color.Error,
+        "Mantenimiento" => Color.Warning,
+        _ => Color.Default
+    };
+}

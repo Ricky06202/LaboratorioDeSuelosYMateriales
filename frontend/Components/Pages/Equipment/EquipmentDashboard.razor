@@ -1,0 +1,65 @@
+@page "/dashboard-equipos"
+@using frontend.Models
+@using frontend.Services
+@inject EquipmentService EquipmentService
+
+<MudText Typo="Typo.h4" GutterBottom="true">Panel de Alertas de Calibración</MudText>
+
+<MudGrid>
+    <MudItem xs="12">
+        <MudTable Items="@_alerts" Hover="true" Breakpoint="Breakpoint.Sm" Loading="@_loading" LoadingProgressColor="Color.Info">
+            <HeaderContent>
+                <MudTh>Equipo</MudTh>
+                <MudTh>Nº Serie</MudTh>
+                <MudTh>Estado</MudTh>
+                <MudTh>Vencimiento</MudTh>
+                <MudTh>Acción</MudTh>
+            </HeaderContent>
+            <RowTemplate>
+                <MudTd DataLabel="Equipo">@context.Nombre</MudTd>
+                <MudTd DataLabel="Nº Serie">@context.NumeroSerie</MudTd>
+                <MudTd DataLabel="Estado">
+                    <MudChip T="string" Color="@GetColor(context.Estado)">@context.Estado</MudChip>
+                </MudTd>
+                <MudTd DataLabel="Vencimiento">
+                    <MudText Color="@GetExpirationColor(context.Calibraciones.FirstOrDefault()?.FechaVencimiento)">
+                        @(context.Calibraciones.FirstOrDefault()?.FechaVencimiento.ToShortDateString() ?? "Sin datos")
+                    </MudText>
+                </MudTd>
+                <MudTd>
+                    <MudButton Variant="Variant.Filled" Color="Color.Primary" StartIcon="@Icons.Material.Filled.Add" Size="Size.Small">Calibrar</MudButton>
+                </MudTd>
+            </RowTemplate>
+            <NoRecordsContent>
+                <MudAlert Severity="Severity.Success">No hay alertas pendientes. Todos los equipos están al día.</MudAlert>
+            </NoRecordsContent>
+        </MudTable>
+    </MudItem>
+</MudGrid>
+
+@code {
+    private List<Equipo> _alerts = new();
+    private bool _loading = true;
+
+    protected override async Task OnInitializedAsync()
+    {
+        _alerts = await EquipmentService.GetAlertsAsync();
+        _loading = false;
+    }
+
+    private Color GetColor(string estado) => estado switch
+    {
+        "Activo" => Color.Success,
+        "Dañado" => Color.Error,
+        "Mantenimiento" => Color.Warning,
+        _ => Color.Default
+    };
+
+    private Color GetExpirationColor(DateTime? dueDate)
+    {
+        if (!dueDate.HasValue) return Color.Default;
+        if (dueDate.Value < DateTime.Now) return Color.Error;
+        if (dueDate.Value < DateTime.Now.AddDays(30)) return Color.Warning;
+        return Color.Success;
+    }
+}

@@ -1,0 +1,41 @@
+@page "/login"
+@using frontend.Auth
+@using Microsoft.AspNetCore.Components.Authorization
+@inject NavigationManager Navigation
+@inject AuthenticationStateProvider AuthStateProvider
+@inject HttpClient Http
+
+<MudContainer MaxWidth="MaxWidth.Small" Class="mt-16">
+    <MudPaper Class="pa-8">
+        <MudText Typo="Typo.h4" Align="Align.Center" GutterBottom="true">Iniciar Sesión</MudText>
+        <MudTextField @bind-Value="_model.Username" Label="Email" Variant="Variant.Outlined" Class="mt-4" />
+        <MudTextField @bind-Value="_model.Password" Label="Contraseña" Variant="Variant.Outlined" InputType="InputType.Password" Class="mt-4" />
+        
+        @if (!string.IsNullOrEmpty(_error))
+        {
+            <MudAlert Severity="Severity.Error" Class="mt-4">@_error</MudAlert>
+        }
+
+        <MudButton Variant="Variant.Filled" Color="Color.Primary" FullWidth="true" Class="mt-6" OnClick="HandleLogin">Entrar</MudButton>
+    </MudPaper>
+</MudContainer>
+
+@code {
+    private LoginModel _model = new();
+    private string _error;
+
+    private async Task HandleLogin()
+    {
+        // Placeholder for real API call
+        // var response = await Http.PostAsJsonAsync("api/auth/login", _model);
+        // if (response.IsSuccessStatusCode) ...
+        
+        _error = "Servicio de autenticación en desarrollo. Backend requerido.";
+    }
+
+    public class LoginModel
+    {
+        public string Username { get; set; }
+        public string Password { get; set; }
+    }
+}
