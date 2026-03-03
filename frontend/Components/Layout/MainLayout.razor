@@ -6,7 +6,7 @@
 <MudSnackbarProvider />
 
 <MudLayout>
-    <MudAppBar Elevation="0">
+    <MudAppBar Elevation="0" Fixed="true">
         <MudIconButton Icon="@Icons.Material.Filled.Menu" Color="Color.Inherit" Edge="Edge.Start" OnClick="@((e) => DrawerToggle())" />
         <MudText Typo="Typo.h5" Class="ml-3 font-weight-bold">Laboratorio <span class="mud-primary-text">Suelos</span></MudText>
         <MudSpacer />
@@ -20,10 +20,10 @@
             <MudMenuItem Icon="@Icons.Material.Filled.Logout">Cerrar Sesión</MudMenuItem>
         </MudMenu>
     </MudAppBar>
-    <MudDrawer @bind-Open="_drawerOpen" ClipMode="DrawerClipMode.Always" Elevation="0" MiniMode="true">
+    <MudDrawer @bind-Open="_drawerOpen" ClipMode="DrawerClipMode.Always" Elevation="0" MiniMode="true" Fixed="true">
         <NavMenu />
     </MudDrawer>
-    <MudMainContent Class="pa-6">
+    <MudMainContent Class="pa-8 pt-24">
         <MudContainer MaxWidth="MaxWidth.ExtraLarge" Class="mt-4">
             @Body
         </MudContainer>

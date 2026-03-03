@@ -84,7 +84,9 @@
         <RowTemplate>
             <MudTd DataLabel="Equipo">
                 <div class="d-flex align-center">
-                    <MudAvatar Color="Color.Primary" Variant="Variant.Filled" Size="Size.Small" Class="mr-3">@context.Nombre[0]</MudAvatar>
+                    <MudAvatar Color="Color.Primary" Variant="Variant.Filled" Size="Size.Small" Class="mr-3">
+                        @(string.IsNullOrEmpty(context.Nombre) ? "?" : context.Nombre[0])
+                    </MudAvatar>
                     <MudText Typo="Typo.body2" Class="font-weight-medium">@context.Nombre</MudText>
                 </div>
             </MudTd>

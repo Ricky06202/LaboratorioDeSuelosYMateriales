@@ -39,10 +39,12 @@
         <RowTemplate>
             <MudTd DataLabel="Equipo">
                 <div class="d-flex align-center">
-                    <MudAvatar Color="Color.Primary" Variant="Variant.Filled" Size="Size.Medium" Class="mr-3 shadow-sm">@context.Nombre[0]</MudAvatar>
+                    <MudAvatar Color="Color.Primary" Variant="Variant.Filled" Size="Size.Medium" Class="mr-3 shadow-sm">
+                        @(string.IsNullOrEmpty(context.Nombre) ? "?" : context.Nombre[0])
+                    </MudAvatar>
                     <div>
                         <MudText Typo="Typo.body1" Class="font-weight-bold">@context.Nombre</MudText>
-                        <MudText Typo="Typo.caption" Class="opacity-50">ID: @context.Id.ToString().Substring(0, 8)</MudText>
+                        <MudText Typo="Typo.caption" Class="opacity-50">ID: @(context.Id.ToString().Length > 8 ? context.Id.ToString().Substring(0, 8) : context.Id.ToString())</MudText>
                     </div>
                 </div>
             </MudTd>
