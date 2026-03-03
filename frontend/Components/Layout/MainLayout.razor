@@ -1,29 +1,76 @@
 ﻿@inherits LayoutComponentBase
 
-<MudThemeProvider />
+<MudThemeProvider Theme="_currentTheme" IsDarkMode="_isDarkMode" />
 <MudPopoverProvider />
 <MudDialogProvider />
 <MudSnackbarProvider />
 
 <MudLayout>
-    <MudAppBar Elevation="1">
+    <MudAppBar Elevation="0">
         <MudIconButton Icon="@Icons.Material.Filled.Menu" Color="Color.Inherit" Edge="Edge.Start" OnClick="@((e) => DrawerToggle())" />
-        <MudText Typo="Typo.h5" Class="ml-3">Laboratorio de Suelos y Materiales</MudText>
+        <MudText Typo="Typo.h5" Class="ml-3 font-weight-bold">Laboratorio <span class="mud-primary-text">Suelos</span></MudText>
         <MudSpacer />
+        <MudTooltip Text="Alternar Modo Oscuro">
+            <MudIconButton Icon="@(_isDarkMode ? Icons.Material.Filled.LightMode : Icons.Material.Filled.DarkMode)" Color="Color.Inherit" OnClick="@((e) => DarkModeToggle())" />
+        </MudTooltip>
+        <MudMenu Icon="@Icons.Material.Filled.AccountCircle" Color="Color.Inherit" AnchorOrigin="Origin.BottomRight" TransformOrigin="Origin.TopRight" Class="ml-2">
+            <MudMenuItem Icon="@Icons.Material.Filled.Person">Mi Perfil</MudMenuItem>
+            <MudMenuItem Icon="@Icons.Material.Filled.Settings">Ajustes</MudMenuItem>
+            <MudDivider />
+            <MudMenuItem Icon="@Icons.Material.Filled.Logout">Cerrar Sesión</MudMenuItem>
+        </MudMenu>
     </MudAppBar>
-    <MudDrawer @bind-Open="_drawerOpen" ClipMode="DrawerClipMode.Always" Elevation="2">
+    <MudDrawer @bind-Open="_drawerOpen" ClipMode="DrawerClipMode.Always" Elevation="0" MiniMode="true">
         <NavMenu />
     </MudDrawer>
-    <MudMainContent Class="pa-4">
-        @Body
+    <MudMainContent Class="pa-6">
+        <MudContainer MaxWidth="MaxWidth.ExtraLarge" Class="mt-4">
+            @Body
+        </MudContainer>
     </MudMainContent>
 </MudLayout>
 
 @code {
     bool _drawerOpen = true;
+    bool _isDarkMode = false;
 
-    void DrawerToggle()
+    private void DrawerToggle()
     {
         _drawerOpen = !_drawerOpen;
     }
+
+    private void DarkModeToggle()
+    {
+        _isDarkMode = !_isDarkMode;
+    }
+
+    private MudTheme _currentTheme = new MudTheme()
+    {
+        PaletteLight = new PaletteLight()
+        {
+            Primary = "#3f51b5",
+            Secondary = "#00b09b",
+            AppbarBackground = "rgba(255, 255, 255, 0.7)",
+            Background = "#f8fafd",
+            DrawerBackground = "rgba(255, 255, 255, 0.8)",
+            Surface = "#ffffff",
+            TextPrimary = "#1a202c",
+            TextSecondary = "#4a5568",
+            ActionDefault = "#5a67d8"
+        },
+        PaletteDark = new PaletteDark()
+        {
+            Primary = "#7986cb",
+            Secondary = "#00b09b",
+            Background = "#0f172a",
+            Surface = "#1e293b",
+            AppbarBackground = "rgba(15, 23, 42, 0.7)",
+            DrawerBackground = "rgba(15, 23, 42, 0.8)",
+        },
+        LayoutProperties = new LayoutProperties()
+        {
+            DefaultBorderRadius = "16px",
+            AppbarHeight = "72px"
+        }
+    };
 }

@@ -5,54 +5,91 @@
 @inject ISnackbar Snackbar
 @inject IDialogService DialogService
 
-<MudText Typo="Typo.h4" GutterBottom="true">Inventario de Equipos</MudText>
+<div class="d-flex align-center mb-6">
+    <MudIcon Icon="@Icons.Material.Filled.Inventory" Size="Size.Large" Color="Color.Primary" Class="mr-3" />
+    <MudText Typo="Typo.h4" Class="font-weight-bold">Inventario de Equipos</MudText>
+</div>
 
 @if (_loadFailed)
 {
-    <MudAlert Severity="Severity.Error" Variant="Variant.Filled" Class="my-4">
-        No se pudieron cargar los datos del inventario.
+    <MudAlert Severity="Severity.Error" Variant="Variant.Filled" Class="mb-6 rounded-lg shadow-sm">
+        No se pudieron cargar los datos del inventario. Por favor, reintente.
     </MudAlert>
 }
 
-<MudTable ServerData="ServerReload" Dense="true" Hover="true" @ref="_table">
-    <ToolBarContent>
-        <MudButton Variant="Variant.Filled" Color="Color.Primary" StartIcon="@Icons.Material.Filled.Add" OnClick="OnAddEquipment" Class="mr-4">Nuevo Equipo</MudButton>
-        <MudSpacer />
-        <MudTextField T="string" ValueChanged="@(s=>OnSearch(s))" Placeholder="Buscar por nombre o serie..." Adornment="Adornment.Start"
-                      AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium" Class="mt-0"></MudTextField>
-    </ToolBarContent>
-    <HeaderContent>
-        <MudTh>Nombre</MudTh>
-        <MudTh>Marca</MudTh>
-        <MudTh>Modelo</MudTh>
-        <MudTh>Nº Serie</MudTh>
-        <MudTh>Estado</MudTh>
-        <MudTh>Acciones</MudTh>
-    </HeaderContent>
-    <RowTemplate>
-        <MudTd DataLabel="Nombre">@context.Nombre</MudTd>
-        <MudTd DataLabel="Marca">@context.Marca</MudTd>
-        <MudTd DataLabel="Modelo">@context.Modelo</MudTd>
-        <MudTd DataLabel="Nº Serie">@context.NumeroSerie</MudTd>
-        <MudTd DataLabel="Estado">
-            <MudChip T="string" Color="@GetColor(context.Estado)" Size="Size.Small">@context.Estado</MudChip>
-        </MudTd>
-        <MudTd>
-            <MudIconButton Icon="@Icons.Material.Filled.History" Size="Size.Small" Color="Color.Info" OnClick="@(() => OnManageCalibrations(context))" Title="Calibraciones" />
-            <MudIconButton Icon="@Icons.Material.Filled.Edit" Size="Size.Small" OnClick="@(() => OnEditEquipment(context))" Title="Editar" />
-            <MudIconButton Icon="@Icons.Material.Filled.Delete" Size="Size.Small" Color="Color.Error" OnClick="@(() => OnDeleteEquipment(context))" Title="Eliminar" />
-        </MudTd>
-    </RowTemplate>
-    <NoRecordsContent>
-        <MudText>No se encontraron equipos.</MudText>
-    </NoRecordsContent>
-    <LoadingContent>
-        <MudText>Cargando...</MudText>
-    </LoadingContent>
-    <PagerContent>
-        <MudTablePager />
-    </PagerContent>
-</MudTable>
+<MudPaper Elevation="0" Class="pa-6 rounded-xl shadow-sm border">
+    <MudTable ServerData="ServerReload" Dense="false" Hover="true" @ref="_table" Elevation="0" Class="rounded-lg overflow-hidden">
+        <ToolBarContent>
+            <MudButton Variant="Variant.Filled" Color="Color.Primary" StartIcon="@Icons.Material.Filled.Add" 
+                       OnClick="OnAddEquipment" Class="rounded-pill px-6" DropShadow="false">
+                Nuevo Equipo
+            </MudButton>
+            <MudSpacer />
+            <MudTextField T="string" ValueChanged="@(s=>OnSearch(s))" Placeholder="Buscar por nombre o serie..." 
+                          Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.Search" 
+                          IconSize="Size.Medium" Class="mt-0" Variant="Variant.Outlined" Margin="Margin.Dense"></MudTextField>
+        </ToolBarContent>
+        <HeaderContent>
+            <MudTh>Equipo</MudTh>
+            <MudTh>Detalles</MudTh>
+            <MudTh>Nº Serie</MudTh>
+            <MudTh>Estado</MudTh>
+            <MudTh>Acciones</MudTh>
+        </HeaderContent>
+        <RowTemplate>
+            <MudTd DataLabel="Equipo">
+                <div class="d-flex align-center">
+                    <MudAvatar Color="Color.Primary" Variant="Variant.Filled" Size="Size.Medium" Class="mr-3 shadow-sm">@context.Nombre[0]</MudAvatar>
+                    <div>
+                        <MudText Typo="Typo.body1" Class="font-weight-bold">@context.Nombre</MudText>
+                        <MudText Typo="Typo.caption" Class="opacity-50">ID: @context.Id.ToString().Substring(0, 8)</MudText>
+                    </div>
+                </div>
+            </MudTd>
+            <MudTd DataLabel="Detalles">
+                <MudText Typo="Typo.body2">@context.Marca</MudText>
+                <MudText Typo="Typo.caption" Class="opacity-75">@context.Modelo</MudText>
+            </MudTd>
+            <MudTd DataLabel="Nº Serie">
+                <code>@context.NumeroSerie</code>
+            </MudTd>
+            <MudTd DataLabel="Estado">
+                <MudChip T="string" Color="@GetColor(context.Estado)" Size="Size.Small" Variant="Variant.Text" Class="font-weight-bold">@context.Estado</MudChip>
+            </MudTd>
+            <MudTd>
+                <div class="d-flex">
+                    <MudTooltip Text="Gestionar Calibraciones">
+                        <MudIconButton Icon="@Icons.Material.Filled.FactCheck" Size="Size.Small" Color="Color.Info" 
+                                       OnClick="@(() => OnManageCalibrations(context))" Class="mr-1" />
+                    </MudTooltip>
+                    <MudTooltip Text="Editar">
+                        <MudIconButton Icon="@Icons.Material.Filled.Edit" Size="Size.Small" Color="Color.Primary" 
+                                       OnClick="@(() => OnEditEquipment(context))" Class="mr-1" />
+                    </MudTooltip>
+                    <MudTooltip Text="Eliminar">
+                        <MudIconButton Icon="@Icons.Material.Filled.Delete" Size="Size.Small" Color="Color.Error" 
+                                       OnClick="@(() => OnDeleteEquipment(context))" />
+                    </MudTooltip>
+                </div>
+            </MudTd>
+        </RowTemplate>
+        <NoRecordsContent>
+            <div class="pa-8 d-flex flex-column align-center">
+                <MudIcon Icon="@Icons.Material.Filled.SearchOff" Size="Size.Large" Class="mb-3 opacity-25" />
+                <MudText Typo="Typo.body1" Class="opacity-50">No se encontraron equipos.</MudText>
+            </div>
+        </NoRecordsContent>
+        <LoadingContent>
+            <div class="pa-8 d-flex flex-column align-center">
+                <MudProgressCircular Color="Color.Primary" Indeterminate="true" Class="mb-3" />
+                <MudText Typo="Typo.body1" Class="opacity-50">Cargando inventario...</MudText>
+            </div>
+        </LoadingContent>
+        <PagerContent>
+            <MudTablePager InfoText="Equipos {from}-{to} de {all}" RowsPerPageString="Filas:" />
+        </PagerContent>
+    </MudTable>
+</MudPaper>
 
 @code {
     private MudTable<Equipo> _table = null!;
@@ -89,7 +126,7 @@
 
     private async Task OnAddEquipment()
     {
-        var options = new DialogOptions { CloseOnEscapeKey = true, MaxWidth = MaxWidth.Small, FullWidth = true };
+        var options = new DialogOptions { CloseOnEscapeKey = true, MaxWidth = MaxWidth.Small, FullWidth = true, CloseButton = true };
         var dialog = await DialogService.ShowAsync<EquipoDialog>("Nuevo Equipo", options);
         var result = await dialog.Result;
 
@@ -102,7 +139,7 @@
     private async Task OnEditEquipment(Equipo equipo)
     {
         var parameters = new DialogParameters<EquipoDialog> { { x => x.Equipo, equipo } };
-        var options = new DialogOptions { CloseOnEscapeKey = true, MaxWidth = MaxWidth.Small, FullWidth = true };
+        var options = new DialogOptions { CloseOnEscapeKey = true, MaxWidth = MaxWidth.Small, FullWidth = true, CloseButton = true };
         var dialog = await DialogService.ShowAsync<EquipoDialog>("Editar Equipo", parameters, options);
         var result = await dialog.Result;
 
@@ -119,7 +156,7 @@
             { x => x.EquipoId, equipo.Id },
             { x => x.EquipoNombre, equipo.Nombre }
         };
-        var options = new DialogOptions { CloseOnEscapeKey = true, MaxWidth = MaxWidth.Small, FullWidth = true };
+        var options = new DialogOptions { CloseOnEscapeKey = true, MaxWidth = MaxWidth.Small, FullWidth = true, CloseButton = true };
         var dialog = await DialogService.ShowAsync<CalibracionDialog>("Gestionar Calibraciones", parameters, options);
         var result = await dialog.Result;
 

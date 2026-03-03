@@ -1,0 +1,54 @@
+/* Global Design System Corrections */
+:root {
+    --mud-palette-primary: #3f51b5;
+    --mud-palette-appbar-background: rgba(255, 255, 255, 0.7);
+}
+
+body {
+    font-family: 'Outfit', 'Roboto', sans-serif !important;
+}
+
+/* Glassmorphism Appbar */
+.mud-appbar.mud-appbar-fixed-top {
+    backdrop-filter: blur(12px) saturate(180%);
+    -webkit-backdrop-filter: blur(12px) saturate(180%);
+    background-color: rgba(255, 255, 255, 0.65) !important;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.3);
+    color: #1a1a1a !important;
+}
+
+/* Glassmorphism Drawer */
+.mud-drawer {
+    backdrop-filter: blur(8px);
+    background-color: rgba(255, 255, 255, 0.8) !important;
+    border-right: 1px solid rgba(0, 0, 0, 0.05) !important;
+}
+
+/* Dashboard Cards with Gradients */
+.stats-card {
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    cursor: pointer;
+    border: none !important;
+    border-radius: 16px !important;
+    overflow: hidden;
+}
+
+.stats-card:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 12px 24px rgba(0,0,0,0.1) !important;
+}
+
+.gradient-blue { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; }
+.gradient-red { background: linear-gradient(135deg, #ff6b6b 0%, #ee0979 100%); color: white; }
+.gradient-orange { background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%); color: white; }
+.gradient-green { background: linear-gradient(135deg, #00b09b 0%, #96c93d 100%); color: white; }
+
+/* Table Enhancements */
+.mud-table-container {
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+}
+
+.mud-table-head {
+    background-color: #f8fafc;
+}

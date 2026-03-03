@@ -4,65 +4,131 @@
 @inject EquipmentService EquipmentService
 @inject ISnackbar Snackbar
 
-<PageTitle>Laboratorio - Alertas</PageTitle>
+<PageTitle>Dashboard - Suelos</PageTitle>
 
-<MudText Typo="Typo.h4" GutterBottom="true">Panel de Alertas de Calibración</MudText>
+<div class="d-flex align-center mb-6">
+    <MudIcon Icon="@Icons.Material.Filled.Dashboard" Size="Size.Large" Color="Color.Primary" Class="mr-3" />
+    <MudText Typo="Typo.h4" Class="font-weight-bold">Dashboard de Gestión</MudText>
+</div>
 
 @if (_loadFailed)
 {
-    <MudAlert Severity="Severity.Error" Variant="Variant.Filled" Class="my-4">
+    <MudAlert Severity="Severity.Error" Variant="Variant.Filled" Class="mb-6 rounded-lg shadow-sm">
         No se pudo conectar con el servidor. Verifique que el backend esté ejecutándose.
         <MudButton Color="Color.Inherit" Variant="Variant.Outlined" Size="Size.Small" OnClick="LoadData" Class="ml-4">Reintentar</MudButton>
     </MudAlert>
 }
 
-<MudGrid>
-    <MudItem xs="12">
-        <MudTable Items="@_alerts" Hover="true" Breakpoint="Breakpoint.Sm" Loading="@_loading" LoadingProgressColor="Color.Info">
-            <HeaderContent>
-                <MudTh>Equipo</MudTh>
-                <MudTh>Nº Serie</MudTh>
-                <MudTh>Estado</MudTh>
-                <MudTh>Vencimiento</MudTh>
-                <MudTh>Acción</MudTh>
-            </HeaderContent>
-            <RowTemplate>
-                <MudTd DataLabel="Equipo">@context.Nombre</MudTd>
-                <MudTd DataLabel="Nº Serie">@context.NumeroSerie</MudTd>
-                <MudTd DataLabel="Estado">
-                    <MudChip T="string" Color="@GetColor(context.Estado)">@context.Estado</MudChip>
-                </MudTd>
-                <MudTd DataLabel="Vencimiento">
-                    @if (context.Calibraciones != null && context.Calibraciones.Any())
-                    {
-                        var lastCal = context.Calibraciones.OrderByDescending(c => c.FechaVencimiento).First();
-                        <MudText Color="@GetExpirationColor(lastCal.FechaVencimiento)">
-                            @lastCal.FechaVencimiento.ToShortDateString()
-                        </MudText>
-                    }
-                    else
-                    {
-                        <MudText Color="Color.Default">Sin datos</MudText>
-                    }
-                </MudTd>
-                <MudTd>
-                    <MudButton Variant="Variant.Filled" Color="Color.Primary" StartIcon="@Icons.Material.Filled.Add" Size="Size.Small">Calibrar</MudButton>
-                </MudTd>
-            </RowTemplate>
-            <NoRecordsContent>
-                @if (!_loading && !_loadFailed)
-                {
-                    <MudAlert Severity="Severity.Success">No hay alertas pendientes. Todos los equipos están al día.</MudAlert>
-                }
-            </NoRecordsContent>
-        </MudTable>
+<MudGrid Class="mb-8">
+    <MudItem xs="12" sm="6" md="3">
+        <MudCard Elevation="0" Class="stats-card gradient-blue pa-4">
+            <div class="d-flex align-center justify-space-between">
+                <div>
+                    <MudText Typo="Typo.subtitle1" Class="opacity-75">Total Equipos</MudText>
+                    <MudText Typo="Typo.h3" Class="font-weight-bold">@_totalEquipos</MudText>
+                </div>
+                <MudIcon Icon="@Icons.Material.Filled.Inventory" Size="Size.Large" Class="opacity-50" />
+            </div>
+        </MudCard>
+    </MudItem>
+    <MudItem xs="12" sm="6" md="3">
+        <MudCard Elevation="0" Class="stats-card gradient-red pa-4">
+            <div class="d-flex align-center justify-space-between">
+                <div>
+                    <MudText Typo="Typo.subtitle1" Class="opacity-75">Alertas Críticas</MudText>
+                    <MudText Typo="Typo.h3" Class="font-weight-bold">@_criticalAlerts</MudText>
+                </div>
+                <MudIcon Icon="@Icons.Material.Filled.Warning" Size="Size.Large" Class="opacity-50" />
+            </div>
+        </MudCard>
+    </MudItem>
+    <MudItem xs="12" sm="6" md="3">
+        <MudCard Elevation="0" Class="stats-card gradient-orange pa-4">
+            <div class="d-flex align-center justify-space-between">
+                <div>
+                    <MudText Typo="Typo.subtitle1" Class="opacity-75">Próximos Vencimientos</MudText>
+                    <MudText Typo="Typo.h3" Class="font-weight-bold">@_upcomingAlerts</MudText>
+                </div>
+                <MudIcon Icon="@Icons.Material.Filled.NotificationImportant" Size="Size.Large" Class="opacity-50" />
+            </div>
+        </MudCard>
+    </MudItem>
+    <MudItem xs="12" sm="6" md="3">
+        <MudCard Elevation="0" Class="stats-card gradient-green pa-4">
+            <div class="d-flex align-center justify-space-between">
+                <div>
+                    <MudText Typo="Typo.subtitle1" Class="opacity-75">Al Día</MudText>
+                    <MudText Typo="Typo.h3" Class="font-weight-bold">@(_totalEquipos - _criticalAlerts - _upcomingAlerts)</MudText>
+                </div>
+                <MudIcon Icon="@Icons.Material.Filled.CheckCircle" Size="Size.Large" Class="opacity-50" />
+            </div>
+        </MudCard>
     </MudItem>
 </MudGrid>
+
+<MudPaper Elevation="0" Class="pa-6 rounded-xl shadow-sm border border-solid border-light">
+    <div class="d-flex align-center justify-space-between mb-4">
+        <MudText Typo="Typo.h6" Class="font-weight-bold">Detalle de Alertas de Calibración</MudText>
+        <MudButton Variant="Variant.Text" Color="Color.Primary" EndIcon="@Icons.Material.Filled.ArrowForward" href="/inventario">Ver Todo</MudButton>
+    </div>
+
+    <MudTable Items="@_alerts" Hover="true" Breakpoint="Breakpoint.Sm" Loading="@_loading" 
+              Elevation="0" Class="rounded-lg overflow-hidden border">
+        <HeaderContent>
+            <MudTh>Equipo</MudTh>
+            <MudTh>Nº Serie</MudTh>
+            <MudTh>Estado</MudTh>
+            <MudTh>Vencimiento</MudTh>
+            <MudTh>Acción</MudTh>
+        </HeaderContent>
+        <RowTemplate>
+            <MudTd DataLabel="Equipo">
+                <div class="d-flex align-center">
+                    <MudAvatar Color="Color.Primary" Variant="Variant.Filled" Size="Size.Small" Class="mr-3">@context.Nombre[0]</MudAvatar>
+                    <MudText Typo="Typo.body2" Class="font-weight-medium">@context.Nombre</MudText>
+                </div>
+            </MudTd>
+            <MudTd DataLabel="Nº Serie">@context.NumeroSerie</MudTd>
+            <MudTd DataLabel="Estado">
+                <MudChip T="string" Color="@GetColor(context.Estado)" Size="Size.Small" Variant="Variant.Text">@context.Estado</MudChip>
+            </MudTd>
+            <MudTd DataLabel="Vencimiento">
+                @if (context.Calibraciones != null && context.Calibraciones.Any())
+                {
+                    var lastCal = context.Calibraciones.OrderByDescending(c => c.FechaVencimiento).First();
+                    <MudChip T="string" Color="@GetExpirationColor(lastCal.FechaVencimiento)" Size="Size.Small" Label="true">
+                        @lastCal.FechaVencimiento.ToShortDateString()
+                    </MudChip>
+                }
+                else
+                {
+                    <MudText Color="Color.Default" Typo="Typo.caption">Sin datos</MudText>
+                }
+            </MudTd>
+            <MudTd>
+                <MudIconButton Icon="@Icons.Material.Filled.FactCheck" Color="Color.Primary" Size="Size.Small" />
+            </MudTd>
+        </RowTemplate>
+        <NoRecordsContent>
+            @if (!_loading && !_loadFailed)
+            {
+                <div class="pa-10 d-flex flex-column align-center">
+                    <MudIcon Icon="@Icons.Material.Filled.Verified" Size="Size.Large" Color="Color.Success" Class="mb-3 opacity-25" />
+                    <MudText Typo="Typo.h6" Class="opacity-50">¡Todo en regla!</MudText>
+                    <MudText Typo="Typo.body2" Class="opacity-25">No hay equipos que requieran atención inmediata.</MudText>
+                </div>
+            }
+        </NoRecordsContent>
+    </MudTable>
+</MudPaper>
 
 @code {
     private List<Equipo> _alerts = new();
     private bool _loading = true;
     private bool _loadFailed = false;
+    private int _totalEquipos = 0;
+    private int _criticalAlerts = 0;
+    private int _upcomingAlerts = 0;
 
     protected override async Task OnInitializedAsync()
     {
@@ -75,12 +141,18 @@
         _loadFailed = false;
         try 
         {
+            var equiposResponse = await EquipmentService.GetEquiposAsync(limit: 1000);
+            _totalEquipos = equiposResponse.Total;
+
             _alerts = await EquipmentService.GetAlertsAsync();
+            
+            _criticalAlerts = _alerts.Count(a => a.Calibraciones.Any(c => c.FechaVencimiento < DateTime.Now));
+            _upcomingAlerts = _alerts.Count(a => a.Calibraciones.Any(c => c.FechaVencimiento >= DateTime.Now && c.FechaVencimiento < DateTime.Now.AddDays(30)));
         } 
         catch (Exception ex)
         {
             _loadFailed = true;
-            Snackbar.Add("Error al conectar con la API", Severity.Error);
+            Snackbar.Add($"Error al conectar con la API: {ex.Message}", Severity.Error);
         } 
         finally 
         {
