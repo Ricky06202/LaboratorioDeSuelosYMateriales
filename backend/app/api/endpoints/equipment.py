@@ -1,4 +1,6 @@
 from fastapi import APIRouter, Depends, HTTPException, UploadFile, File, Query, Form
+from fastapi.responses import FileResponse
+import os
 from sqlalchemy.orm import Session
 from typing import List, Optional
 from uuid import UUID
@@ -125,3 +127,24 @@ async def create_calibration(
     )
     
     return equipment_service.create_calibracion(db=db, calibracion=calibracion_in)
+
+@router.get("/files/download/{type}/{filename}")
+def download_file(
+    type: str,
+    filename: str,
+    current_user = Depends(deps.get_current_active_user)
+):
+    """
+    Protected endpoint to serve files. Requires a valid JWT token.
+    Type should be 'equipos' or 'certificados'.
+    """
+    if type not in ["equipos", "certificados"]:
+        raise HTTPException(status_code=400, detail="Tipo de archivo inválido")
+        
+    from app.core.config import settings
+    full_path = os.path.join(settings.STORAGE_PATH, type, filename)
+    
+    if not os.path.exists(full_path):
+        raise HTTPException(status_code=404, detail="Archivo no encontrado")
+        
+    return FileResponse(full_path)

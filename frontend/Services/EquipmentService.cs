@@ -61,21 +61,21 @@ namespace frontend.Services
             }
 
             var response = await _httpClient.PostAsync("api/equipos/", content);
-            response.EnsureSuccessStatusCode();
+            await EnsureSuccessOrThrowAsync(response);
             return await response.Content.ReadFromJsonAsync<Equipo>() ?? throw new Exception("Error al crear equipo");
         }
 
         public async Task<Equipo> UpdateEquipoAsync(Guid id, EquipoUpdate equipo)
         {
             var response = await _httpClient.PutAsJsonAsync($"api/equipos/{id}", equipo);
-            response.EnsureSuccessStatusCode();
+            await EnsureSuccessOrThrowAsync(response);
             return await response.Content.ReadFromJsonAsync<Equipo>() ?? throw new Exception("Error al actualizar equipo");
         }
 
         public async Task DeleteEquipoAsync(Guid id)
         {
             var response = await _httpClient.DeleteAsync($"api/equipos/{id}");
-            response.EnsureSuccessStatusCode();
+            await EnsureSuccessOrThrowAsync(response);
         }
 
         public async Task<string> UploadPhotoAsync(Guid id, Stream fileStream, string fileName)
@@ -85,7 +85,7 @@ namespace frontend.Services
             content.Add(fileContent, "file", fileName);
 
             var response = await _httpClient.PostAsync($"api/equipos/{id}/foto", content);
-            response.EnsureSuccessStatusCode();
+            await EnsureSuccessOrThrowAsync(response);
             var result = await response.Content.ReadFromJsonAsync<UploadResult>();
             return result?.Filename ?? throw new Exception("Error al subir foto");
         }
@@ -105,10 +105,30 @@ namespace frontend.Services
             }
 
             var response = await _httpClient.PostAsync("api/equipos/calibrations", content);
-            response.EnsureSuccessStatusCode();
+            await EnsureSuccessOrThrowAsync(response);
             return await response.Content.ReadFromJsonAsync<Calibracion>() ?? throw new Exception("Error al crear calibración");
         }
 
+        private async Task EnsureSuccessOrThrowAsync(HttpResponseMessage response)
+        {
+            if (!response.IsSuccessStatusCode)
+            {
+                var content = await response.Content.ReadAsStringAsync();
+                try
+                {
+                    var error = System.Text.Json.JsonSerializer.Deserialize<ApiError>(content, new System.Text.Json.JsonSerializerOptions { PropertyNameCaseInsensitive = true });
+                    if (error != null && !string.IsNullOrEmpty(error.Detail))
+                    {
+                        throw new Exception(error.Detail);
+                    }
+                }
+                catch { } // Fallback if parsing fails
+                
+                throw new Exception($"Error {response.StatusCode}: No se pudo completar la operación.");
+            }
+        }
+
+        private class ApiError { public string Detail { get; set; } = ""; }
         private class UploadResult { public string Filename { get; set; } = ""; }
     }
 }
