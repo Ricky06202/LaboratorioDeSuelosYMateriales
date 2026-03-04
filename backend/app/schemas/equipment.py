@@ -26,6 +26,8 @@ class EquipoBase(BaseModel):
     numero_serie: str
     estado: str
     foto_url: Optional[str] = None
+    ubicacion: Optional[str] = None  # WKT Format (e.g., 'POINT(lon lat)')
+    fecha_proxima_calibracion: Optional[date] = None
 
 class EquipoCreate(EquipoBase):
     pass
@@ -37,6 +39,8 @@ class EquipoUpdate(BaseModel):
     numero_serie: Optional[str] = None
     estado: Optional[str] = None
     foto_url: Optional[str] = None
+    ubicacion: Optional[str] = None
+    fecha_proxima_calibracion: Optional[date] = None
 
 class Equipo(EquipoBase):
     id: UUID

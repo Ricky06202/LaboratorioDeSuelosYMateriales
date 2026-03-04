@@ -110,6 +110,17 @@
         _processing = true;
         try
         {
+            // Upload photo if selected
+            Stream? fileStream = null;
+            string? fileName = null;
+            
+            if (_file != null)
+            {
+                // Max 5MB
+                fileStream = _file.OpenReadStream(maxAllowedSize: 1024 * 1024 * 5);
+                fileName = _file.Name;
+            }
+
             Equipo result;
             if (IsEdit && Equipo != null)
             {
@@ -123,25 +134,24 @@
                 };
                 result = await EquipmentService.UpdateEquipoAsync(Equipo.Id, updateModel);
                 Snackbar.Add("Equipo actualizado con éxito", Severity.Success);
+                
+                // If editing and we selected a new file, we do the legacy UploadPhotoAsync
+                if (fileStream != null)
+                {
+                    try
+                    {
+                        await EquipmentService.UploadPhotoAsync(result.Id, fileStream, fileName!);
+                    }
+                    catch (Exception ex)
+                    {
+                        Snackbar.Add($"Equipo actualizado, pero falló la subida de foto: {ex.Message}", Severity.Warning);
+                    }
+                }
             }
             else
             {
-                result = await EquipmentService.CreateEquipoAsync(_model);
+                result = await EquipmentService.CreateEquipoAsync(_model, fileStream, fileName);
                 Snackbar.Add("Equipo creado con éxito", Severity.Success);
-            }
-
-            // Upload photo if selected
-            if (_file != null)
-            {
-                try 
-                {
-                    using var stream = _file.OpenReadStream(maxAllowedSize: 1024 * 1024 * 5); // 5MB max
-                    await EquipmentService.UploadPhotoAsync(result.Id, stream, _file.Name);
-                }
-                catch (Exception ex)
-                {
-                    Snackbar.Add($"Equipo guardado, pero falló la subida de foto: {ex.Message}", Severity.Warning);
-                }
             }
 
             MudDialog.Close(DialogResult.Ok(result));

@@ -2,6 +2,7 @@ import enum
 from sqlalchemy import Column, String, Integer, ForeignKey, Date, Enum, Table
 from sqlalchemy.dialects.postgresql import UUID
 from sqlalchemy.orm import relationship
+from geoalchemy2 import Geometry
 import uuid
 from app.db.base_class import Base
 
@@ -21,8 +22,11 @@ class Equipo(Base):
     numero_serie = Column(String, unique=True, index=True)
     estado = Column(Enum(EquipoStatus), default=EquipoStatus.Activo)
     foto_url = Column(String, nullable=True)
+    ubicacion = Column(Geometry(geometry_type='POINT', srid=4326), nullable=True)
+    fecha_proxima_calibracion = Column(Date, nullable=True)
 
-    calibraciones = relationship("Calibracion", back_populates="equipo", cascade="all, delete-orphan")
+    # Passive deletes / no cascade to enforce RESTRICT on physical deletion
+    calibraciones = relationship("Calibracion", back_populates="equipo")
 
 class Calibracion(Base):
     __tablename__ = "calibraciones"

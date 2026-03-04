@@ -1,0 +1,285 @@
+info: Microsoft.Hosting.Lifetime[14]
+      Now listening on: http://localhost:5000
+info: Microsoft.Hosting.Lifetime[0]
+      Application started. Press Ctrl+C to shut down.
+info: Microsoft.Hosting.Lifetime[0]
+      Hosting environment: Production
+info: Microsoft.Hosting.Lifetime[0]
+      Content root path: /home/ricky/Documentos/C#/LaboratorioDeSuelosYMateriales/frontend
+warn: Microsoft.AspNetCore.HttpsPolicy.HttpsRedirectionMiddleware[3]
+      Failed to determine the https port for redirect.
+info: System.Net.Http.HttpClient.EquipmentService.LogicalHandler[100]
+      Start processing HTTP request GET http://localhost:8000/api/equipos/?*
+info: System.Net.Http.HttpClient.EquipmentService.ClientHandler[100]
+      Sending HTTP request GET http://localhost:8000/api/equipos/?*
+info: System.Net.Http.HttpClient.EquipmentService.ClientHandler[101]
+      Received HTTP response headers after 614.3872ms - 200
+info: System.Net.Http.HttpClient.EquipmentService.LogicalHandler[101]
+      End processing HTTP request after 705.0482ms - 200
+info: System.Net.Http.HttpClient.EquipmentService.LogicalHandler[100]
+      Start processing HTTP request GET http://localhost:8000/api/equipos/alerts/calibrations
+info: System.Net.Http.HttpClient.EquipmentService.ClientHandler[100]
+      Sending HTTP request GET http://localhost:8000/api/equipos/alerts/calibrations
+info: System.Net.Http.HttpClient.EquipmentService.ClientHandler[101]
+      Received HTTP response headers after 76.046ms - 200
+info: System.Net.Http.HttpClient.EquipmentService.LogicalHandler[101]
+      End processing HTTP request after 76.7776ms - 200
+fail: Microsoft.AspNetCore.Diagnostics.ExceptionHandlerMiddleware[1]
+      An unhandled exception has occurred while executing the request.
+      System.IO.FileNotFoundException: Could not find file '/home/ricky/Documentos/C#/LaboratorioDeSuelosYMateriales/frontend/wwwroot/Components/Layout/ReconnectModal.razor.js'.
+      File name: '/home/ricky/Documentos/C#/LaboratorioDeSuelosYMateriales/frontend/wwwroot/Components/Layout/ReconnectModal.razor.js'
+         at System.IO.FileInfo.get_Length()
+         at Microsoft.AspNetCore.Builder.StaticAssetDevelopmentRuntimeHandler.<>c__DisplayClass3_0.<<AttachRuntimePatching>b__0>d.MoveNext()
+      --- End of stack trace from previous location ---
+         at Microsoft.AspNetCore.Diagnostics.StatusCodePagesMiddleware.Invoke(HttpContext context)
+         at Microsoft.AspNetCore.Diagnostics.ExceptionHandlerMiddlewareImpl.<Invoke>g__Awaited|10_0(ExceptionHandlerMiddlewareImpl middleware, HttpContext context, Task task)
+fail: Microsoft.AspNetCore.Diagnostics.ExceptionHandlerMiddleware[1]
+      An unhandled exception has occurred while executing the request.
+      System.IO.FileNotFoundException: Could not find file '/home/ricky/Documentos/C#/LaboratorioDeSuelosYMateriales/frontend/wwwroot/_content/MudBlazor/MudBlazor.min.css'.
+      File name: '/home/ricky/Documentos/C#/LaboratorioDeSuelosYMateriales/frontend/wwwroot/_content/MudBlazor/MudBlazor.min.css'
+         at System.IO.FileInfo.get_Length()
+         at Microsoft.AspNetCore.Builder.StaticAssetDevelopmentRuntimeHandler.<>c__DisplayClass3_0.<<AttachRuntimePatching>b__0>d.MoveNext()
+      --- End of stack trace from previous location ---
+         at Microsoft.AspNetCore.Diagnostics.StatusCodePagesMiddleware.Invoke(HttpContext context)
+         at Microsoft.AspNetCore.Diagnostics.ExceptionHandlerMiddlewareImpl.<Invoke>g__Awaited|10_0(ExceptionHandlerMiddlewareImpl middleware, HttpContext context, Task task)
+fail: Microsoft.AspNetCore.Diagnostics.ExceptionHandlerMiddleware[1]
+      An unhandled exception has occurred while executing the request.
+      System.IO.FileNotFoundException: Could not find file '/home/ricky/Documentos/C#/LaboratorioDeSuelosYMateriales/frontend/wwwroot/_content/MudBlazor/MudBlazor.min.js'.
+      File name: '/home/ricky/Documentos/C#/LaboratorioDeSuelosYMateriales/frontend/wwwroot/_content/MudBlazor/MudBlazor.min.js'
+         at System.IO.FileInfo.get_Length()
+         at Microsoft.AspNetCore.Builder.StaticAssetDevelopmentRuntimeHandler.<>c__DisplayClass3_0.<<AttachRuntimePatching>b__0>d.MoveNext()
+      --- End of stack trace from previous location ---
+         at Microsoft.AspNetCore.Diagnostics.StatusCodePagesMiddleware.Invoke(HttpContext context)
+         at Microsoft.AspNetCore.Diagnostics.ExceptionHandlerMiddlewareImpl.<Invoke>g__Awaited|10_0(ExceptionHandlerMiddlewareImpl middleware, HttpContext context, Task task)
+fail: Microsoft.AspNetCore.Diagnostics.ExceptionHandlerMiddleware[1]
+      An unhandled exception has occurred while executing the request.
+      System.IO.FileNotFoundException: Could not find file '/home/ricky/Documentos/C#/LaboratorioDeSuelosYMateriales/frontend/wwwroot/frontend.styles.css'.
+      File name: '/home/ricky/Documentos/C#/LaboratorioDeSuelosYMateriales/frontend/wwwroot/frontend.styles.css'
+         at System.IO.FileInfo.get_Length()
+         at Microsoft.AspNetCore.Builder.StaticAssetDevelopmentRuntimeHandler.<>c__DisplayClass3_0.<<AttachRuntimePatching>b__0>d.MoveNext()
+      --- End of stack trace from previous location ---
+         at Microsoft.AspNetCore.Diagnostics.StatusCodePagesMiddleware.Invoke(HttpContext context)
+         at Microsoft.AspNetCore.Diagnostics.ExceptionHandlerMiddlewareImpl.<Invoke>g__Awaited|10_0(ExceptionHandlerMiddlewareImpl middleware, HttpContext context, Task task)
+fail: Microsoft.AspNetCore.Diagnostics.ExceptionHandlerMiddleware[1]
+      An unhandled exception has occurred while executing the request.
+      System.IO.FileNotFoundException: Could not find file '/home/ricky/Documentos/C#/LaboratorioDeSuelosYMateriales/frontend/wwwroot/_framework/blazor.web.js'.
+      File name: '/home/ricky/Documentos/C#/LaboratorioDeSuelosYMateriales/frontend/wwwroot/_framework/blazor.web.js'
+         at System.IO.FileInfo.get_Length()
+         at Microsoft.AspNetCore.Builder.StaticAssetDevelopmentRuntimeHandler.<>c__DisplayClass3_0.<<AttachRuntimePatching>b__0>d.MoveNext()
+      --- End of stack trace from previous location ---
+         at Microsoft.AspNetCore.Diagnostics.StatusCodePagesMiddleware.Invoke(HttpContext context)
+         at Microsoft.AspNetCore.Diagnostics.ExceptionHandlerMiddlewareImpl.<Invoke>g__Awaited|10_0(ExceptionHandlerMiddlewareImpl middleware, HttpContext context, Task task)
+info: System.Net.Http.HttpClient.EquipmentService.LogicalHandler[100]
+      Start processing HTTP request GET http://localhost:8000/api/equipos/?*
+info: System.Net.Http.HttpClient.EquipmentService.ClientHandler[100]
+      Sending HTTP request GET http://localhost:8000/api/equipos/?*
+info: System.Net.Http.HttpClient.EquipmentService.ClientHandler[101]
+      Received HTTP response headers after 151.9343ms - 200
+info: System.Net.Http.HttpClient.EquipmentService.LogicalHandler[101]
+      End processing HTTP request after 153.0967ms - 200
+info: System.Net.Http.HttpClient.EquipmentService.LogicalHandler[100]
+      Start processing HTTP request GET http://localhost:8000/api/equipos/alerts/calibrations
+info: System.Net.Http.HttpClient.EquipmentService.ClientHandler[100]
+      Sending HTTP request GET http://localhost:8000/api/equipos/alerts/calibrations
+info: System.Net.Http.HttpClient.EquipmentService.ClientHandler[101]
+      Received HTTP response headers after 59.0627ms - 200
+info: System.Net.Http.HttpClient.EquipmentService.LogicalHandler[101]
+      End processing HTTP request after 64.1726ms - 200
+fail: Microsoft.AspNetCore.Diagnostics.ExceptionHandlerMiddleware[1]
+      An unhandled exception has occurred while executing the request.
+      System.IO.FileNotFoundException: Could not find file '/home/ricky/Documentos/C#/LaboratorioDeSuelosYMateriales/frontend/wwwroot/_content/MudBlazor/MudBlazor.min.css'.
+      File name: '/home/ricky/Documentos/C#/LaboratorioDeSuelosYMateriales/frontend/wwwroot/_content/MudBlazor/MudBlazor.min.css'
+         at System.IO.FileInfo.get_Length()
+         at Microsoft.AspNetCore.Builder.StaticAssetDevelopmentRuntimeHandler.<>c__DisplayClass3_0.<<AttachRuntimePatching>b__0>d.MoveNext()
+      --- End of stack trace from previous location ---
+         at Microsoft.AspNetCore.Diagnostics.StatusCodePagesMiddleware.Invoke(HttpContext context)
+         at Microsoft.AspNetCore.Diagnostics.ExceptionHandlerMiddlewareImpl.<Invoke>g__Awaited|10_0(ExceptionHandlerMiddlewareImpl middleware, HttpContext context, Task task)
+fail: Microsoft.AspNetCore.Diagnostics.ExceptionHandlerMiddleware[1]
+      An unhandled exception has occurred while executing the request.
+      System.IO.FileNotFoundException: Could not find file '/home/ricky/Documentos/C#/LaboratorioDeSuelosYMateriales/frontend/wwwroot/frontend.styles.css'.
+      File name: '/home/ricky/Documentos/C#/LaboratorioDeSuelosYMateriales/frontend/wwwroot/frontend.styles.css'
+         at System.IO.FileInfo.get_Length()
+         at Microsoft.AspNetCore.Builder.StaticAssetDevelopmentRuntimeHandler.<>c__DisplayClass3_0.<<AttachRuntimePatching>b__0>d.MoveNext()
+      --- End of stack trace from previous location ---
+         at Microsoft.AspNetCore.Diagnostics.StatusCodePagesMiddleware.Invoke(HttpContext context)
+         at Microsoft.AspNetCore.Diagnostics.ExceptionHandlerMiddlewareImpl.<Invoke>g__Awaited|10_0(ExceptionHandlerMiddlewareImpl middleware, HttpContext context, Task task)
+fail: Microsoft.AspNetCore.Diagnostics.ExceptionHandlerMiddleware[1]
+      An unhandled exception has occurred while executing the request.
+      System.IO.FileNotFoundException: Could not find file '/home/ricky/Documentos/C#/LaboratorioDeSuelosYMateriales/frontend/wwwroot/_content/MudBlazor/MudBlazor.min.js'.
+      File name: '/home/ricky/Documentos/C#/LaboratorioDeSuelosYMateriales/frontend/wwwroot/_content/MudBlazor/MudBlazor.min.js'
+         at System.IO.FileInfo.get_Length()
+         at Microsoft.AspNetCore.Builder.StaticAssetDevelopmentRuntimeHandler.<>c__DisplayClass3_0.<<AttachRuntimePatching>b__0>d.MoveNext()
+      --- End of stack trace from previous location ---
+         at Microsoft.AspNetCore.Diagnostics.StatusCodePagesMiddleware.Invoke(HttpContext context)
+         at Microsoft.AspNetCore.Diagnostics.ExceptionHandlerMiddlewareImpl.<Invoke>g__Awaited|10_0(ExceptionHandlerMiddlewareImpl middleware, HttpContext context, Task task)
+fail: Microsoft.AspNetCore.Diagnostics.ExceptionHandlerMiddleware[1]
+      An unhandled exception has occurred while executing the request.
+      System.IO.FileNotFoundException: Could not find file '/home/ricky/Documentos/C#/LaboratorioDeSuelosYMateriales/frontend/wwwroot/Components/Layout/ReconnectModal.razor.js'.
+      File name: '/home/ricky/Documentos/C#/LaboratorioDeSuelosYMateriales/frontend/wwwroot/Components/Layout/ReconnectModal.razor.js'
+         at System.IO.FileInfo.get_Length()
+         at Microsoft.AspNetCore.Builder.StaticAssetDevelopmentRuntimeHandler.<>c__DisplayClass3_0.<<AttachRuntimePatching>b__0>d.MoveNext()
+      --- End of stack trace from previous location ---
+         at Microsoft.AspNetCore.Diagnostics.StatusCodePagesMiddleware.Invoke(HttpContext context)
+         at Microsoft.AspNetCore.Diagnostics.ExceptionHandlerMiddlewareImpl.<Invoke>g__Awaited|10_0(ExceptionHandlerMiddlewareImpl middleware, HttpContext context, Task task)
+fail: Microsoft.AspNetCore.Diagnostics.ExceptionHandlerMiddleware[1]
+      An unhandled exception has occurred while executing the request.
+      System.IO.FileNotFoundException: Could not find file '/home/ricky/Documentos/C#/LaboratorioDeSuelosYMateriales/frontend/wwwroot/_framework/blazor.web.js'.
+      File name: '/home/ricky/Documentos/C#/LaboratorioDeSuelosYMateriales/frontend/wwwroot/_framework/blazor.web.js'
+         at System.IO.FileInfo.get_Length()
+         at Microsoft.AspNetCore.Builder.StaticAssetDevelopmentRuntimeHandler.<>c__DisplayClass3_0.<<AttachRuntimePatching>b__0>d.MoveNext()
+      --- End of stack trace from previous location ---
+         at Microsoft.AspNetCore.Diagnostics.StatusCodePagesMiddleware.Invoke(HttpContext context)
+         at Microsoft.AspNetCore.Diagnostics.ExceptionHandlerMiddlewareImpl.<Invoke>g__Awaited|10_0(ExceptionHandlerMiddlewareImpl middleware, HttpContext context, Task task)
+fail: Microsoft.AspNetCore.Diagnostics.ExceptionHandlerMiddleware[1]
+      An unhandled exception has occurred while executing the request.
+      System.IO.FileNotFoundException: Could not find file '/home/ricky/Documentos/C#/LaboratorioDeSuelosYMateriales/frontend/wwwroot/_content/MudBlazor/MudBlazor.min.css'.
+      File name: '/home/ricky/Documentos/C#/LaboratorioDeSuelosYMateriales/frontend/wwwroot/_content/MudBlazor/MudBlazor.min.css'
+         at System.IO.FileInfo.get_Length()
+         at Microsoft.AspNetCore.Builder.StaticAssetDevelopmentRuntimeHandler.<>c__DisplayClass3_0.<<AttachRuntimePatching>b__0>d.MoveNext()
+      --- End of stack trace from previous location ---
+         at Microsoft.AspNetCore.Diagnostics.StatusCodePagesMiddleware.Invoke(HttpContext context)
+         at Microsoft.AspNetCore.Diagnostics.ExceptionHandlerMiddlewareImpl.<Invoke>g__Awaited|10_0(ExceptionHandlerMiddlewareImpl middleware, HttpContext context, Task task)
+fail: Microsoft.AspNetCore.Diagnostics.ExceptionHandlerMiddleware[1]
+      An unhandled exception has occurred while executing the request.
+      System.IO.FileNotFoundException: Could not find file '/home/ricky/Documentos/C#/LaboratorioDeSuelosYMateriales/frontend/wwwroot/Components/Layout/ReconnectModal.razor.js'.
+      File name: '/home/ricky/Documentos/C#/LaboratorioDeSuelosYMateriales/frontend/wwwroot/Components/Layout/ReconnectModal.razor.js'
+         at System.IO.FileInfo.get_Length()
+         at Microsoft.AspNetCore.Builder.StaticAssetDevelopmentRuntimeHandler.<>c__DisplayClass3_0.<<AttachRuntimePatching>b__0>d.MoveNext()
+      --- End of stack trace from previous location ---
+         at Microsoft.AspNetCore.Diagnostics.StatusCodePagesMiddleware.Invoke(HttpContext context)
+         at Microsoft.AspNetCore.Diagnostics.ExceptionHandlerMiddlewareImpl.<Invoke>g__Awaited|10_0(ExceptionHandlerMiddlewareImpl middleware, HttpContext context, Task task)
+fail: Microsoft.AspNetCore.Diagnostics.ExceptionHandlerMiddleware[1]
+      An unhandled exception has occurred while executing the request.
+      System.IO.FileNotFoundException: Could not find file '/home/ricky/Documentos/C#/LaboratorioDeSuelosYMateriales/frontend/wwwroot/frontend.styles.css'.
+      File name: '/home/ricky/Documentos/C#/LaboratorioDeSuelosYMateriales/frontend/wwwroot/frontend.styles.css'
+         at System.IO.FileInfo.get_Length()
+         at Microsoft.AspNetCore.Builder.StaticAssetDevelopmentRuntimeHandler.<>c__DisplayClass3_0.<<AttachRuntimePatching>b__0>d.MoveNext()
+      --- End of stack trace from previous location ---
+         at Microsoft.AspNetCore.Diagnostics.StatusCodePagesMiddleware.Invoke(HttpContext context)
+         at Microsoft.AspNetCore.Diagnostics.ExceptionHandlerMiddlewareImpl.<Invoke>g__Awaited|10_0(ExceptionHandlerMiddlewareImpl middleware, HttpContext context, Task task)
+fail: Microsoft.AspNetCore.Diagnostics.ExceptionHandlerMiddleware[1]
+      An unhandled exception has occurred while executing the request.
+      System.IO.FileNotFoundException: Could not find file '/home/ricky/Documentos/C#/LaboratorioDeSuelosYMateriales/frontend/wwwroot/_content/MudBlazor/MudBlazor.min.js'.
+      File name: '/home/ricky/Documentos/C#/LaboratorioDeSuelosYMateriales/frontend/wwwroot/_content/MudBlazor/MudBlazor.min.js'
+         at System.IO.FileInfo.get_Length()
+         at Microsoft.AspNetCore.Builder.StaticAssetDevelopmentRuntimeHandler.<>c__DisplayClass3_0.<<AttachRuntimePatching>b__0>d.MoveNext()
+      --- End of stack trace from previous location ---
+         at Microsoft.AspNetCore.Diagnostics.StatusCodePagesMiddleware.Invoke(HttpContext context)
+         at Microsoft.AspNetCore.Diagnostics.ExceptionHandlerMiddlewareImpl.<Invoke>g__Awaited|10_0(ExceptionHandlerMiddlewareImpl middleware, HttpContext context, Task task)
+fail: Microsoft.AspNetCore.Diagnostics.ExceptionHandlerMiddleware[1]
+      An unhandled exception has occurred while executing the request.
+      System.IO.FileNotFoundException: Could not find file '/home/ricky/Documentos/C#/LaboratorioDeSuelosYMateriales/frontend/wwwroot/_framework/blazor.web.js'.
+      File name: '/home/ricky/Documentos/C#/LaboratorioDeSuelosYMateriales/frontend/wwwroot/_framework/blazor.web.js'
+         at System.IO.FileInfo.get_Length()
+         at Microsoft.AspNetCore.Builder.StaticAssetDevelopmentRuntimeHandler.<>c__DisplayClass3_0.<<AttachRuntimePatching>b__0>d.MoveNext()
+      --- End of stack trace from previous location ---
+         at Microsoft.AspNetCore.Diagnostics.StatusCodePagesMiddleware.Invoke(HttpContext context)
+         at Microsoft.AspNetCore.Diagnostics.ExceptionHandlerMiddlewareImpl.<Invoke>g__Awaited|10_0(ExceptionHandlerMiddlewareImpl middleware, HttpContext context, Task task)
+info: System.Net.Http.HttpClient.EquipmentService.LogicalHandler[100]
+      Start processing HTTP request GET http://localhost:8000/api/equipos/?*
+info: System.Net.Http.HttpClient.EquipmentService.ClientHandler[100]
+      Sending HTTP request GET http://localhost:8000/api/equipos/?*
+info: System.Net.Http.HttpClient.EquipmentService.ClientHandler[101]
+      Received HTTP response headers after 215.4508ms - 200
+info: System.Net.Http.HttpClient.EquipmentService.LogicalHandler[101]
+      End processing HTTP request after 216.949ms - 200
+info: System.Net.Http.HttpClient.EquipmentService.LogicalHandler[100]
+      Start processing HTTP request GET http://localhost:8000/api/equipos/alerts/calibrations
+info: System.Net.Http.HttpClient.EquipmentService.ClientHandler[100]
+      Sending HTTP request GET http://localhost:8000/api/equipos/alerts/calibrations
+info: System.Net.Http.HttpClient.EquipmentService.ClientHandler[101]
+      Received HTTP response headers after 46.4554ms - 200
+info: System.Net.Http.HttpClient.EquipmentService.LogicalHandler[101]
+      End processing HTTP request after 46.7971ms - 200
+fail: Microsoft.AspNetCore.Diagnostics.ExceptionHandlerMiddleware[1]
+      An unhandled exception has occurred while executing the request.
+      System.IO.FileNotFoundException: Could not find file '/home/ricky/Documentos/C#/LaboratorioDeSuelosYMateriales/frontend/wwwroot/_content/MudBlazor/MudBlazor.min.css'.
+      File name: '/home/ricky/Documentos/C#/LaboratorioDeSuelosYMateriales/frontend/wwwroot/_content/MudBlazor/MudBlazor.min.css'
+         at System.IO.FileInfo.get_Length()
+         at Microsoft.AspNetCore.Builder.StaticAssetDevelopmentRuntimeHandler.<>c__DisplayClass3_0.<<AttachRuntimePatching>b__0>d.MoveNext()
+      --- End of stack trace from previous location ---
+         at Microsoft.AspNetCore.Diagnostics.StatusCodePagesMiddleware.Invoke(HttpContext context)
+         at Microsoft.AspNetCore.Diagnostics.ExceptionHandlerMiddlewareImpl.<Invoke>g__Awaited|10_0(ExceptionHandlerMiddlewareImpl middleware, HttpContext context, Task task)
+fail: Microsoft.AspNetCore.Diagnostics.ExceptionHandlerMiddleware[1]
+      An unhandled exception has occurred while executing the request.
+      System.IO.FileNotFoundException: Could not find file '/home/ricky/Documentos/C#/LaboratorioDeSuelosYMateriales/frontend/wwwroot/frontend.styles.css'.
+      File name: '/home/ricky/Documentos/C#/LaboratorioDeSuelosYMateriales/frontend/wwwroot/frontend.styles.css'
+         at System.IO.FileInfo.get_Length()
+         at Microsoft.AspNetCore.Builder.StaticAssetDevelopmentRuntimeHandler.<>c__DisplayClass3_0.<<AttachRuntimePatching>b__0>d.MoveNext()
+      --- End of stack trace from previous location ---
+         at Microsoft.AspNetCore.Diagnostics.StatusCodePagesMiddleware.Invoke(HttpContext context)
+         at Microsoft.AspNetCore.Diagnostics.ExceptionHandlerMiddlewareImpl.<Invoke>g__Awaited|10_0(ExceptionHandlerMiddlewareImpl middleware, HttpContext context, Task task)
+fail: Microsoft.AspNetCore.Diagnostics.ExceptionHandlerMiddleware[1]
+      An unhandled exception has occurred while executing the request.
+      System.IO.FileNotFoundException: Could not find file '/home/ricky/Documentos/C#/LaboratorioDeSuelosYMateriales/frontend/wwwroot/Components/Layout/ReconnectModal.razor.js'.
+      File name: '/home/ricky/Documentos/C#/LaboratorioDeSuelosYMateriales/frontend/wwwroot/Components/Layout/ReconnectModal.razor.js'
+         at System.IO.FileInfo.get_Length()
+         at Microsoft.AspNetCore.Builder.StaticAssetDevelopmentRuntimeHandler.<>c__DisplayClass3_0.<<AttachRuntimePatching>b__0>d.MoveNext()
+      --- End of stack trace from previous location ---
+         at Microsoft.AspNetCore.Diagnostics.StatusCodePagesMiddleware.Invoke(HttpContext context)
+         at Microsoft.AspNetCore.Diagnostics.ExceptionHandlerMiddlewareImpl.<Invoke>g__Awaited|10_0(ExceptionHandlerMiddlewareImpl middleware, HttpContext context, Task task)
+fail: Microsoft.AspNetCore.Diagnostics.ExceptionHandlerMiddleware[1]
+      An unhandled exception has occurred while executing the request.
+      System.IO.FileNotFoundException: Could not find file '/home/ricky/Documentos/C#/LaboratorioDeSuelosYMateriales/frontend/wwwroot/_content/MudBlazor/MudBlazor.min.js'.
+      File name: '/home/ricky/Documentos/C#/LaboratorioDeSuelosYMateriales/frontend/wwwroot/_content/MudBlazor/MudBlazor.min.js'
+         at System.IO.FileInfo.get_Length()
+         at Microsoft.AspNetCore.Builder.StaticAssetDevelopmentRuntimeHandler.<>c__DisplayClass3_0.<<AttachRuntimePatching>b__0>d.MoveNext()
+      --- End of stack trace from previous location ---
+         at Microsoft.AspNetCore.Diagnostics.StatusCodePagesMiddleware.Invoke(HttpContext context)
+         at Microsoft.AspNetCore.Diagnostics.ExceptionHandlerMiddlewareImpl.<Invoke>g__Awaited|10_0(ExceptionHandlerMiddlewareImpl middleware, HttpContext context, Task task)
+fail: Microsoft.AspNetCore.Diagnostics.ExceptionHandlerMiddleware[1]
+      An unhandled exception has occurred while executing the request.
+      System.IO.FileNotFoundException: Could not find file '/home/ricky/Documentos/C#/LaboratorioDeSuelosYMateriales/frontend/wwwroot/_framework/blazor.web.js'.
+      File name: '/home/ricky/Documentos/C#/LaboratorioDeSuelosYMateriales/frontend/wwwroot/_framework/blazor.web.js'
+         at System.IO.FileInfo.get_Length()
+         at Microsoft.AspNetCore.Builder.StaticAssetDevelopmentRuntimeHandler.<>c__DisplayClass3_0.<<AttachRuntimePatching>b__0>d.MoveNext()
+      --- End of stack trace from previous location ---
+         at Microsoft.AspNetCore.Diagnostics.StatusCodePagesMiddleware.Invoke(HttpContext context)
+         at Microsoft.AspNetCore.Diagnostics.ExceptionHandlerMiddlewareImpl.<Invoke>g__Awaited|10_0(ExceptionHandlerMiddlewareImpl middleware, HttpContext context, Task task)
+fail: Microsoft.AspNetCore.Diagnostics.ExceptionHandlerMiddleware[1]
+      An unhandled exception has occurred while executing the request.
+      System.IO.FileNotFoundException: Could not find file '/home/ricky/Documentos/C#/LaboratorioDeSuelosYMateriales/frontend/wwwroot/_content/MudBlazor/MudBlazor.min.css'.
+      File name: '/home/ricky/Documentos/C#/LaboratorioDeSuelosYMateriales/frontend/wwwroot/_content/MudBlazor/MudBlazor.min.css'
+         at System.IO.FileInfo.get_Length()
+         at Microsoft.AspNetCore.Builder.StaticAssetDevelopmentRuntimeHandler.<>c__DisplayClass3_0.<<AttachRuntimePatching>b__0>d.MoveNext()
+      --- End of stack trace from previous location ---
+         at Microsoft.AspNetCore.Diagnostics.StatusCodePagesMiddleware.Invoke(HttpContext context)
+         at Microsoft.AspNetCore.Diagnostics.ExceptionHandlerMiddlewareImpl.<Invoke>g__Awaited|10_0(ExceptionHandlerMiddlewareImpl middleware, HttpContext context, Task task)
+fail: Microsoft.AspNetCore.Diagnostics.ExceptionHandlerMiddleware[1]
+      An unhandled exception has occurred while executing the request.
+      System.IO.FileNotFoundException: Could not find file '/home/ricky/Documentos/C#/LaboratorioDeSuelosYMateriales/frontend/wwwroot/frontend.styles.css'.
+      File name: '/home/ricky/Documentos/C#/LaboratorioDeSuelosYMateriales/frontend/wwwroot/frontend.styles.css'
+         at System.IO.FileInfo.get_Length()
+         at Microsoft.AspNetCore.Builder.StaticAssetDevelopmentRuntimeHandler.<>c__DisplayClass3_0.<<AttachRuntimePatching>b__0>d.MoveNext()
+      --- End of stack trace from previous location ---
+         at Microsoft.AspNetCore.Diagnostics.StatusCodePagesMiddleware.Invoke(HttpContext context)
+         at Microsoft.AspNetCore.Diagnostics.ExceptionHandlerMiddlewareImpl.<Invoke>g__Awaited|10_0(ExceptionHandlerMiddlewareImpl middleware, HttpContext context, Task task)
+fail: Microsoft.AspNetCore.Diagnostics.ExceptionHandlerMiddleware[1]
+      An unhandled exception has occurred while executing the request.
+      System.IO.FileNotFoundException: Could not find file '/home/ricky/Documentos/C#/LaboratorioDeSuelosYMateriales/frontend/wwwroot/_content/MudBlazor/MudBlazor.min.js'.
+      File name: '/home/ricky/Documentos/C#/LaboratorioDeSuelosYMateriales/frontend/wwwroot/_content/MudBlazor/MudBlazor.min.js'
+         at System.IO.FileInfo.get_Length()
+         at Microsoft.AspNetCore.Builder.StaticAssetDevelopmentRuntimeHandler.<>c__DisplayClass3_0.<<AttachRuntimePatching>b__0>d.MoveNext()
+      --- End of stack trace from previous location ---
+         at Microsoft.AspNetCore.Diagnostics.StatusCodePagesMiddleware.Invoke(HttpContext context)
+         at Microsoft.AspNetCore.Diagnostics.ExceptionHandlerMiddlewareImpl.<Invoke>g__Awaited|10_0(ExceptionHandlerMiddlewareImpl middleware, HttpContext context, Task task)
+fail: Microsoft.AspNetCore.Diagnostics.ExceptionHandlerMiddleware[1]
+      An unhandled exception has occurred while executing the request.
+      System.IO.FileNotFoundException: Could not find file '/home/ricky/Documentos/C#/LaboratorioDeSuelosYMateriales/frontend/wwwroot/Components/Layout/ReconnectModal.razor.js'.
+      File name: '/home/ricky/Documentos/C#/LaboratorioDeSuelosYMateriales/frontend/wwwroot/Components/Layout/ReconnectModal.razor.js'
+         at System.IO.FileInfo.get_Length()
+         at Microsoft.AspNetCore.Builder.StaticAssetDevelopmentRuntimeHandler.<>c__DisplayClass3_0.<<AttachRuntimePatching>b__0>d.MoveNext()
+      --- End of stack trace from previous location ---
+         at Microsoft.AspNetCore.Diagnostics.StatusCodePagesMiddleware.Invoke(HttpContext context)
+         at Microsoft.AspNetCore.Diagnostics.ExceptionHandlerMiddlewareImpl.<Invoke>g__Awaited|10_0(ExceptionHandlerMiddlewareImpl middleware, HttpContext context, Task task)
+fail: Microsoft.AspNetCore.Diagnostics.ExceptionHandlerMiddleware[1]
+      An unhandled exception has occurred while executing the request.
+      System.IO.FileNotFoundException: Could not find file '/home/ricky/Documentos/C#/LaboratorioDeSuelosYMateriales/frontend/wwwroot/_framework/blazor.web.js'.
+      File name: '/home/ricky/Documentos/C#/LaboratorioDeSuelosYMateriales/frontend/wwwroot/_framework/blazor.web.js'
+         at System.IO.FileInfo.get_Length()
+         at Microsoft.AspNetCore.Builder.StaticAssetDevelopmentRuntimeHandler.<>c__DisplayClass3_0.<<AttachRuntimePatching>b__0>d.MoveNext()
+      --- End of stack trace from previous location ---
+         at Microsoft.AspNetCore.Diagnostics.StatusCodePagesMiddleware.Invoke(HttpContext context)
+         at Microsoft.AspNetCore.Diagnostics.ExceptionHandlerMiddlewareImpl.<Invoke>g__Awaited|10_0(ExceptionHandlerMiddlewareImpl middleware, HttpContext context, Task task)
+info: Microsoft.Hosting.Lifetime[0]
+      Application is shutting down...

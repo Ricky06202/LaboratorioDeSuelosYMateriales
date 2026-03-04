@@ -28,6 +28,12 @@ namespace frontend.Models
         [JsonPropertyName("foto_url")]
         public string? FotoUrl { get; set; }
         
+        [JsonPropertyName("ubicacion")]
+        public string? Ubicacion { get; set; }
+        
+        [JsonPropertyName("fecha_proxima_calibracion")]
+        public DateTime? FechaProximaCalibracion { get; set; }
+        
         [JsonPropertyName("calibraciones")]
         public List<Calibracion> Calibraciones { get; set; } = new();
     }
@@ -78,6 +84,9 @@ namespace frontend.Models
         
         [JsonPropertyName("estado")]
         public string Estado { get; set; } = "Activo";
+        
+        [JsonPropertyName("ubicacion")]
+        public string? Ubicacion { get; set; }
     }
 
     public class EquipoUpdate

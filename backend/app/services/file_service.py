@@ -15,10 +15,10 @@ class FileService:
 
     async def save_file(self, file: UploadFile, folder: str) -> str:
         """
-        Saves a file to the physical storage and returns the relative path.
+        Saves a file to the physical storage using a UUID and returns ONLY the filename.
         """
         extension = os.path.splitext(file.filename)[1]
-        unique_filename = f"{datetime.now().strftime('%Y%m%d_%H%M%S')}_{uuid.uuid4().hex}{extension}"
+        unique_filename = f"{uuid.uuid4().hex}{extension}"
         
         relative_path = os.path.join(folder, unique_filename)
         full_path = os.path.join(self.base_path, relative_path)
@@ -27,6 +27,6 @@ class FileService:
             content = await file.read()
             buffer.write(content)
             
-        return relative_path
+        return unique_filename
 
 file_service = FileService()

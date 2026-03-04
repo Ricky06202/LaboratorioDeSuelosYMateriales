@@ -14,7 +14,7 @@ namespace frontend.Services
             _httpClient = httpClient;
         }
 
-        public async Task<EquipoResponse> GetEquiposAsync(int skip = 0, int limit = 10, string? search = null)
+        public async Task<EquipoResponse> GetEquiposAsync(int skip = 0, int limit = 10, string? search = null, string? estado = null)
         {
             var query = new Dictionary<string, string>
             {
@@ -22,6 +22,8 @@ namespace frontend.Services
                 ["limit"] = limit.ToString()
             };
             if (!string.IsNullOrEmpty(search)) query["search"] = search;
+            if (!string.IsNullOrEmpty(estado)) query["estado"] = estado;
+
 
             var url = QueryHelpers.AddQueryString("api/equipos/", query);
             return await _httpClient.GetFromJsonAsync<EquipoResponse>(url);
@@ -37,9 +39,28 @@ namespace frontend.Services
             return await _httpClient.GetFromJsonAsync<Equipo>($"api/equipos/{id}") ?? throw new Exception("Equipo no encontrado");
         }
 
-        public async Task<Equipo> CreateEquipoAsync(EquipoCreate equipo)
+        public async Task<Equipo> CreateEquipoAsync(EquipoCreate equipo, Stream? fileStream = null, string? fileName = null)
         {
-            var response = await _httpClient.PostAsJsonAsync("api/equipos/", equipo);
+            using var content = new MultipartFormDataContent();
+            content.Add(new StringContent(equipo.Nombre ?? ""), "nombre");
+            content.Add(new StringContent(equipo.NumeroSerie ?? ""), "numero_serie");
+            content.Add(new StringContent(equipo.Estado ?? "Activo"), "estado");
+            
+            if (!string.IsNullOrEmpty(equipo.Marca))
+                content.Add(new StringContent(equipo.Marca), "marca");
+                
+            if (!string.IsNullOrEmpty(equipo.Modelo))
+                content.Add(new StringContent(equipo.Modelo), "modelo");
+
+            // Assuming Ubicacion might be added to EquipoCreate in C# later if needed
+            
+            if (fileStream != null && !string.IsNullOrEmpty(fileName))
+            {
+                var fileContent = new StreamContent(fileStream);
+                content.Add(fileContent, "file", fileName);
+            }
+
+            var response = await _httpClient.PostAsync("api/equipos/", content);
             response.EnsureSuccessStatusCode();
             return await response.Content.ReadFromJsonAsync<Equipo>() ?? throw new Exception("Error al crear equipo");
         }
@@ -71,35 +92,21 @@ namespace frontend.Services
 
         public async Task<Calibracion> CreateCalibracionAsync(CalibracionCreate calibracion, Stream? fileStream = null, string? fileName = null)
         {
-            // For simplicity in the initial implementation, we'll send the metadata first
-            // and then handle the file if present. In a more robust implementation,
-            // we'd use multipart for the whole request or separate endpoints.
-            // Current backend expect JSON metadata and optional file in separate parts for certifications
-            // but the C# PostAsJsonAsync doesn't support mixing easily.
-            // Let's use multipart if file exists.
+            using var content = new MultipartFormDataContent();
+            content.Add(new StringContent(calibracion.EquipoId.ToString()), "equipo_id");
+            content.Add(new StringContent(calibracion.FechaCalibracion.ToString("yyyy-MM-dd")), "fecha_calibracion");
+            content.Add(new StringContent(calibracion.FechaVencimiento.ToString("yyyy-MM-dd")), "fecha_vencimiento");
+            content.Add(new StringContent(calibracion.EmpresaCertificadora ?? ""), "empresa_certificadora");
             
-            if (fileStream != null && fileName != null)
+            if (fileStream != null && !string.IsNullOrEmpty(fileName))
             {
-                using var content = new MultipartFormDataContent();
-                // Add JSON parts manually or as string parts
-                content.Add(new StringContent(calibracion.EquipoId.ToString()), "equipo_id");
-                content.Add(new StringContent(calibracion.FechaCalibracion.ToString("yyyy-MM-dd")), "fecha_calibracion");
-                content.Add(new StringContent(calibracion.FechaVencimiento.ToString("yyyy-MM-dd")), "fecha_vencimiento");
-                content.Add(new StringContent(calibracion.EmpresaCertificadora), "empresa_certificadora");
-                
                 var fileContent = new StreamContent(fileStream);
                 content.Add(fileContent, "file", fileName);
+            }
 
-                var response = await _httpClient.PostAsync("api/equipos/calibrations", content);
-                response.EnsureSuccessStatusCode();
-                return await response.Content.ReadFromJsonAsync<Calibracion>() ?? throw new Exception("Error al crear calibración");
-            }
-            else
-            {
-                var response = await _httpClient.PostAsJsonAsync("api/equipos/calibrations", calibracion);
-                response.EnsureSuccessStatusCode();
-                return await response.Content.ReadFromJsonAsync<Calibracion>() ?? throw new Exception("Error al crear calibración");
-            }
+            var response = await _httpClient.PostAsync("api/equipos/calibrations", content);
+            response.EnsureSuccessStatusCode();
+            return await response.Content.ReadFromJsonAsync<Calibracion>() ?? throw new Exception("Error al crear calibración");
         }
 
         private class UploadResult { public string Filename { get; set; } = ""; }

@@ -25,6 +25,14 @@
                 Nuevo Equipo
             </MudButton>
             <MudSpacer />
+            <MudSelect T="string" Value="@_selectedEstado" ValueChanged="OnEstadoChanged" Label="Estado" 
+                       Variant="Variant.Outlined" Margin="Margin.Dense" Class="mr-4" Style="max-width: 150px;">
+                <MudSelectItem Value="@((string?)null)">Todos</MudSelectItem>
+                <MudSelectItem Value="@("Activo")">Activos</MudSelectItem>
+                <MudSelectItem Value="@("Mantenimiento")">Mantenimiento</MudSelectItem>
+                <MudSelectItem Value="@("Danado")">Dañados</MudSelectItem>
+                <MudSelectItem Value="@("Baja")">De Baja</MudSelectItem>
+            </MudSelect>
             <MudTextField T="string" ValueChanged="@(s=>OnSearch(s))" Placeholder="Buscar por nombre o serie..." 
                           Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.Search" 
                           IconSize="Size.Medium" Class="mt-0" Variant="Variant.Outlined" Margin="Margin.Dense"></MudTextField>
@@ -96,6 +104,7 @@
 @code {
     private MudTable<Equipo> _table = null!;
     private string _searchString = "";
+    private string? _selectedEstado = null;
     private bool _loadFailed = false;
 
     private async Task<TableData<Equipo>> ServerReload(TableState state, CancellationToken cancellationToken)
@@ -103,7 +112,7 @@
         try
         {
             _loadFailed = false;
-            var response = await EquipmentService.GetEquiposAsync(state.Page * state.PageSize, state.PageSize, _searchString);
+            var response = await EquipmentService.GetEquiposAsync(state.Page * state.PageSize, state.PageSize, _searchString, _selectedEstado);
             
             if (response == null)
             {
@@ -123,6 +132,12 @@
     private void OnSearch(string text)
     {
         _searchString = text;
+        _table?.ReloadServerData();
+    }
+    
+    private void OnEstadoChanged(string? estado)
+    {
+        _selectedEstado = estado;
         _table?.ReloadServerData();
     }
 
