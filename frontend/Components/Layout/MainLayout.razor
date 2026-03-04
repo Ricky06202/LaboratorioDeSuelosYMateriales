@@ -17,14 +17,13 @@
             <MudMenuItem Icon="@Icons.Material.Filled.Person">Mi Perfil</MudMenuItem>
             <MudMenuItem Icon="@Icons.Material.Filled.Settings">Ajustes</MudMenuItem>
             <MudDivider />
-            <MudMenuItem Icon="@Icons.Material.Filled.Logout">Cerrar Sesión</MudMenuItem>
         </MudMenu>
     </MudAppBar>
     <MudDrawer @bind-Open="_drawerOpen" ClipMode="DrawerClipMode.Always" Elevation="0" MiniMode="true" Fixed="true">
         <NavMenu />
     </MudDrawer>
-    <MudMainContent Class="pa-8 pt-24">
-        <MudContainer MaxWidth="MaxWidth.ExtraLarge" Class="mt-4">
+    <MudMainContent Class="pt-16 px-4 pb-4">
+        <MudContainer MaxWidth="MaxWidth.ExtraLarge" Class="mt-6">
             @Body
         </MudContainer>
     </MudMainContent>
