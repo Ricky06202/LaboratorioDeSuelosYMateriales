@@ -142,73 +142,84 @@
         </table>
     </div>
 
-    <div style="overflow: hidden; margin-bottom: 10px;">
-        <div style="float: left; font-weight: bold; font-size: 12px; margin-top: 15px;">
-            ORDEN DE SERVICIO No.:
-            <span class="box">LSMCH</span>
-            <span class="box">{{ order.order_number.split('-')[1] if '-' in order.order_number else order.order_number
-                }}</span>
-            <span class="box">{{ order.year }}</span>
-            <div style="font-size: 8px; font-weight: normal; margin-top: 2px; padding-left: 110px;">
-                <span style="margin-right: 40px;">Lab.</span>
-                <span style="margin-right: 40px;">Núm..</span>
-                <span>Año</span>
-            </div>
-        </div>
+    <table class="no-border" style="margin-bottom: 10px;">
+        <tr>
+            <td style="vertical-align: bottom; width: 60%;">
+                <div style="font-weight: bold; font-size: 12px;">
+                    ORDEN DE SERVICIO No.:
+                    <span class="box">LSMCH</span>
+                    <span class="box">{{ order.order_number.split('-')[1] if '-' in order.order_number else
+                        order.order_number }}</span>
+                    <span class="box">{{ order.year }}</span>
+                </div>
+                <div style="font-size: 8px; font-weight: normal; margin-top: 2px; padding-left: 110px;">
+                    <span style="margin-right: 40px;">Lab.</span>
+                    <span style="margin-right: 40px;">Núm..</span>
+                    <span>Año</span>
+                </div>
+            </td>
+            <td style="width: 40%; text-align: right;">
+                <table class="date-table" style="display: table; margin-left: auto; float: none;">
+                    <tr>
+                        <td colspan="3" class="bold">FECHA</td>
+                    </tr>
+                    <tr>
+                        <td>{{ order.date.strftime('%d') if order.date else '' }}</td>
+                        <td>{{ order.date.strftime('%m') if order.date else '' }}</td>
+                        <td>{{ order.date.strftime('%y') if order.date else '' }}</td>
+                    </tr>
+                    <tr style="font-size: 8px;">
+                        <td>Día</td>
+                        <td>Mes</td>
+                        <td>Año</td>
+                    </tr>
+                </table>
+            </td>
+        </tr>
+    </table>
 
-        <table class="date-table">
-            <tr>
-                <td colspan="3" class="bold">FECHA</td>
-            </tr>
-            <tr>
-                <td>{{ order.date.strftime('%d') if order.date else '' }}</td>
-                <td>{{ order.date.strftime('%m') if order.date else '' }}</td>
-                <td>{{ order.date.strftime('%y') if order.date else '' }}</td>
-            </tr>
-            <tr style="font-size: 8px;">
-                <td>Día</td>
-                <td>Mes</td>
-                <td>Año</td>
-            </tr>
-        </table>
-    </div>
-
-    <table class="no-border">
+    <table class="no-border info-fields-table" style="margin-top: 5px;">
         <tr>
-            <td class="field-label" style="width: 15%;">Nombre del Cliente:</td>
-            <td style="border-bottom: 1px solid #000;" colspan="5">{{ order.client_name }}</td>
+            <td class="field-label" style="width: 15%; padding-bottom: 8px;">Nombre del Cliente:</td>
+            <td style="border-bottom: 1px solid #000; padding-bottom: 2px;" colspan="5">{{ order.client_name }}</td>
         </tr>
         <tr>
-            <td class="field-label">RUC:</td>
-            <td style="border-bottom: 1px solid #000; width: 20%;">{{ order.client_ruc or '' }}</td>
-            <td class="field-label" style="width: 5%;">D.V.</td>
-            <td style="border-bottom: 1px solid #000; width: 10%;">{{ order.client_dv or '' }}</td>
-            <td class="field-label" style="width: 20%;">Cotización aprobada LSMCH No.:</td>
-            <td style="border-bottom: 1px solid #000;">{{ order.quotation_ref or '' }}</td>
+            <td class="field-label" style="padding-bottom: 8px;">RUC:</td>
+            <td style="border-bottom: 1px solid #000; width: 20%; padding-bottom: 2px;">{{ order.client_ruc or '' }}
+            </td>
+            <td class="field-label" style="width: 5%; padding-bottom: 8px;">D.V.</td>
+            <td style="border-bottom: 1px solid #000; width: 10%; padding-bottom: 2px;">{{ order.client_dv or '' }}</td>
+            <td class="field-label" style="width: 20%; padding-bottom: 8px;">Cotización aprobada LSMCH No.:</td>
+            <td style="border-bottom: 1px solid #000; padding-bottom: 2px;">{{ order.quotation_ref or '' }}</td>
         </tr>
         <tr>
-            <td class="field-label">Teléfono:</td>
-            <td style="border-bottom: 1px solid #000;">{{ order.client_phone or '' }}</td>
-            <td class="field-label" colspan="2">Correo electrónico:</td>
-            <td style="border-bottom: 1px solid #000;" colspan="2">{{ order.client_email or '' }}</td>
+            <td class="field-label" style="padding-bottom: 8px;">Teléfono:</td>
+            <td style="border-bottom: 1px solid #000; padding-bottom: 2px;">{{ order.client_phone or '' }}</td>
+            <td class="field-label" colspan="2" style="padding-bottom: 8px;">Correo electrónico:</td>
+            <td style="border-bottom: 1px solid #000; padding-bottom: 2px;" colspan="2">{{ order.client_email or '' }}
+            </td>
         </tr>
         <tr>
-            <td class="field-label">Dirección:</td>
-            <td style="border-bottom: 1px solid #000;" colspan="5">{{ order.client_direction or '' }}</td>
+            <td class="field-label" style="padding-bottom: 8px;">Dirección:</td>
+            <td style="border-bottom: 1px solid #000; padding-bottom: 2px;" colspan="5">{{ order.client_direction or ''
+                }}</td>
         </tr>
         <tr>
-            <td class="field-label">Nombre del Proyecto:</td>
-            <td style="border-bottom: 1px solid #000;" colspan="5">{{ order.project_name or '' }}</td>
+            <td class="field-label" style="padding-bottom: 8px;">Nombre del Proyecto:</td>
+            <td style="border-bottom: 1px solid #000; padding-bottom: 2px;" colspan="5">{{ order.project_name or '' }}
+            </td>
         </tr>
         <tr>
-            <td class="field-label">Ubicación del Proyecto:</td>
-            <td style="border-bottom: 1px solid #000;" colspan="5">{{ order.project_location or '' }}</td>
+            <td class="field-label" style="padding-bottom: 8px;">Ubicación del Proyecto:</td>
+            <td style="border-bottom: 1px solid #000; padding-bottom: 2px;" colspan="5">{{ order.project_location or ''
+                }}</td>
         </tr>
         <tr>
-            <td class="field-label">Responsable o Encargado del Proyecto:</td>
-            <td style="border-bottom: 1px solid #000;" colspan="3">{{ order.project_responsable or '' }}</td>
-            <td class="field-label" style="width: 10%;">Celular:</td>
-            <td style="border-bottom: 1px solid #000;">{{ order.project_phone or '' }}</td>
+            <td class="field-label" style="padding-bottom: 8px;">Responsable o Encargado del Proyecto:</td>
+            <td style="border-bottom: 1px solid #000; padding-bottom: 2px;" colspan="3">{{ order.project_responsable or
+                '' }}</td>
+            <td class="field-label" style="width: 10%; padding-bottom: 8px;">Celular:</td>
+            <td style="border-bottom: 1px solid #000; padding-bottom: 2px;">{{ order.project_phone or '' }}</td>
         </tr>
     </table>
 
@@ -233,20 +244,18 @@
         </tr>
     </table>
 
-    <div style="margin-top: 5px;">
+    <div style="margin-top: 15px;">
         <span class="bold">Descripción de los ítems de ensayo o inspección, y/o condición del ítem, cuando sea
             necesario:</span><br>
         <div style="border-bottom: 1px solid #000; min-height: 15px; margin-top: 5px;">{{ order.item_description or ''
             }}</div>
         <div style="border-bottom: 1px solid #000; min-height: 15px;"></div>
-        <div style="border-bottom: 1px solid #000; min-height: 15px;"></div>
     </div>
 
-    <div style="margin-top: 10px;">
+    <div style="margin-top: 15px;">
         <span class="bold">Metodología: Métodos / Normas / Otros:</span><br>
         <div style="border-bottom: 1px solid #000; min-height: 15px; margin-top: 5px;">{{ order.methodology or '' }}
         </div>
-        <div style="border-bottom: 1px solid #000; min-height: 15px;"></div>
         <div style="border-bottom: 1px solid #000; min-height: 15px;"></div>
     </div>
 
@@ -298,9 +307,9 @@
         </tr>
     </table>
 
-    <div style="margin-top: 10px;">
+    <div style="margin-top: 15px;">
         <span class="bold">Observaciones:</span>
-        <div style="border-bottom: 1px solid #000; min-height: 15px; margin-top: 2px;">{{ order.observations or '' }}
+        <div style="border-bottom: 1px solid #000; min-height: 15px; margin-top: 5px;">{{ order.observations or '' }}
         </div>
         <div style="border-bottom: 1px solid #000; min-height: 15px;"></div>
     </div>

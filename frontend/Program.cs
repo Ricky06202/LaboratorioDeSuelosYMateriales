@@ -26,6 +26,10 @@ builder.Services.AddHttpClient<ServiceOrderService>(client => {
     client.BaseAddress = new Uri("http://localhost:8000/");
     client.Timeout = TimeSpan.FromSeconds(10);
 });
+builder.Services.AddHttpClient<CustomerOrderService>(client => {
+    client.BaseAddress = new Uri("http://localhost:8000/");
+    client.Timeout = TimeSpan.FromSeconds(10);
+});
 
 var app = builder.Build();
 

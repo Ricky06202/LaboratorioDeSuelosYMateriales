@@ -1,0 +1,183 @@
+@using frontend.Models
+@using frontend.Services
+@using MudBlazor
+@inject CustomerOrderService CustomerOrderService
+@inject ISnackbar Snackbar
+
+<MudDialog>
+    <DialogContent>
+        <MudForm @ref="_form" @bind-IsValid="@_success">
+            <MudTabs Elevation="1" Rounded="true" ApplyEffectsToContainer="true" PanelClass="pa-4">
+                <MudTabPanel Text="Datos del Cliente y Proyecto">
+                    <MudGrid>
+                        <MudItem xs="12" sm="8">
+                            <MudTextField @bind-Value="_order.ClientName" Label="Nombre del Cliente" Required="true" RequiredError="Requerido" />
+                        </MudItem>
+                        <MudItem xs="12" sm="4">
+                            <MudDatePicker Label="Fecha del pedido" @bind-Date="_orderDate" Editable="true" Required="true" />
+                        </MudItem>
+
+                        <MudItem xs="12">
+                            <MudTextField @bind-Value="_order.ClientDirection" Label="Dirección de la empresa" Lines="2" />
+                        </MudItem>
+
+                        <MudItem xs="12" sm="4">
+                            <MudTextField @bind-Value="_order.ClientRuc" Label="RUC" />
+                        </MudItem>
+                        <MudItem xs="12" sm="2">
+                            <MudTextField @bind-Value="_order.ClientDv" Label="DV" />
+                        </MudItem>
+                        <MudItem xs="12" sm="6">
+                            <MudTextField @bind-Value="_order.ClientPhone" Label="Teléfono" />
+                        </MudItem>
+
+                        <MudItem xs="12"><MudDivider /></MudItem>
+
+                        <MudItem xs="12" sm="6">
+                            <MudTextField @bind-Value="_order.ProjectName" Label="Proyecto" />
+                        </MudItem>
+                        <MudItem xs="12" sm="6">
+                            <MudTextField @bind-Value="_order.ProjectLocation" Label="Ubicación del Proyecto" />
+                        </MudItem>
+
+                        <MudItem xs="12" sm="12">
+                            <MudTextField @bind-Value="_order.ProjectResponsable" Label="Responsable del proyecto o contacto (Nombres)" />
+                        </MudItem>
+                        <MudItem xs="12" sm="6">
+                            <MudTextField @bind-Value="_order.ProjectResponsablePhone" Label="Celular del responsable / contacto" />
+                        </MudItem>
+                        <MudItem xs="12" sm="6">
+                            <MudTextField @bind-Value="_order.ProjectResponsableEmail" Label="e-mail del responsable / contacto" />
+                        </MudItem>
+                    </MudGrid>
+                </MudTabPanel>
+
+                <MudTabPanel Text="Datos de Ensayos">
+                    <MudTable Items="_order.Items" Hover="true" Breakpoint="Breakpoint.Sm" Elevation="0" Dense="true">
+                        <HeaderContent>
+                            <MudTh>#</MudTh>
+                            <MudTh>Ensayos</MudTh>
+                            <MudTh>Tipo de Muestra</MudTh>
+                            <MudTh>Cantidad</MudTh>
+                            <MudTh>Norma / Método</MudTh>
+                            <MudTh></MudTh>
+                        </HeaderContent>
+                        <RowTemplate>
+                            <MudTd DataLabel="#">@(context.ItemNumber ?? _order.Items.IndexOf(context) + 1)</MudTd>
+                            <MudTd DataLabel="Ensayos">
+                                <MudTextField @bind-Value="context.TestName" Margin="Margin.Dense" Variant="Variant.Outlined" />
+                            </MudTd>
+                            <MudTd DataLabel="Tipo de Muestra">
+                                <MudTextField @bind-Value="context.SampleType" Margin="Margin.Dense" Variant="Variant.Outlined" />
+                            </MudTd>
+                            <MudTd DataLabel="Cantidad">
+                                <MudNumericField @bind-Value="context.TestCount" Margin="Margin.Dense" Variant="Variant.Outlined" Min="1" />
+                            </MudTd>
+                            <MudTd DataLabel="Norma / Método">
+                                <MudTextField @bind-Value="context.NormMethod" Margin="Margin.Dense" Variant="Variant.Outlined" />
+                            </MudTd>
+                            <MudTd>
+                                <MudIconButton Icon="@Icons.Material.Filled.Delete" Color="Color.Error" Size="Size.Small" OnClick="@(() => RemoveItem(context))" />
+                            </MudTd>
+                        </RowTemplate>
+                        <FooterContent>
+                            <MudButton StartIcon="@Icons.Material.Filled.Add" OnClick="AddItem" Variant="Variant.Text" Color="Color.Primary" Class="mt-2">Agregar Ítem</MudButton>
+                        </FooterContent>
+                    </MudTable>
+                </MudTabPanel>
+
+                <MudTabPanel Text="Observaciones e Interno">
+                    <MudGrid>
+                        <MudItem xs="12">
+                            <MudTextField @bind-Value="_order.Observations" Label="OBSERVACIONES" Lines="4" />
+                        </MudItem>
+                        
+                        <MudItem xs="12"><MudDivider /></MudItem>
+                        <MudItem xs="12"><MudText Typo="Typo.subtitle2">Para uso interno del Laboratorio</MudText></MudItem>
+
+                        <MudItem xs="12" sm="6">
+                            <MudTextField @bind-Value="_order.AttendedBy" Label="Atendido por" />
+                        </MudItem>
+                        <MudItem xs="12" sm="6">
+                            <MudTextField @bind-Value="_order.ApprovedQuotationNumber" Label="Nº de cotización aprobada" />
+                        </MudItem>
+                    </MudGrid>
+                </MudTabPanel>
+            </MudTabs>
+        </MudForm>
+    </DialogContent>
+    <DialogActions>
+        <MudButton OnClick="Cancel">Cancelar</MudButton>
+        <MudButton Color="Color.Primary" Variant="Variant.Filled" OnClick="Submit" Disabled="@_processing">Guardar Pedido</MudButton>
+    </DialogActions>
+</MudDialog>
+
+@code {
+    [CascadingParameter] IMudDialogInstance MudDialog { get; set; } = null!;
+
+    private CustomerOrderCreate _order = new();
+    private DateTime? _orderDate = DateTime.Today;
+    private MudForm _form = null!;
+    private bool _success;
+    private bool _processing;
+
+    protected override void OnInitialized()
+    {
+        if (_order.Items.Count == 0)
+        {
+            AddItem();
+            AddItem();
+        }
+    }
+
+    private void AddItem()
+    {
+        _order.Items.Add(new CustomerOrderItemCreate 
+        { 
+            ItemNumber = _order.Items.Count + 1,
+            TestCount = 1 
+        });
+    }
+
+    private void RemoveItem(CustomerOrderItemCreate item)
+    {
+        _order.Items.Remove(item);
+        // Refresh numbers
+        for (int i = 0; i < _order.Items.Count; i++)
+        {
+            _order.Items[i].ItemNumber = i + 1;
+        }
+    }
+
+    private void Cancel()
+    {
+        MudDialog.Cancel();
+    }
+
+    private async Task Submit()
+    {
+        await _form.Validate();
+        if (_success)
+        {
+            _processing = true;
+            try
+            {
+                if (_orderDate.HasValue)
+                {
+                    _order.Date = _orderDate.Value;
+                }
+                await CustomerOrderService.CreateCustomerOrderAsync(_order);
+                Snackbar.Add("Pedido creado exitosamente", Severity.Success);
+                MudDialog.Close(DialogResult.Ok(true));
+            }
+            catch (Exception ex)
+            {
+                Snackbar.Add(ex.Message, Severity.Error);
+            }
+            finally
+            {
+                _processing = false;
+            }
+        }
+    }
+}

@@ -1,7 +1,7 @@
 from contextlib import asynccontextmanager
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from app.api.endpoints import auth, equipment, quotation, service_order
+from app.api.endpoints import auth, equipment, quotation, service_order, customer_order
 from app.db.session import engine
 from app.db.base import Base
 
@@ -26,6 +26,7 @@ app.include_router(auth.router, prefix="/api/auth", tags=["auth"])
 app.include_router(equipment.router, prefix="/api/equipos", tags=["equipos"])
 app.include_router(quotation.router, prefix="/api/cotizaciones", tags=["cotizaciones"])
 app.include_router(service_order.router, prefix="/api/ordenes-servicio", tags=["ordenes_servicio"])
+app.include_router(customer_order.router, prefix="/api/pedidos", tags=["pedidos"])
 
 @app.get("/")
 def root():
