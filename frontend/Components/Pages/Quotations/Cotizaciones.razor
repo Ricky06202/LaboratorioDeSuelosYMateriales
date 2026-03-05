@@ -1,0 +1,138 @@
+@page "/cotizaciones"
+@using frontend.Models
+@using frontend.Services
+@using Microsoft.JSInterop
+@inject QuotationService QuotationService
+@inject IDialogService DialogService
+@inject ISnackbar Snackbar
+@inject IJSRuntime JS
+
+<PageTitle>Cotizaciones - LSMCH</PageTitle>
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <MudText Typo="Typo.h4">Cotizaciones</MudText>
+    <MudButton Variant="Variant.Filled" Color="Color.Primary" StartIcon="@Icons.Material.Filled.Add" OnClick="OpenNewQuotationDialog">Nueva Cotización</MudButton>
+</div>
+
+<MudTable Items="@_quotations" Hover="true" Loading="@_loading" LoadingProgressColor="Color.Info" Filter="new Func<Quotation,bool>(FilterFunc1)">
+    <ToolBarContent>
+        <MudSpacer />
+        <MudTextField @bind-Value="_searchString" Placeholder="Buscar cotización..." Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium" Class="mt-0"></MudTextField>
+    </ToolBarContent>
+    <HeaderContent>
+        <MudTh>Nº Cotización</MudTh>
+        <MudTh>Fecha</MudTh>
+        <MudTh>Cliente</MudTh>
+        <MudTh>Proyecto</MudTh>
+        <MudTh>Total</MudTh>
+        <MudTh>Acciones</MudTh>
+    </HeaderContent>
+    <RowTemplate>
+        <MudTd DataLabel="Nº Cotización">@context.QuotationNumber</MudTd>
+        <MudTd DataLabel="Fecha">@context.Date.ToShortDateString()</MudTd>
+        <MudTd DataLabel="Cliente">@context.ClientName</MudTd>
+        <MudTd DataLabel="Proyecto">@context.ProjectName</MudTd>
+        <MudTd DataLabel="Total">B/. @context.TotalAmount.ToString("F2")</MudTd>
+        <MudTd DataLabel="Acciones">
+            <MudIconButton Icon="@Icons.Material.Filled.PictureAsPdf" Color="Color.Error" Size="Size.Small" OnClick="@(() => DownloadPdf(context.Id, context.QuotationNumber))" title="Descargar PDF" />
+            <MudIconButton Icon="@Icons.Material.Filled.Delete" Color="Color.Default" Size="Size.Small" OnClick="@(() => DeleteQuotation(context))" title="Eliminar" />
+        </MudTd>
+    </RowTemplate>
+    <PagerContent>
+        <MudTablePager />
+    </PagerContent>
+</MudTable>
+
+@code {
+    private List<Quotation> _quotations = new();
+    private bool _loading = true;
+    private string _searchString = "";
+
+    protected override async Task OnInitializedAsync()
+    {
+        await LoadDataAsync();
+    }
+
+    private async Task LoadDataAsync()
+    {
+        _loading = true;
+        try
+        {
+            _quotations = await QuotationService.GetQuotationsAsync();
+        }
+        catch (Exception ex)
+        {
+            Snackbar.Add($"Error al cargar cotizaciones: {ex.Message}", Severity.Error);
+        }
+        finally
+        {
+            _loading = false;
+        }
+    }
+
+    private bool FilterFunc1(Quotation element) => FilterFunc(element, _searchString);
+
+    private bool FilterFunc(Quotation element, string searchString)
+    {
+        if (string.IsNullOrWhiteSpace(searchString))
+            return true;
+        if (element.ClientName.Contains(searchString, StringComparison.OrdinalIgnoreCase))
+            return true;
+        if (element.QuotationNumber.Contains(searchString, StringComparison.OrdinalIgnoreCase))
+            return true;
+        if ($"{element.ProjectName}".Contains(searchString, StringComparison.OrdinalIgnoreCase))
+            return true;
+        return false;
+    }
+
+    private async Task OpenNewQuotationDialog()
+    {
+        var options = new DialogOptions { MaxWidth = MaxWidth.Medium, FullWidth = true, CloseButton = true };
+        var dialog = DialogService.Show<CotizacionForm>("Crear Cotización", options);
+        var result = await dialog.Result;
+
+        if (!result.Canceled)
+        {
+            await LoadDataAsync();
+        }
+    }
+
+    private async Task DeleteQuotation(Quotation quotation)
+    {
+        bool? result = await DialogService.ShowMessageBox(
+            "Eliminar Cotización",
+            $"¿Está seguro de eliminar la cotización {quotation.QuotationNumber}?",
+            yesText: "Eliminar", cancelText: "Cancelar");
+
+        if (result == true)
+        {
+            try
+            {
+                await QuotationService.DeleteQuotationAsync(quotation.Id);
+                Snackbar.Add("Cotización eliminada", Severity.Success);
+                await LoadDataAsync();
+            }
+            catch (Exception ex)
+            {
+                Snackbar.Add($"Error: {ex.Message}", Severity.Error);
+            }
+        }
+    }
+
+    private async Task DownloadPdf(Guid id, string quotationNumber)
+    {
+        try
+        {
+            var pdfBytes = await QuotationService.GetQuotationPdfAsync(id);
+            var base64 = Convert.ToBase64String(pdfBytes);
+            // We use JSInterop to trigger a file download. Note: This assumes a small blazor js function, 
+            // but we can just use the standard file download approach. Let's use it via a quick helper.
+            await JS.InvokeVoidAsync("downloadFileFromStream", $"Cotizacion_{quotationNumber}.pdf", "application/pdf", base64);
+            Snackbar.Add("PDF generado con éxito", Severity.Success);
+        }
+        catch (Exception ex)
+        {
+            Snackbar.Add($"Error generando PDF: {ex.Message}", Severity.Error);
+        }
+    }
+}

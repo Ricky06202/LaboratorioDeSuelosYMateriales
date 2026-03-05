@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Orden de Servicio LSMCH</title>
+    <style>
+        @page {
+            size: letter;
+            margin: 15mm;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            font-size: 11px;
+            color: #000;
+        }
+
+        .header {
+            width: 100%;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .header-title {
+            font-weight: bold;
+            font-size: 14px;
+            margin: 10px 0;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 10px;
+        }
+
+        th,
+        td {
+            border: 1px solid #000;
+            padding: 5px;
+            text-align: left;
+        }
+
+        .text-center {
+            text-align: center;
+        }
+
+        .text-right {
+            text-align: right;
+        }
+
+        .bold {
+            font-weight: bold;
+        }
+
+        .checkbox {
+            display: inline-block;
+            width: 10px;
+            height: 10px;
+            border: 1px solid #000;
+            text-align: center;
+            line-height: 10px;
+            font-size: 10px;
+        }
+
+        .checked::after {
+            content: 'x';
+        }
+    </style>
+</head>
+
+<body>
+    <div class="header">
+        <table style="border: none; margin-bottom: 0;">
+            <tr>
+                <td style="border: none; width: 20%; text-align: left;">
+                    <h2>UTP</h2>
+                </td>
+                <td style="border: none; width: 60%; text-align: center;">
+                    <div class="bold">UNIVERSIDAD TECNOLÓGICA DE PANAMÁ</div>
+                    <div>CENTRO REGIONAL DE CHIRIQUÍ</div>
+                    <div class="bold">LABORATORIO DE SUELOS Y MATERIALES</div>
+                    <div>RA-LSMCH-005</div>
+                    <div>Revisión 03</div>
+                </td>
+                <td style="border: none; width: 20%; text-align: right;">
+                    <h2>LSMCH</h2>
+                </td>
+            </tr>
+        </table>
+
+        <div class="header-title">
+            <span>ORDEN DE SERVICIO No.:</span>
+            <span style="border: 1px solid #000; padding: 2px 10px;">LSMCH</span>
+            <span style="border: 1px solid #000; padding: 2px 10px;">{{ order.order_number.split('-')[1] }}</span>
+            <span style="border: 1px solid #000; padding: 2px 10px;">{{ order.year }}</span>
+        </div>
+
+        <div style="text-align: right;">
+            FECHA: <span style="border: 1px solid #000; padding: 2px 10px;">{{ order.date.strftime('%Y-%m-%d') }}</span>
+        </div>
+    </div>
+
+    <table>
+        <tr>
+            <td class="bold">Nombre del Cliente:</td>
+            <td colspan="5">{{ order.client_name }}</td>
+        </tr>
+        <tr>
+            <td class="bold">RUC:</td>
+            <td>{{ order.client_ruc or '#N/D' }}</td>
+            <td class="bold">Teléfono:</td>
+            <td>{{ order.client_phone or '#N/D' }}</td>
+            <td class="bold">Correo electrónico:</td>
+            <td>{{ order.client_email or '#N/D' }}</td>
+        </tr>
+        <tr>
+            <td class="bold">Dirección:</td>
+            <td colspan="5">{{ order.client_direction or '#N/D' }}</td>
+        </tr>
+        <tr>
+            <td class="bold">Nombre del Proyecto:</td>
+            <td colspan="5">{{ order.project_name or 'N/D' }}</td>
+        </tr>
+        <tr>
+            <td class="bold">Ubicación del Proyecto:</td>
+            <td colspan="5">{{ order.project_location or 'N/D' }}</td>
+        </tr>
+        <tr>
+            <td class="bold">Responsable o Encargado del Proyecto:</td>
+            <td colspan="3">{{ order.project_responsable or 'N/I' }}</td>
+            <td class="bold">Celular:</td>
+            <td>{{ order.project_phone or '' }}</td>
+        </tr>
+    </table>
+
+    <table>
+        <tr>
+            <td class="bold">Tipo de Servicio:</td>
+            <td>
+                <span class="checkbox {% if order.service_type_ensayos %}checked{% endif %}"></span> Ensayos
+            </td>
+            <td>
+                <span class="checkbox {% if order.service_type_muestreo %}checked{% endif %}"></span> Muestreo
+            </td>
+            <td class="bold">Efectuado por:</td>
+            <td>
+                Laboratorio <span class="checkbox {% if order.performed_by_laboratory %}checked{% endif %}"></span><br>
+                Inspección <span class="checkbox {% if order.performed_by_inspection %}checked{% endif %}"></span>
+            </td>
+            <td>
+                Cliente <span class="checkbox {% if order.performed_by_client %}checked{% endif %}"></span>
+            </td>
+        </tr>
+    </table>
+
+    <div style="border: 1px solid #000; padding: 5px; margin-bottom: 10px; min-height: 50px;">
+        <span class="bold">Descripción de los ítems de ensayo o inspección, y/o condición del ítem:</span><br>
+        {{ order.item_description or '' }}
+    </div>
+
+    <div style="border: 1px solid #000; padding: 5px; margin-bottom: 10px; min-height: 30px;">
+        <span class="bold">Metodología: Métodos / Normas / Otros:</span><br>
+        {{ order.methodology or '' }}
+    </div>
+
+    <table>
+        <tr>
+            <td class="bold">Subcontratación:</td>
+            <td>Sí <span class="checkbox {% if order.subcontraction %}checked{% endif %}"></span></td>
+            <td>No <span class="checkbox {% if not order.subcontraction %}checked{% endif %}"></span></td>
+            <td class="bold">Detalle:</td>
+            <td colspan="2">{{ order.subcontraction_details or '' }}</td>
+        </tr>
+        <tr>
+            <td class="bold" colspan="2">Solicitud de Declaración de Conformidad:</td>
+            <td>Sí <span class="checkbox {% if order.request_declaration_conformity %}checked{% endif %}"></span></td>
+            <td>No <span class="checkbox {% if not order.request_declaration_conformity %}checked{% endif %}"></span>
+            </td>
+            <td class="bold">Especificación o Norma:</td>
+            <td>{{ order.declaration_specification or '' }}</td>
+        </tr>
+    </table>
+
+    <table>
+        <tr>
+            <td class="bold">Regla de decisión:</td>
+            <td>No Aplica <span class="checkbox {% if order.decision_rule_not_applicable %}checked{% endif %}"></span>
+            </td>
+            <td colspan="2">Acordada con el cliente <span
+                    class="checkbox {% if order.decision_rule_client_agreed %}checked{% endif %}"></span></td>
+        </tr>
+        <tr>
+            <td colspan="2">Inherente a la especificación o norma solicitada</td>
+            <td colspan="2"><span class="checkbox {% if order.decision_rule_inherent %}checked{% endif %}"></span></td>
+        </tr>
+        <tr>
+            <td class="bold">Desviación solicitada por el cliente:</td>
+            <td>Sí <span class="checkbox {% if order.client_deviation %}checked{% endif %}"></span></td>
+            <td colspan="2">No <span class="checkbox {% if not order.client_deviation %}checked{% endif %}"></span></td>
+        </tr>
+        <tr>
+            <td class="bold" colspan="4">Detalle si la respuesta es SÍ: {{ order.deviation_details or '' }}</td>
+        </tr>
+    </table>
+
+    <div style="border: 1px solid #000; padding: 5px; margin-bottom: 10px; min-height: 40px;">
+        <span class="bold">Observaciones:</span> {{ order.observations or '' }}
+    </div>
+
+    <div style="font-size: 10px; margin-bottom: 10px;">
+        Tiempo de conservación de las muestras: <span style="font-weight: bold; text-decoration: underline;">{{
+            order.sample_conservation_time }}</span> días. Nota: Terminado este periodo, las mismas podrán ser retiradas
+        por el cliente, de lo contrario el laboratorio realizará el descarte.
+    </div>
+
+    <table>
+        <tr>
+            <td class="bold">Costo Total:</td>
+            <td>B/. {{ "%.2f"|format(order.total_cost) }}</td>
+            <td class="bold">Cancela (100%):</td>
+            <td><span class="checkbox {% if order.paid_100_percent %}checked{% endif %}"></span></td>
+        </tr>
+        <tr>
+            <td class="bold">Comprobante de venta de Servicios No.:</td>
+            <td>{{ order.service_sale_receipt_number or '' }}</td>
+            <td class="bold">Informe LSMCH No:</td>
+            <td>{{ order.relates_to_inform or '' }}</td>
+            <td class="bold">Cantidad de Informes:</td>
+            <td>{{ order.number_of_informs }}</td>
+        </tr>
+        <tr>
+            <td class="bold">Apoyo Institucional:</td>
+            <td colspan="5"><span class="checkbox {% if order.support_institutional %}checked{% endif %}"></span>
+                Documento Relacionado: {{ order.related_document or '' }}</td>
+        </tr>
+    </table>
+
+    <table style="margin-top: 30px; border: none;">
+        <tr>
+            <td style="border: none; border-bottom: 1px solid #000; width: 45%;">
+                <br>
+                <br>
+                {{ order.attended_by or 'Sistema' }}
+            </td>
+            <td style="border: none; width: 10%;"></td>
+            <td style="border: none; border-bottom: 1px solid #000; width: 45%;">
+                <br>
+                <br>
+                N° Contrato, Orden de Compra o Firma autorizada
+            </td>
+        </tr>
+        <tr>
+            <td class="text-center" style="border: none;">Nombe legible / No. de Cédula (Solicitante o Emisario: {{
+                order.applicant_name or '' }})</td>
+            <td style="border: none;"></td>
+            <td class="text-center" style="border: none;"></td>
+        </tr>
+    </table>
+</body>
+
+</html>
