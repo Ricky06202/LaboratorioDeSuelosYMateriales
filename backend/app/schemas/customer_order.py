@@ -18,8 +18,7 @@ class CustomerOrderItem(CustomerOrderItemBase):
     id: int
     customer_order_id: uuid.UUID
 
-    class Config:
-        from_attributes = True
+    model_config = {"from_attributes": True}
 
 # CustomerOrder Schemas
 class CustomerOrderBase(BaseModel):
@@ -52,5 +51,4 @@ class CustomerOrder(CustomerOrderBase):
     created_by: Optional[str] = None
     items: List[CustomerOrderItem] = []
 
-    class Config:
-        from_attributes = True
+    model_config = {"from_attributes": True}
