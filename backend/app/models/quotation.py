@@ -15,6 +15,7 @@ class Quotation(Base):
     
     # Client info
     client_name = Column(String, nullable=False)
+    client_ruc = Column(String)
     client_direction = Column(String)
     client_phone = Column(String)
     client_email = Column(String)

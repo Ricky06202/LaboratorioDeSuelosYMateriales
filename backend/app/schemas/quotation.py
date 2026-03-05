@@ -30,6 +30,7 @@ class QuotationItem(QuotationItemInDBBase):
 # Quotation Schemas
 class QuotationBase(BaseModel):
     client_name: str
+    client_ruc: Optional[str] = None
     client_direction: Optional[str] = None
     client_phone: Optional[str] = None
     client_email: Optional[str] = None
