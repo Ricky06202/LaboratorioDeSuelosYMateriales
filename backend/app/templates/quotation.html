@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
     <meta charset="UTF-8">
     <title>Cotización LSMCH</title>
@@ -8,47 +9,59 @@
             size: letter;
             margin: 20mm;
         }
+
         body {
             font-family: Arial, sans-serif;
             font-size: 11px;
             color: #000;
         }
+
         .header {
             width: 100%;
             text-align: center;
             margin-bottom: 20px;
         }
+
         .header img {
             max-height: 80px;
         }
+
         .header-title {
             font-weight: bold;
             font-size: 14px;
             margin: 10px 0;
         }
+
         table {
             width: 100%;
             border-collapse: collapse;
             margin-bottom: 10px;
         }
-        th, td {
+
+        th,
+        td {
             border: 1px solid #000;
             padding: 5px;
             text-align: left;
         }
+
         th {
             background-color: #f2f2f2;
             text-align: center;
         }
+
         .text-center {
             text-align: center;
         }
+
         .text-right {
             text-align: right;
         }
+
         .bold {
             font-weight: bold;
         }
+
         .section-title {
             background-color: #e0e0e0;
             font-weight: bold;
@@ -56,35 +69,42 @@
             padding: 5px;
             margin-top: 10px;
         }
+
         .summary-box {
             width: 100%;
             margin-top: 20px;
         }
+
         .summary-box td {
             border: none;
             padding: 3px;
         }
+
         .summary-box .totals {
             font-weight: bold;
             background-color: #f2f2f2;
             border: 1px solid #000;
         }
+
         .footer-signature {
             margin-top: 50px;
             width: 100%;
         }
+
         .footer-signature td {
             border: none;
             text-align: center;
             vertical-align: bottom;
             height: 60px;
         }
+
         .footer-signature .line {
             border-top: 1px solid #000;
             width: 80%;
             margin: 0 auto;
             padding-top: 5px;
         }
+
         .notes {
             font-size: 9px;
             margin-top: 20px;
@@ -92,6 +112,7 @@
         }
     </style>
 </head>
+
 <body>
     <div class="header">
         <table style="border: none; margin-bottom: 0;">
@@ -113,15 +134,17 @@
                 </td>
             </tr>
         </table>
-        
+
         <div class="header-title">
             <span>COTIZACIÓN No. LSMCH - </span>
-            <span style="border: 1px solid #000; padding: 2px 10px;">{{ quotation.quotation_number.split('-')[1] }}</span>
+            <span style="border: 1px solid #000; padding: 2px 10px;">{{ quotation.quotation_number.split('-')[1] if '-'
+                in quotation.quotation_number else quotation.quotation_number }}</span>
             <span style="border: 1px solid #000; padding: 2px 10px;">{{ quotation.year }}</span>
         </div>
-        
+
         <div style="text-align: right;">
-            Fecha: <span style="border: 1px solid #000; padding: 2px 10px;">{{ quotation.date.strftime('%Y-%m-%d') }}</span>
+            Fecha: <span style="border: 1px solid #000; padding: 2px 10px;">{{ quotation.date.strftime('%Y-%m-%d') if
+                quotation.date else '--' }}</span>
         </div>
     </div>
 
@@ -175,17 +198,20 @@
             <tr>
                 <td colspan="4" style="border: none;"></td>
                 <td class="bold text-right totals" style="border:1px solid #000; background:#f2f2f2;">SUB-TOTAL B/.</td>
-                <td class="bold text-center totals" style="border:1px solid #000; background:#f2f2f2;">{{ "%.2f"|format(quotation.subtotal_amount) }}</td>
+                <td class="bold text-center totals" style="border:1px solid #000; background:#f2f2f2;">{{
+                    "%.2f"|format(quotation.subtotal_amount) }}</td>
             </tr>
             <tr>
                 <td colspan="2" class="bold" style="border: none; text-align: right;">Servicios Adicionales - </td>
-                <td colspan="2" class="text-right" style="border: 1px solid #000; background:#f2f2f2;">Movilización - Lugar:</td>
+                <td colspan="2" class="text-right" style="border: 1px solid #000; background:#f2f2f2;">Movilización -
+                    Lugar:</td>
                 <td class="text-center">{{ quotation.project_location or '--' }}</td>
                 <td class="text-center">{{ "%.2f"|format(quotation.mobilization_cost) }}</td>
             </tr>
             <tr>
                 <td colspan="2" style="border: none;"></td>
-                <td colspan="2" class="text-right" style="border: 1px solid #000; background:#f2f2f2;">Viáticos del Personal</td>
+                <td colspan="2" class="text-right" style="border: 1px solid #000; background:#f2f2f2;">Viáticos del
+                    Personal</td>
                 <td class="text-center">--</td>
                 <td class="text-center">{{ "%.2f"|format(quotation.viatics_cost) }}</td>
             </tr>
@@ -193,7 +219,8 @@
                 <td class="bold">Cotizado por:</td>
                 <td colspan="2">{{ quotation.created_by or 'Sistema' }}</td>
                 <td class="bold text-right" colspan="2" style="background:#f2f2f2;">TOTAL B/.</td>
-                <td class="bold text-center" style="background:#f2f2f2;">{{ "%.2f"|format(quotation.total_amount) }}</td>
+                <td class="bold text-center" style="background:#f2f2f2;">{{ "%.2f"|format(quotation.total_amount) }}
+                </td>
             </tr>
             <tr>
                 <td class="bold text-center" style="background:#f2f2f2;">Notas:</td>
@@ -216,11 +243,15 @@
 
     <div class="notes">
         <p><strong>Observaciones:</strong><br>
-        1. Este Documento NO es Válido para pagar.<br>
-        2. Para confirmar la aceptación de esta cotización, firmar al final de este documento y devolverlo mediante correo electrónico al laboratorio.<br>
-        3. Una vez apruebe esta Cotización, deberá facilitar un comprobante que permita verificar el RUC y DV para elaborar la Orden de Servicio.<br>
-        4. Con la Orden de Servicio, El laboratorio (LSMCH) procederá a generar la Factura para que realice el pago.<br>
+            1. Este Documento NO es Válido para pagar.<br>
+            2. Para confirmar la aceptación de esta cotización, firmar al final de este documento y devolverlo mediante
+            correo electrónico al laboratorio.<br>
+            3. Una vez apruebe esta Cotización, deberá facilitar un comprobante que permita verificar el RUC y DV para
+            elaborar la Orden de Servicio.<br>
+            4. Con la Orden de Servicio, El laboratorio (LSMCH) procederá a generar la Factura para que realice el
+            pago.<br>
         </p>
     </div>
 </body>
+
 </html>

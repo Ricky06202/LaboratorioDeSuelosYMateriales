@@ -92,12 +92,14 @@
         <div class="header-title">
             <span>ORDEN DE SERVICIO No.:</span>
             <span style="border: 1px solid #000; padding: 2px 10px;">LSMCH</span>
-            <span style="border: 1px solid #000; padding: 2px 10px;">{{ order.order_number.split('-')[1] }}</span>
+            <span style="border: 1px solid #000; padding: 2px 10px;">{{ order.order_number.split('-')[1] if '-' in
+                order.order_number else order.order_number }}</span>
             <span style="border: 1px solid #000; padding: 2px 10px;">{{ order.year }}</span>
         </div>
 
         <div style="text-align: right;">
-            FECHA: <span style="border: 1px solid #000; padding: 2px 10px;">{{ order.date.strftime('%Y-%m-%d') }}</span>
+            FECHA: <span style="border: 1px solid #000; padding: 2px 10px;">{{ order.date.strftime('%Y-%m-%d') if
+                order.date else '--' }}</span>
         </div>
     </div>
 
