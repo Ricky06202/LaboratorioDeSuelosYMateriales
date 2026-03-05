@@ -13,8 +13,14 @@
                         <MudItem xs="12" sm="6">
                             <MudTextField @bind-Value="_order.ClientName" Label="Nombre del Cliente" Required="true" RequiredError="Requerido" />
                         </MudItem>
-                        <MudItem xs="12" sm="6">
+                        <MudItem xs="12" sm="4">
                             <MudTextField @bind-Value="_order.ClientRuc" Label="RUC" />
+                        </MudItem>
+                        <MudItem xs="12" sm="2">
+                            <MudTextField @bind-Value="_order.ClientDv" Label="D.V." />
+                        </MudItem>
+                        <MudItem xs="12" sm="6">
+                            <MudTextField @bind-Value="_order.QuotationRef" Label="Cotización aprobada LSMCH No." />
                         </MudItem>
                         <MudItem xs="12" sm="6">
                             <MudTextField @bind-Value="_order.ClientPhone" Label="Teléfono" />
@@ -130,6 +136,9 @@
                         <MudItem xs="12" sm="6">
                             <MudTextField @bind-Value="_order.ApplicantName" Label="Solicitante o Emisario" />
                         </MudItem>
+                        <MudItem xs="12" sm="6">
+                            <MudTextField @bind-Value="_order.ApplicantIdNumber" Label="No. de Cédula (Solicitante)" />
+                        </MudItem>
                     </MudGrid>
                 </MudTabPanel>
             </MudTabs>
@@ -143,11 +152,20 @@
 
 @code {
     [CascadingParameter] IMudDialogInstance MudDialog { get; set; } = null!;
+    [Parameter] public ServiceOrderCreate? InitialData { get; set; }
 
     private ServiceOrderCreate _order = new();
     private MudForm _form = null!;
     private bool _success;
     private bool _processing;
+
+    protected override void OnInitialized()
+    {
+        if (InitialData != null)
+        {
+            _order = InitialData;
+        }
+    }
 
     private void Cancel()
     {

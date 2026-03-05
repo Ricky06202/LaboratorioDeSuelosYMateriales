@@ -15,6 +15,8 @@ class ServiceOrder(Base):
     # Client info
     client_name = Column(String, nullable=False)
     client_ruc = Column(String)
+    client_dv = Column(String) # D.V.
+    quotation_ref = Column(String) # Cotización aprobada LSMCH No.
     client_phone = Column(String)
     client_email = Column(String)
     client_direction = Column(String)
@@ -73,4 +75,5 @@ class ServiceOrder(Base):
     
     attended_by = Column(String)
     applicant_name = Column(String)
+    applicant_id_number = Column(String) # No. de Cédula
     created_by = Column(String)

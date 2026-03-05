@@ -6,6 +6,8 @@ import uuid
 class ServiceOrderBase(BaseModel):
     client_name: str
     client_ruc: Optional[str] = None
+    client_dv: Optional[str] = None
+    quotation_ref: Optional[str] = None
     client_phone: Optional[str] = None
     client_email: Optional[str] = None
     client_direction: Optional[str] = None
@@ -53,6 +55,7 @@ class ServiceOrderBase(BaseModel):
     
     attended_by: Optional[str] = None
     applicant_name: Optional[str] = None
+    applicant_id_number: Optional[str] = None
 
 class ServiceOrderCreate(ServiceOrderBase):
     pass

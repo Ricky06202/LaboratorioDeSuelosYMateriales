@@ -23,6 +23,12 @@ namespace frontend.Models
         [JsonPropertyName("client_ruc")]
         public string? ClientRuc { get; set; }
 
+        [JsonPropertyName("client_dv")]
+        public string? ClientDv { get; set; }
+
+        [JsonPropertyName("quotation_ref")]
+        public string? QuotationRef { get; set; }
+
         [JsonPropertyName("client_phone")]
         public string? ClientPhone { get; set; }
 
@@ -124,6 +130,9 @@ namespace frontend.Models
 
         [JsonPropertyName("applicant_name")]
         public string? ApplicantName { get; set; }
+
+        [JsonPropertyName("applicant_id_number")]
+        public string? ApplicantIdNumber { get; set; }
 
         [JsonPropertyName("created_by")]
         public string? CreatedBy { get; set; }
@@ -137,6 +146,12 @@ namespace frontend.Models
         [JsonPropertyName("client_ruc")]
         public string? ClientRuc { get; set; }
 
+        [JsonPropertyName("client_dv")]
+        public string? ClientDv { get; set; }
+
+        [JsonPropertyName("quotation_ref")]
+        public string? QuotationRef { get; set; }
+
         [JsonPropertyName("client_phone")]
         public string? ClientPhone { get; set; }
 
@@ -238,5 +253,8 @@ namespace frontend.Models
 
         [JsonPropertyName("applicant_name")]
         public string? ApplicantName { get; set; }
+
+        [JsonPropertyName("applicant_id_number")]
+        public string? ApplicantIdNumber { get; set; }
     }
 }

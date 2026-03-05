@@ -1,6 +1,7 @@
 @page "/cotizaciones"
 @using frontend.Models
 @using frontend.Services
+@using frontend.Components.Pages.ServiceOrders
 @using Microsoft.JSInterop
 @inject QuotationService QuotationService
 @inject IDialogService DialogService
@@ -35,6 +36,7 @@
         <MudTd DataLabel="Total">B/. @context.TotalAmount.ToString("F2")</MudTd>
         <MudTd DataLabel="Acciones">
             <MudIconButton Icon="@Icons.Material.Filled.PictureAsPdf" Color="Color.Error" Size="Size.Small" OnClick="@(() => DownloadPdf(context.Id, context.QuotationNumber))" title="Descargar PDF" />
+            <MudIconButton Icon="@Icons.Material.Filled.AssignmentTurnedIn" Color="Color.Success" Size="Size.Small" OnClick="@(() => ApproveAndGenerateOrder(context))" title="Aprobar y Generar Orden" />
             <MudIconButton Icon="@Icons.Material.Filled.Delete" Color="Color.Default" Size="Size.Small" OnClick="@(() => DeleteQuotation(context))" title="Eliminar" />
         </MudTd>
     </RowTemplate>
@@ -125,14 +127,41 @@
         {
             var pdfBytes = await QuotationService.GetQuotationPdfAsync(id);
             var base64 = Convert.ToBase64String(pdfBytes);
-            // We use JSInterop to trigger a file download. Note: This assumes a small blazor js function, 
-            // but we can just use the standard file download approach. Let's use it via a quick helper.
             await JS.InvokeVoidAsync("downloadFileFromStream", $"Cotizacion_{quotationNumber}.pdf", "application/pdf", base64);
             Snackbar.Add("PDF generado con éxito", Severity.Success);
         }
         catch (Exception ex)
         {
             Snackbar.Add($"Error generando PDF: {ex.Message}", Severity.Error);
+        }
+    }
+
+    private async Task ApproveAndGenerateOrder(Quotation quotation)
+    {
+        var parameters = new DialogParameters<OrdenServicioForm>
+        {
+            { x => x.InitialData, new ServiceOrderCreate 
+                { 
+                    ClientName = quotation.ClientName,
+                    ClientRuc = quotation.ClientRuc,
+                    ClientDirection = quotation.ClientDirection,
+                    ClientPhone = quotation.ClientPhone,
+                    ClientEmail = quotation.ClientEmail,
+                    ProjectName = quotation.ProjectName,
+                    ProjectLocation = quotation.ProjectLocation,
+                    QuotationRef = quotation.QuotationNumber,
+                    TotalCost = quotation.TotalAmount
+                } 
+            }
+        };
+
+        var options = new DialogOptions { MaxWidth = MaxWidth.Medium, FullWidth = true, CloseButton = true };
+        var dialog = await DialogService.ShowAsync<OrdenServicioForm>("Generar Orden de Servicio", parameters, options);
+        var result = await dialog.Result;
+
+        if (!result.Canceled)
+        {
+            Snackbar.Add("Orden de Servicio generada a partir de la cotización", Severity.Success);
         }
     }
 }
