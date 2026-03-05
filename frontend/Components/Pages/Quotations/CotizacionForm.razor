@@ -1,5 +1,6 @@
 @using frontend.Models
 @using frontend.Services
+@using MudBlazor
 @inject QuotationService QuotationService
 @inject ISnackbar Snackbar
 
@@ -126,7 +127,7 @@
 </MudDialog>
 
 @code {
-    [CascadingParameter] MudDialogInstance MudDialog { get; set; } = null!;
+    [CascadingParameter] IMudDialogInstance MudDialog { get; set; } = null!;
 
     private QuotationCreate _quotation = new() { Items = new() };
     private MudForm _form = null!;

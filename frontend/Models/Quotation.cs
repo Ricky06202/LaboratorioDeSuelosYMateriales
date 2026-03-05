@@ -114,6 +114,9 @@ namespace frontend.Models
         [JsonPropertyName("client_name")]
         public string ClientName { get; set; } = string.Empty;
 
+        [JsonPropertyName("client_ruc")]
+        public string? ClientRuc { get; set; }
+
         [JsonPropertyName("client_direction")]
         public string? ClientDirection { get; set; }
 

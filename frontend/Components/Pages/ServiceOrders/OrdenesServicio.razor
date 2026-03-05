@@ -88,7 +88,7 @@
     private async Task OpenNewOrderDialog()
     {
         var options = new DialogOptions { MaxWidth = MaxWidth.Large, FullWidth = true, CloseButton = true };
-        var dialog = DialogService.Show<OrdenServicioForm>("Crear Orden de Servicio", options);
+        var dialog = await DialogService.ShowAsync<OrdenServicioForm>("Crear Orden de Servicio", options);
         var result = await dialog.Result;
 
         if (!result.Canceled)
@@ -99,7 +99,7 @@
 
     private async Task DeleteOrder(ServiceOrder order)
     {
-        bool? result = await DialogService.ShowMessageBox(
+        bool? result = await DialogService.ShowMessageBoxAsync(
             "Eliminar Orden",
             $"¿Está seguro de eliminar la orden {order.OrderNumber}?",
             yesText: "Eliminar", cancelText: "Cancelar");

@@ -1,5 +1,6 @@
 @using frontend.Models
 @using frontend.Services
+@using MudBlazor
 @inject ServiceOrderService ServiceOrderService
 @inject ISnackbar Snackbar
 
@@ -141,7 +142,7 @@
 </MudDialog>
 
 @code {
-    [CascadingParameter] MudDialogInstance MudDialog { get; set; } = null!;
+    [CascadingParameter] IMudDialogInstance MudDialog { get; set; } = null!;
 
     private ServiceOrderCreate _order = new();
     private MudForm _form = null!;
