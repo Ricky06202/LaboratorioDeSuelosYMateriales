@@ -10,7 +10,7 @@ class ServiceOrder(Base):
     id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
     order_number = Column(String, index=True, nullable=False, unique=True)
     year = Column(Integer, default=lambda: datetime.datetime.now().year)
-    date = Column(Date, default=datetime.datetime.utcnow)
+    date = Column(Date, default=datetime.date.today)
     
     # Client info
     client_name = Column(String, nullable=False)
