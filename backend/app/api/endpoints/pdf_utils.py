@@ -14,16 +14,20 @@ import logging
 
 logger = logging.getLogger(__name__)
 
-# Configurar Jinja2 con ruta absoluta más robusta
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 TEMPLATES_DIR = os.path.join(BASE_DIR, "templates")
+ASSETS_DIR = os.path.join(BASE_DIR, "assets")
 env = Environment(loader=FileSystemLoader(TEMPLATES_DIR))
 
 def render_pdf(template_name: str, context: dict) -> bytes:
     try:
+        # Inject assets_dir into context for logos
+        if "assets_dir" not in context:
+            context["assets_dir"] = ASSETS_DIR
+        
         template = env.get_template(template_name)
         html_out = template.render(context)
-        return HTML(string=html_out).write_pdf()
+        return HTML(string=html_out, base_url=BASE_DIR).write_pdf()
     except Exception as e:
         logger.error(f"Error rendering PDF {template_name}: {str(e)}")
         raise e
