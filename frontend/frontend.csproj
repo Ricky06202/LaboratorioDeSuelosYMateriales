@@ -9,8 +9,6 @@
     <OverrideHtmlAssetPlaceholders>false</OverrideHtmlAssetPlaceholders>
     <WasmFingerprintAssets>false</WasmFingerprintAssets>
     <StaticWebAssetsFingerprintingEnabled>false</StaticWebAssetsFingerprintingEnabled>
-    <PublishTrimmed>true</PublishTrimmed>
-    <BlazorEnableCompression>true</BlazorEnableCompression>
   </PropertyGroup>
 
   <ItemGroup>
