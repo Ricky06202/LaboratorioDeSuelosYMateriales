@@ -16,7 +16,7 @@ namespace frontend.Services
 
         public async Task<EquipoResponse> GetEquiposAsync(int skip = 0, int limit = 10, string? search = null, string? estado = null)
         {
-            var query = new Dictionary<string, string>
+            var query = new Dictionary<string, string?>
             {
                 ["skip"] = skip.ToString(),
                 ["limit"] = limit.ToString()
@@ -26,7 +26,7 @@ namespace frontend.Services
 
 
             var url = QueryHelpers.AddQueryString("api/equipos/", query);
-            return await _httpClient.GetFromJsonAsync<EquipoResponse>(url);
+            return await _httpClient.GetFromJsonAsync<EquipoResponse>(url) ?? new EquipoResponse();
         }
 
         public async Task<List<Equipo>> GetAlertsAsync()
