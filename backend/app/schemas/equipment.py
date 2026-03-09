@@ -28,6 +28,16 @@ class EquipoBase(BaseModel):
     foto_url: Optional[str] = None
     ubicacion: Optional[str] = None  # WKT Format (e.g., 'POINT(lon lat)')
     fecha_proxima_calibracion: Optional[date] = None
+    
+    # New fields for wizard/LSMCH forms
+    tipo_fondo: Optional[str] = None
+    orden_compra: Optional[str] = None
+    solicitud_no: Optional[str] = None
+    tipo_bien: Optional[str] = None
+    fecha_recibido: Optional[date] = None
+    id_asignado: Optional[str] = None
+    capacidad: Optional[str] = None
+    ubicacion_fisica: Optional[str] = None
 
 class EquipoCreate(EquipoBase):
     pass
@@ -41,6 +51,16 @@ class EquipoUpdate(BaseModel):
     foto_url: Optional[str] = None
     ubicacion: Optional[str] = None
     fecha_proxima_calibracion: Optional[date] = None
+    
+    # New fields for wizard/LSMCH forms
+    tipo_fondo: Optional[str] = None
+    orden_compra: Optional[str] = None
+    solicitud_no: Optional[str] = None
+    tipo_bien: Optional[str] = None
+    fecha_recibido: Optional[date] = None
+    id_asignado: Optional[str] = None
+    capacidad: Optional[str] = None
+    ubicacion_fisica: Optional[str] = None
 
 class Equipo(EquipoBase):
     id: UUID

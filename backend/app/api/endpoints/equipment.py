@@ -33,8 +33,21 @@ async def create_equipo(
     numero_serie: str = Form(""),
     estado: str = Form("Activo"),
     ubicacion: Optional[str] = Form(None),
+    tipo_fondo: Optional[str] = Form(None),
+    orden_compra: Optional[str] = Form(None),
+    solicitud_no: Optional[str] = Form(None),
+    tipo_bien: Optional[str] = Form(None),
+    fecha_recibido: Optional[str] = Form(None),
+    id_asignado: Optional[str] = Form(None),
+    capacidad: Optional[str] = Form(None),
+    ubicacion_fisica: Optional[str] = Form(None),
     file: Optional[UploadFile] = File(None)
 ):
+    from datetime import datetime
+    d_recibido = None
+    if fecha_recibido:
+        d_recibido = datetime.strptime(fecha_recibido, "%Y-%m-%d").date()
+
     foto_url = None
     if file:
         foto_url = await file_service.save_file(file, "equipos")
@@ -46,7 +59,15 @@ async def create_equipo(
         numero_serie=numero_serie,
         estado=estado,
         ubicacion=ubicacion,
-        foto_url=foto_url
+        foto_url=foto_url,
+        tipo_fondo=tipo_fondo,
+        orden_compra=orden_compra,
+        solicitud_no=solicitud_no,
+        tipo_bien=tipo_bien,
+        fecha_recibido=d_recibido,
+        id_asignado=id_asignado,
+        capacidad=capacidad,
+        ubicacion_fisica=ubicacion_fisica
     )
     return equipment_service.create_equipo(db=db, equipo=equipo_in)
 

@@ -24,6 +24,18 @@ class Equipo(Base):
     foto_url = Column(String, nullable=True)
     ubicacion = Column(Geometry(geometry_type='POINT', srid=4326), nullable=True)
     fecha_proxima_calibracion = Column(Date, nullable=True)
+    
+    # New fields for wizard/LSMCH forms
+    tipo_fondo = Column(String, nullable=True)
+    orden_compra = Column(String, nullable=True)
+    solicitud_no = Column(String, nullable=True)
+    tipo_bien = Column(String, nullable=True)
+    fecha_recibido = Column(Date, nullable=True)
+    id_asignado = Column(String, nullable=True)
+    marca = Column(String, nullable=True)
+    modelo = Column(String, nullable=True)
+    capacidad = Column(String, nullable=True)
+    ubicacion_fisica = Column(String, nullable=True)
 
     # Passive deletes / no cascade to enforce RESTRICT on physical deletion
     calibraciones = relationship("Calibracion", back_populates="equipo")

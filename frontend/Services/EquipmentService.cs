@@ -52,8 +52,30 @@ namespace frontend.Services
             if (!string.IsNullOrEmpty(equipo.Modelo))
                 content.Add(new StringContent(equipo.Modelo), "modelo");
 
-            // Assuming Ubicacion might be added to EquipoCreate in C# later if needed
-            
+            if (!string.IsNullOrEmpty(equipo.TipoFondo))
+                content.Add(new StringContent(equipo.TipoFondo), "tipo_fondo");
+
+            if (!string.IsNullOrEmpty(equipo.OrdenCompra))
+                content.Add(new StringContent(equipo.OrdenCompra), "orden_compra");
+
+            if (!string.IsNullOrEmpty(equipo.SolicitudNo))
+                content.Add(new StringContent(equipo.SolicitudNo), "solicitud_no");
+
+            if (!string.IsNullOrEmpty(equipo.TipoBien))
+                content.Add(new StringContent(equipo.TipoBien), "tipo_bien");
+
+            if (equipo.FechaRecibido.HasValue)
+                content.Add(new StringContent(equipo.FechaRecibido.Value.ToString("yyyy-MM-dd")), "fecha_recibido");
+
+            if (!string.IsNullOrEmpty(equipo.IdAsignado))
+                content.Add(new StringContent(equipo.IdAsignado), "id_asignado");
+
+            if (!string.IsNullOrEmpty(equipo.Capacidad))
+                content.Add(new StringContent(equipo.Capacidad), "capacidad");
+
+            if (!string.IsNullOrEmpty(equipo.UbicacionFisica))
+                content.Add(new StringContent(equipo.UbicacionFisica), "ubicacion_fisica");
+
             if (fileStream != null && !string.IsNullOrEmpty(fileName))
             {
                 var fileContent = new StreamContent(fileStream);

@@ -33,6 +33,30 @@ namespace frontend.Models
         
         [JsonPropertyName("fecha_proxima_calibracion")]
         public DateTime? FechaProximaCalibracion { get; set; }
+
+        [JsonPropertyName("tipo_fondo")]
+        public string? TipoFondo { get; set; }
+
+        [JsonPropertyName("orden_compra")]
+        public string? OrdenCompra { get; set; }
+
+        [JsonPropertyName("solicitud_no")]
+        public string? SolicitudNo { get; set; }
+
+        [JsonPropertyName("tipo_bien")]
+        public string? TipoBien { get; set; }
+
+        [JsonPropertyName("fecha_recibido")]
+        public DateTime? FechaRecibido { get; set; }
+
+        [JsonPropertyName("id_asignado")]
+        public string? IdAsignado { get; set; }
+
+        [JsonPropertyName("capacidad")]
+        public string? Capacidad { get; set; }
+
+        [JsonPropertyName("ubicacion_fisica")]
+        public string? UbicacionFisica { get; set; }
         
         [JsonPropertyName("calibraciones")]
         public List<Calibracion> Calibraciones { get; set; } = new();
@@ -87,6 +111,30 @@ namespace frontend.Models
         
         [JsonPropertyName("ubicacion")]
         public string? Ubicacion { get; set; }
+
+        [JsonPropertyName("tipo_fondo")]
+        public string? TipoFondo { get; set; }
+
+        [JsonPropertyName("orden_compra")]
+        public string? OrdenCompra { get; set; }
+
+        [JsonPropertyName("solicitud_no")]
+        public string? SolicitudNo { get; set; }
+
+        [JsonPropertyName("tipo_bien")]
+        public string? TipoBien { get; set; }
+
+        [JsonPropertyName("fecha_recibido")]
+        public DateTime? FechaRecibido { get; set; }
+
+        [JsonPropertyName("id_asignado")]
+        public string? IdAsignado { get; set; }
+
+        [JsonPropertyName("capacidad")]
+        public string? Capacidad { get; set; }
+
+        [JsonPropertyName("ubicacion_fisica")]
+        public string? UbicacionFisica { get; set; }
     }
 
     public class EquipoUpdate

@@ -5,6 +5,7 @@
 @inject EquipmentService EquipmentService
 @inject IJSRuntime JS
 @inject ISnackbar Snackbar
+@inject IDialogService DialogService
 
 <PageTitle>Reportes de Equipos - LSMCH</PageTitle>
 
@@ -14,7 +15,17 @@
             <MudText Typo="Typo.h4" Class="font-weight-bold lsmch-title">DOCUMENTACIÓN TÉCNICA</MudText>
             <MudText Typo="Typo.subtitle1" Class="text-secondary">Generación de reportes y registros oficiales del laboratorio</MudText>
         </div>
-        <MudIcon Icon="@Icons.Material.Filled.Description" Color="Color.Primary" Size="Size.Large" Class="opacity-25" Style="font-size: 3rem;" />
+        <div class="d-flex align-center gap-4">
+            <MudButton Variant="Variant.Filled" 
+                       Color="Color.Primary" 
+                       Size="Size.Large" 
+                       StartIcon="@Icons.Material.Filled.Add"
+                       OnClick="OpenWizard"
+                       Class="rounded-pill px-6 shadow-lg animate__animated animate__pulse animate__infinite">
+                Registrar Nuevo Equipo (Flujo Oficial)
+            </MudButton>
+            <MudIcon Icon="@Icons.Material.Filled.Description" Color="Color.Primary" Size="Size.Large" Class="opacity-25" Style="font-size: 3rem;" />
+        </div>
     </div>
 
     <MudGrid>
@@ -111,6 +122,24 @@
         {
             _isDownloading = false;
             _currentReport = null;
+        }
+    }
+
+    private async Task OpenWizard()
+    {
+        var options = new DialogOptions { 
+            CloseOnEscapeKey = true, 
+            MaxWidth = MaxWidth.Medium, 
+            FullWidth = true, 
+            CloseButton = true,
+            BackdropClick = false
+        };
+        var dialog = await DialogService.ShowAsync<EquipoRegWizard>("Registro de Equipo", options);
+        var result = await dialog.Result;
+
+        if (result != null && !result.Canceled)
+        {
+            // Optionally refresh something or redirect
         }
     }
 }
