@@ -80,15 +80,15 @@
 
     private List<ReportInfo> _availableReports = new()
     {
-        new() { Name = "Inventario de Cristalería", Code = "DT-LSMCH-011", Endpoint = "api/equipments/reports/glassware", Icon = Icons.Material.Filled.Inventory2 },
-        new() { Name = "Programa de Verificación y Calibración", Code = "DT-LSMCH-008", Endpoint = "api/equipments/reports/calibration", Icon = Icons.Material.Filled.QueryStats },
-        new() { Name = "Inventario de Equipos de Medición", Code = "DT-LSMCH-009", Endpoint = "api/equipments/reports/measurement", Icon = Icons.Material.Filled.Straighten },
-        new() { Name = "Inventario de Equipos de Campo", Code = "DT-LSMCH-010", Endpoint = "api/equipments/reports/landscape", Icon = Icons.Material.Filled.Landscape },
-        new() { Name = "Plan de Mantenimiento de Equipos", Code = "DT-LSMCH-017", Endpoint = "api/equipments/reports/maintenance_plan", Icon = Icons.Material.Filled.Handyman },
-        new() { Name = "Registro de Reactivos y Consumibles", Code = "RT-LSMCH-067", Endpoint = "api/equipments/reports/reagents", Icon = Icons.Material.Filled.Science },
-        new() { Name = "Verificación de Compras", Code = "RT-LSMCH-008", Endpoint = "api/equipments/reports/purchase_verification", Icon = Icons.Material.Filled.ShoppingCart },
-        new() { Name = "Registro de Adquisición de Equipos", Code = "RT-LSMCH-006", Endpoint = "api/equipments/reports/acquisition_registry", Icon = Icons.Material.Filled.AddShoppingCart },
-        new() { Name = "Control de Trazabilidad de Muestras", Code = "RT-LSMCH-026", Endpoint = "api/service-orders/reports/sample_control", Icon = Icons.Material.Filled.PlaylistAddCheck }
+        new() { Name = "Inventario de Cristalería", Code = "DT-LSMCH-011", Endpoint = "api/equipos/reports/glassware", Icon = Icons.Material.Filled.Inventory2 },
+        new() { Name = "Programa de Verificación y Calibración", Code = "DT-LSMCH-008", Endpoint = "api/equipos/reports/calibration", Icon = Icons.Material.Filled.QueryStats },
+        new() { Name = "Inventario de Equipos de Medición", Code = "DT-LSMCH-009", Endpoint = "api/equipos/reports/measurement", Icon = Icons.Material.Filled.Straighten },
+        new() { Name = "Inventario de Equipos de Campo", Code = "DT-LSMCH-010", Endpoint = "api/equipos/reports/field_aux", Icon = Icons.Material.Filled.Landscape },
+        new() { Name = "Plan de Mantenimiento de Equipos", Code = "DT-LSMCH-017", Endpoint = "api/equipos/reports/maintenance_plan", Icon = Icons.Material.Filled.Handyman },
+        new() { Name = "Registro de Reactivos y Consumibles", Code = "RT-LSMCH-067", Endpoint = "api/equipos/reports/reagents", Icon = Icons.Material.Filled.Science },
+        new() { Name = "Verificación de Compras", Code = "RT-LSMCH-008", Endpoint = "api/equipos/reports/purchase_verification", Icon = Icons.Material.Filled.ShoppingCart },
+        new() { Name = "Registro de Adquisición de Equipos", Code = "RT-LSMCH-006", Endpoint = "api/equipos/reports/acquisition_registry", Icon = Icons.Material.Filled.AddShoppingCart },
+        new() { Name = "Control de Trazabilidad de Muestras", Code = "RT-LSMCH-026", Endpoint = "api/ordenes-servicio/reports/sample_control", Icon = Icons.Material.Filled.PlaylistAddCheck }
     };
 
     private async Task DownloadReport(ReportInfo report)
