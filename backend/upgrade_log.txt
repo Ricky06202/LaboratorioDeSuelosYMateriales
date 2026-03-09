@@ -1,0 +1,4 @@
+Traceback (most recent call last):
+  File "/home/ricky/Documentos/C#/LaboratorioDeSuelosYMateriales/backend/upgrade_direct.py", line 1, in <module>
+    import psycopg2
+ModuleNotFoundError: No module named 'psycopg2'

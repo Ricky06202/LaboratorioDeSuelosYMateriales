@@ -21,14 +21,10 @@
                 <MudText Typo="Typo.subtitle1" Class="font-weight-bold mb-4">LSMCH 8 Revisión 2: Verificación de Compra</MudText>
                 <MudGrid>
                     <MudItem xs="12" sm="6">
-                        <MudSelect T="string" Label="Tipo de Fondo" @bind-Value="_model.FundType" Variant="Variant.Outlined" Margin="Margin.Dense">
-                            <MudSelectItem Value="@("Funcionamiento")">Funcionamiento</MudSelectItem>
-                            <MudSelectItem Value="@("Inversiones")">Inversiones</MudSelectItem>
-                            <MudSelectItem Value="@("FTP")">FTP</MudSelectItem>
-                        </MudSelect>
+                        <MudTextField Label="Orden de Compra No." @bind-Value="_model.PurchaseOrderNo" Variant="Variant.Outlined" Margin="Margin.Dense" />
                     </MudItem>
                     <MudItem xs="12" sm="6">
-                        <MudTextField Label="Orden de Compra No." @bind-Value="_model.PurchaseOrderNo" Variant="Variant.Outlined" Margin="Margin.Dense" />
+                        <MudTextField Label="Solicitud No." @bind-Value="_model.RequestNo" Variant="Variant.Outlined" Margin="Margin.Dense" />
                     </MudItem>
                     <MudItem xs="12" sm="6">
                         <MudSelect T="string" Label="Tipo de Bien" @bind-Value="_model.ItemType" Variant="Variant.Outlined" Margin="Margin.Dense">
@@ -69,6 +65,15 @@
             {
                 <MudText Typo="Typo.subtitle1" Class="font-weight-bold mb-4">LSMCH 6 Revisión 1: Registro de Adquisición</MudText>
                 <MudGrid>
+                    <MudItem xs="12" sm="6">
+                        <MudSelect T="string" Label="Tipo de Fondo" @bind-Value="_model.FundType" Variant="Variant.Outlined" Margin="Margin.Dense">
+                            <MudSelectItem Value="@("Autogestión")">Autogestión</MudSelectItem>
+                            <MudSelectItem Value="@("Fondo Central")">Fondo Central</MudSelectItem>
+                            <MudSelectItem Value="@("Inversiones")">Inversiones</MudSelectItem>
+                            <MudSelectItem Value="@("Fundación Tecnológica")">Fundación Tecnológica</MudSelectItem>
+                            <MudSelectItem Value="@("No Aplica")">No Aplica</MudSelectItem>
+                        </MudSelect>
+                    </MudItem>
                     <MudItem xs="12" sm="6">
                         <MudDatePicker Label="Fecha de Recibido" @bind-Date="_model.ReceiveDate" Variant="Variant.Outlined" Margin="Margin.Dense" />
                     </MudItem>

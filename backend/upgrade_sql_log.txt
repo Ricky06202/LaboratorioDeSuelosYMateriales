@@ -1,0 +1,5 @@
+bash: psql: instrucción no encontrada...
+Los paquetes que proporcionan este archivo son:
+'postgresql'
+'postgresql16'
+'postgresql17'

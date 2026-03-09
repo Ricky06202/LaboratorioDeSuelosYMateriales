@@ -32,8 +32,6 @@ class Equipo(Base):
     tipo_bien = Column(String, nullable=True)
     fecha_recibido = Column(Date, nullable=True)
     id_asignado = Column(String, nullable=True)
-    marca = Column(String, nullable=True)
-    modelo = Column(String, nullable=True)
     capacidad = Column(String, nullable=True)
     ubicacion_fisica = Column(String, nullable=True)
 
