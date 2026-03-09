@@ -1,4 +1,4 @@
-﻿@page "/"
+@page "/"
 @using frontend.Models
 @using frontend.Services
 @inject EquipmentService EquipmentService
@@ -7,9 +7,11 @@
 <PageTitle>Dashboard - Suelos</PageTitle>
 
 <div class="animate__animated animate__fadeIn">
-    <div class="section-header mb-8">
-        <MudText Typo="Typo.h4" Class="font-weight-bold lsmch-title">PANEL DE CONTROL GENERAL</MudText>
-        <MudText Typo="Typo.subtitle1" Class="text-secondary">Vista técnica del Laboratorio de Suelos y Materiales</MudText>
+    <div class="section-header mb-8 d-flex flex-column flex-sm-row align-start align-sm-center justify-space-between">
+        <div>
+            <MudText Typo="Typo.h4" Class="font-weight-bold lsmch-title">PANEL DE CONTROL GENERAL</MudText>
+            <MudText Typo="Typo.subtitle1" Class="text-secondary">Vista técnica del Laboratorio de Suelos y Materiales</MudText>
+        </div>
     </div>
 
     @if (_loadFailed)
@@ -82,14 +84,14 @@
         </MudItem>
     </MudGrid>
 
-    <MudPaper Elevation="0" Class="pa-8 rounded-xl shadow-lg border border-solid border-light" Style="background: rgba(255,255,255,0.7); backdrop-filter: blur(8px);">
-        <div class="d-flex align-center justify-space-between mb-6">
+    <MudPaper Elevation="0" Class="pa-4 pa-md-8 rounded-xl shadow-lg border border-solid border-light" Style="background: rgba(255,255,255,0.7); backdrop-filter: blur(8px);">
+        <div class="d-flex flex-column flex-sm-row align-start align-sm-center justify-space-between mb-6 gap-4">
             <div class="d-flex align-center">
                 <MudIcon Icon="@Icons.Material.Filled.AssignmentLate" Color="Color.Primary" Class="mr-3" />
                 <MudText Typo="Typo.h6" Class="font-weight-black">Alertas de Calibración Prioritarias</MudText>
             </div>
             <MudButton Variant="Variant.Filled" Color="Color.Primary" EndIcon="@Icons.Material.Filled.ArrowForward" 
-                       href="/inventario" Class="rounded-pill px-6 shadow-sm">Gestionar Inventario</MudButton>
+                       href="/inventario" Class="rounded-pill px-6 shadow-sm w-100 w-sm-auto">Gestionar Inventario</MudButton>
         </div>
 
     <MudTable Items="@_alerts" Hover="true" Breakpoint="Breakpoint.Sm" Loading="@_loading" 
