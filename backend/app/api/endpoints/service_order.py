@@ -1,5 +1,6 @@
 from typing import Any, List
 from fastapi import APIRouter, Depends, HTTPException
+from fastapi.responses import Response
 from sqlalchemy.orm import Session
 import uuid
 
@@ -86,7 +87,6 @@ def export_service_order_pdf(
         raise HTTPException(status_code=404, detail="Service Order not found")
         
     from app.api.endpoints.pdf_utils import render_pdf
-    from fastapi.responses import Response
     
     pdf_bytes = render_pdf("service_order.html", {"order": service_order})
     return Response(
@@ -125,7 +125,6 @@ def export_sample_receipt_pdf(
     }
     
     from app.api.endpoints.pdf_utils import render_pdf
-    from fastapi.responses import Response
     
     pdf_bytes = render_pdf("sample_receipt.html", {"data": data})
     return Response(
@@ -166,7 +165,6 @@ def export_sample_control_pdf(
         })
         
     from app.api.endpoints.pdf_utils import render_pdf
-    from fastapi.responses import Response
     
     pdf_bytes = render_pdf("sample_control_registry.html", {"items": items})
     return Response(
