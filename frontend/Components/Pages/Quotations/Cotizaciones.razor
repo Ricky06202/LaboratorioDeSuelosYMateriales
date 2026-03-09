@@ -99,7 +99,7 @@
         var dialog = await DialogService.ShowAsync<CotizacionForm>("Crear Cotización", options);
         var result = await dialog.Result;
 
-        if (!result.Canceled)
+        if (result != null && !result.Canceled)
         {
             await LoadDataAsync();
         }
@@ -165,7 +165,7 @@
         var dialog = await DialogService.ShowAsync<OrdenServicioForm>("Generar Orden de Servicio", parameters, options);
         var result = await dialog.Result;
 
-        if (!result.Canceled)
+        if (result != null && !result.Canceled)
         {
             Snackbar.Add("Orden de Servicio generada a partir de la cotización", Severity.Success);
         }

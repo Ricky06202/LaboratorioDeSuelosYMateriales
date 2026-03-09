@@ -22,7 +22,7 @@
 
 @code {
     private LoginModel _model = new();
-    private string _error;
+    private string? _error;
 
     private async Task HandleLogin()
     {
@@ -35,7 +35,7 @@
 
     public class LoginModel
     {
-        public string Username { get; set; }
-        public string Password { get; set; }
+        public string? Username { get; set; }
+        public string? Password { get; set; }
     }
 }

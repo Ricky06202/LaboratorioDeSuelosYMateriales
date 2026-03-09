@@ -39,7 +39,7 @@
         </MudMenu>
     </MudAppBar>
 
-    <MudDrawer @bind-Open="_drawerOpen" ClipMode="DrawerClipMode.Always" Elevation="0" MiniMode="false" Fixed="true" Width="280px">
+    <MudDrawer @bind-Open="_drawerOpen" ClipMode="DrawerClipMode.Always" Elevation="0" Fixed="true" Width="280px" Variant="@(_drawerOpen ? DrawerVariant.Responsive : DrawerVariant.Mini)">
         <div class="pa-5 d-flex justify-center mb-4 sidebar-header">
             <MudText Typo="Typo.overline" Style="color: rgba(255,255,255,0.7); letter-spacing: 2.5px; font-weight: 800; font-size: 0.75rem;">PANEL DE CONTROL</MudText>
         </div>

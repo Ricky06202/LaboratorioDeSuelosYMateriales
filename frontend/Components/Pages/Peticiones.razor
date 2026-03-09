@@ -95,7 +95,7 @@
         var dialog = await DialogService.ShowAsync<PedidoForm>("Crear Pedido de Cliente (RA-LSMCH-037)", options);
         var result = await dialog.Result;
 
-        if (!result.Canceled)
+        if (result != null && !result.Canceled)
         {
             await LoadDataAsync();
         }

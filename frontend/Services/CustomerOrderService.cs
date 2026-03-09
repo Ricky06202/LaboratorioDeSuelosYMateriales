@@ -19,7 +19,7 @@ namespace frontend.Services
 
         public async Task<List<CustomerOrder>> GetCustomerOrdersAsync(int skip = 0, int limit = 100)
         {
-            var query = new Dictionary<string, string>
+            var query = new Dictionary<string, string?>
             {
                 ["skip"] = skip.ToString(),
                 ["limit"] = limit.ToString()

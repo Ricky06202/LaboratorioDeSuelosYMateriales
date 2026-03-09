@@ -61,28 +61,32 @@ namespace frontend.Auth
 
             if (keyValuePairs != null)
             {
-                keyValuePairs.TryGetValue(ClaimTypes.Role, out object roles);
+                keyValuePairs.TryGetValue(ClaimTypes.Role, out object? roles);
 
                 if (roles != null)
                 {
-                    if (roles.ToString().Trim().StartsWith("["))
+                    var rolesString = roles.ToString();
+                    if (rolesString != null && rolesString.Trim().StartsWith("["))
                     {
-                        var parsedRoles = JsonSerializer.Deserialize<string[]>(roles.ToString());
+                        var parsedRoles = JsonSerializer.Deserialize<string[]>(rolesString);
 
-                        foreach (var parsedRole in parsedRoles)
+                        if (parsedRoles != null)
                         {
-                            claims.Add(new Claim(ClaimTypes.Role, parsedRole));
+                            foreach (var parsedRole in parsedRoles)
+                            {
+                                claims.Add(new Claim(ClaimTypes.Role, parsedRole));
+                            }
                         }
                     }
                     else
                     {
-                        claims.Add(new Claim(ClaimTypes.Role, roles.ToString()));
+                        claims.Add(new Claim(ClaimTypes.Role, rolesString ?? string.Empty));
                     }
 
                     keyValuePairs.Remove(ClaimTypes.Role);
                 }
 
-                claims.AddRange(keyValuePairs.Select(kvp => new Claim(kvp.Key, kvp.Value.ToString())));
+                claims.AddRange(keyValuePairs.Select(kvp => new Claim(kvp.Key, kvp.Value?.ToString() ?? string.Empty)));
             }
 
             return claims;

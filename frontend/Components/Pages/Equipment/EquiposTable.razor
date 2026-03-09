@@ -96,7 +96,7 @@
             </div>
         </LoadingContent>
         <PagerContent>
-            <MudTablePager InfoText="Equipos {from}-{to} de {all}" RowsPerPageString="Filas:" />
+            <MudTablePager InfoFormat="Equipos {from}-{to} de {all}" RowsPerPageString="Filas:" />
         </PagerContent>
     </MudTable>
 </MudPaper>
@@ -132,13 +132,13 @@
     private void OnSearch(string text)
     {
         _searchString = text;
-        _table?.ReloadServerData();
+        if (_table != null) _table.ReloadServerData();
     }
     
     private void OnEstadoChanged(string? estado)
     {
         _selectedEstado = estado;
-        _table?.ReloadServerData();
+        if (_table != null) _table.ReloadServerData();
     }
 
     private async Task OnAddEquipment()
@@ -196,7 +196,7 @@
             {
                 await EquipmentService.DeleteEquipoAsync(equipo.Id);
                 Snackbar.Add("Equipo eliminado", Severity.Success);
-                await _table.ReloadServerData();
+                if (_table != null) await _table.ReloadServerData();
             }
             catch (Exception ex)
             {
