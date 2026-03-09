@@ -109,6 +109,13 @@ namespace frontend.Services
             return await response.Content.ReadFromJsonAsync<Calibracion>() ?? throw new Exception("Error al crear calibración");
         }
 
+        public async Task<byte[]> GetReportPdfAsync(string endpoint)
+        {
+            var response = await _httpClient.GetAsync(endpoint);
+            await EnsureSuccessOrThrowAsync(response);
+            return await response.Content.ReadAsByteArrayAsync();
+        }
+
         private async Task EnsureSuccessOrThrowAsync(HttpResponseMessage response)
         {
             if (!response.IsSuccessStatusCode)

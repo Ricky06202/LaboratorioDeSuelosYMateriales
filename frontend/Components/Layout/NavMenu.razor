@@ -1,11 +1,13 @@
-﻿<MudNavMenu Color="Color.Primary" Margin="Margin.Normal" Rounded="true" Class="pa-2">
+<MudNavMenu Color="Color.Primary" Margin="Margin.Normal" Rounded="true" Class="pa-2">
     <MudNavLink href="" Match="NavLinkMatch.All" Icon="@Icons.Material.Filled.Dashboard">Panel de Control</MudNavLink>
     
     <MudDivider Class="my-2" Style="background: rgba(255,255,255,0.05);" />
     
-    <MudText Typo="Typo.caption" Class="px-4 py-2" Style="color: rgba(255,255,255,0.4); font-weight: 600; text-transform: uppercase; font-size: 0.65rem;">Gestión de Equipos</MudText>
-    <MudNavLink href="inventario" Icon="@Icons.Material.Filled.PrecisionManufacturing">Inventario General</MudNavLink>
-    <MudNavLink href="mantenimiento" Icon="@Icons.Material.Filled.BuildCircle">Mantenimiento</MudNavLink>
+    <MudNavGroup Title="Documentación Técnica" Icon="@Icons.Material.Filled.MenuBook" Expanded="false">
+        <MudNavLink href="equipos/reportes" Icon="@Icons.Material.Filled.Inventory2">Reportes e Inventarios</MudNavLink>
+        <MudNavLink href="inventario" Icon="@Icons.Material.Filled.PrecisionManufacturing">Gestión de Inventario</MudNavLink>
+        <MudNavLink href="mantenimiento" Icon="@Icons.Material.Filled.BuildCircle">Mantenimiento</MudNavLink>
+    </MudNavGroup>
     
     <MudDivider Class="my-2" Style="background: rgba(255,255,255,0.05);" />
     

@@ -147,7 +147,7 @@
         var dialog = await DialogService.ShowAsync<EquipoDialog>("Nuevo Equipo", options);
         var result = await dialog.Result;
 
-        if (!result.Canceled)
+        if (result != null && !result.Canceled)
         {
             await _table.ReloadServerData();
         }
@@ -160,7 +160,7 @@
         var dialog = await DialogService.ShowAsync<EquipoDialog>("Editar Equipo", parameters, options);
         var result = await dialog.Result;
 
-        if (!result.Canceled)
+        if (result != null && !result.Canceled)
         {
             await _table.ReloadServerData();
         }
@@ -177,7 +177,7 @@
         var dialog = await DialogService.ShowAsync<CalibracionDialog>("Gestionar Calibraciones", parameters, options);
         var result = await dialog.Result;
 
-        if (!result.Canceled)
+        if (result != null && !result.Canceled)
         {
             await _table.ReloadServerData();
         }

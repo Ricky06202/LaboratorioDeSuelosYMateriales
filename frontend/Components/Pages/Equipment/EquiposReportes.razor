@@ -1,0 +1,116 @@
+@page "/equipos/reportes"
+@page "/equipos/{ReportType}"
+@using frontend.Services
+@using Microsoft.JSInterop
+@inject EquipmentService EquipmentService
+@inject IJSRuntime JS
+@inject ISnackbar Snackbar
+
+<PageTitle>Reportes de Equipos - LSMCH</PageTitle>
+
+<div class="animate__animated animate__fadeIn">
+    <div class="section-header mb-8 d-flex align-center justify-space-between">
+        <div>
+            <MudText Typo="Typo.h4" Class="font-weight-bold lsmch-title">DOCUMENTACIÓN TÉCNICA</MudText>
+            <MudText Typo="Typo.subtitle1" Class="text-secondary">Generación de reportes y registros oficiales del laboratorio</MudText>
+        </div>
+        <MudIcon Icon="@Icons.Material.Filled.Description" Color="Color.Primary" Size="Size.Large" Class="opacity-25" Style="font-size: 3rem;" />
+    </div>
+
+    <MudGrid>
+        @foreach (var report in _availableReports)
+        {
+            <MudItem xs="12" sm="6" md="4">
+                <MudCard Elevation="0" Class="report-card pa-4 rounded-xl border border-solid border-light h-100 d-flex flex-column">
+                    <div class="d-flex align-center mb-4">
+                        <div class="report-icon-container pa-3 rounded-lg mr-4" style="background: rgba(30,58,138,0.05);">
+                            <MudIcon Icon="@report.Icon" Color="Color.Primary" />
+                        </div>
+                        <div>
+                            <MudText Typo="Typo.subtitle2" Class="font-weight-bold">@report.Code</MudText>
+                            <MudText Typo="Typo.body2" Class="text-secondary">@report.Name</MudText>
+                        </div>
+                    </div>
+                    
+                    <MudSpacer />
+                    
+                    <div class="d-flex align-center justify-space-between mt-6">
+                        <MudText Typo="Typo.caption" Class="opacity-60">PDF Profesional</MudText>
+                        <MudButton Variant="Variant.Filled" 
+                                   Color="Color.Primary" 
+                                   Size="Size.Small" 
+                                   StartIcon="@Icons.Material.Filled.Download"
+                                   OnClick="@(() => DownloadReport(report))"
+                                   Disabled="@_isDownloading"
+                                   Class="rounded-pill px-4 shadow-sm">
+                            @(_isDownloading && _currentReport == report.Code ? "Generando..." : "Generar")
+                        </MudButton>
+                    </div>
+                </MudCard>
+            </MudItem>
+        }
+    </MudGrid>
+</div>
+
+<style>
+    .report-card {
+        transition: all 0.3s ease;
+        background: var(--lsmch-glass-bg);
+        backdrop-filter: blur(8px);
+    }
+    .report-card:hover {
+        transform: translateY(-8px);
+        box-shadow: var(--lsmch-card-shadow) !important;
+        border-color: var(--mud-palette-primary-light) !important;
+    }
+</style>
+
+@code {
+    [Parameter] public string? ReportType { get; set; }
+    private bool _isDownloading = false;
+    private string? _currentReport;
+
+    private class ReportInfo
+    {
+        public string Name { get; set; } = "";
+        public string Code { get; set; } = "";
+        public string Endpoint { get; set; } = "";
+        public string Icon { get; set; } = "";
+    }
+
+    private List<ReportInfo> _availableReports = new()
+    {
+        new() { Name = "Inventario de Cristalería", Code = "DT-LSMCH-011", Endpoint = "api/equipments/reports/glassware", Icon = Icons.Material.Filled.Inventory2 },
+        new() { Name = "Programa de Verificación y Calibración", Code = "DT-LSMCH-008", Endpoint = "api/equipments/reports/calibration", Icon = Icons.Material.Filled.QueryStats },
+        new() { Name = "Inventario de Equipos de Medición", Code = "DT-LSMCH-009", Endpoint = "api/equipments/reports/measurement", Icon = Icons.Material.Filled.Straighten },
+        new() { Name = "Inventario de Equipos de Campo", Code = "DT-LSMCH-010", Endpoint = "api/equipments/reports/landscape", Icon = Icons.Material.Filled.Landscape },
+        new() { Name = "Plan de Mantenimiento de Equipos", Code = "DT-LSMCH-017", Endpoint = "api/equipments/reports/maintenance_plan", Icon = Icons.Material.Filled.Handyman },
+        new() { Name = "Registro de Reactivos y Consumibles", Code = "RT-LSMCH-067", Endpoint = "api/equipments/reports/reagents", Icon = Icons.Material.Filled.Science },
+        new() { Name = "Verificación de Compras", Code = "RT-LSMCH-008", Endpoint = "api/equipments/reports/purchase_verification", Icon = Icons.Material.Filled.ShoppingCart },
+        new() { Name = "Registro de Adquisición de Equipos", Code = "RT-LSMCH-006", Endpoint = "api/equipments/reports/acquisition_registry", Icon = Icons.Material.Filled.AddShoppingCart },
+        new() { Name = "Control de Trazabilidad de Muestras", Code = "RT-LSMCH-026", Endpoint = "api/service-orders/reports/sample_control", Icon = Icons.Material.Filled.PlaylistAddCheck }
+    };
+
+    private async Task DownloadReport(ReportInfo report)
+    {
+        _isDownloading = true;
+        _currentReport = report.Code;
+        try
+        {
+            var pdfBytes = await EquipmentService.GetReportPdfAsync(report.Endpoint);
+            var base64 = Convert.ToBase64String(pdfBytes);
+            var fileName = $"{report.Code}_{DateTime.Now:yyyyMMdd}.pdf";
+            await JS.InvokeVoidAsync("downloadFileFromStream", fileName, "application/pdf", base64);
+            Snackbar.Add($"Reporte {report.Code} generado con éxito", Severity.Success);
+        }
+        catch (Exception ex)
+        {
+            Snackbar.Add($"Error al generar reporte: {ex.Message}", Severity.Error);
+        }
+        finally
+        {
+            _isDownloading = false;
+            _currentReport = null;
+        }
+    }
+}
