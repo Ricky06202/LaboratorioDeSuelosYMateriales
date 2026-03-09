@@ -9,10 +9,15 @@
 
 <PageTitle>Órdenes de Servicio - LSMCH</PageTitle>
 
-<div class="d-flex justify-content-between align-items-center mb-4">
-    <MudText Typo="Typo.h4">Órdenes de Servicio</MudText>
-    <MudButton Variant="Variant.Filled" Color="Color.Primary" StartIcon="@Icons.Material.Filled.Add" OnClick="OpenNewOrderDialog">Nueva Orden</MudButton>
-</div>
+<div class="animate__animated animate__fadeIn">
+    <div class="section-header d-flex align-center justify-space-between mb-8">
+        <div>
+            <MudText Typo="Typo.h4" Class="font-weight-black lsmch-title">ÓRDENES DE SERVICIO</MudText>
+            <MudText Typo="Typo.subtitle1" Class="text-secondary">Control de ejecución y RT-LSMCH-004</MudText>
+        </div>
+        <MudButton Variant="Variant.Filled" Color="Color.Primary" StartIcon="@Icons.Material.Filled.Add" 
+                   OnClick="OpenNewOrderDialog" Class="rounded-pill px-8 shadow-lg">Nueva Orden</MudButton>
+    </div>
 
 <MudTable Items="@_orders" Hover="true" Loading="@_loading" LoadingProgressColor="Color.Info" Filter="new Func<ServiceOrder,bool>(FilterFunc1)">
     <ToolBarContent>
@@ -42,6 +47,7 @@
         <MudTablePager />
     </PagerContent>
 </MudTable>
+</div>
 
 @code {
     private List<ServiceOrder> _orders = new();

@@ -1,103 +1,198 @@
 /* Global Design System - Laboratorio de Suelos y Materiales */
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap');
 
 :root {
     --lsmch-primary: #1e3a8a;
-    --lsmch-secondary: #64748b;
+    /* Deep Lab Blue */
+    --lsmch-vibrant: #2563eb;
+    /* Vibrant Indigo-Blue */
     --lsmch-accent: #f59e0b;
+    /* Amber */
+    --lsmch-sidebar-grad: linear-gradient(180deg, #0f172a 0%, #1e3a8a 100%);
+    --lsmch-header-grad: linear-gradient(90deg, rgba(255, 255, 255, 0.98) 0%, rgba(241, 245, 249, 0.92) 100%);
+    --lsmch-card-shadow: 0 4px 20px -2px rgba(0, 0, 0, 0.08);
 }
 
 body {
-    font-family: 'Inter', system-ui, -apple-system, sans-serif !important;
-    background-color: var(--mud-palette-background);
-    color: var(--mud-palette-text-primary);
+    font-family: 'Outfit', sans-serif !important;
+    background-color: #f8fafc;
+    color: #0f172a;
+    -webkit-font-smoothing: antialiased;
 }
 
-/* Appbar Modernization */
+/* Appbar - Premium Glassmorphism */
 .mud-appbar {
-    background-color: var(--mud-palette-appbar-background) !important;
-    backdrop-filter: blur(12px);
-    -webkit-backdrop-filter: blur(12px);
-    border-bottom: 1px solid var(--mud-palette-divider) !important;
-    color: var(--mud-palette-text-primary) !important;
+    background: var(--lsmch-header-grad) !important;
+    backdrop-filter: blur(12px) saturate(180%);
+    -webkit-backdrop-filter: blur(12px) saturate(180%);
+    border-bottom: 1px solid rgba(30, 58, 138, 0.12) !important;
+    color: var(--lsmch-primary) !important;
+    transition: all 0.3s ease;
+}
+
+.lsmch-title {
+    background: linear-gradient(135deg, #1e3a8a 0%, #2563eb 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    font-weight: 800 !important;
+    letter-spacing: -0.5px;
+    text-transform: uppercase;
+    font-size: 1.1rem !important;
 }
 
 .logo-img {
-    height: 40px;
-    margin-right: 12px;
-    transition: transform 0.2s;
+    height: 44px;
+    margin-right: 14px;
+    filter: drop-shadow(0 4px 6px rgba(0, 0, 0, 0.1));
+    transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
 }
 
 .logo-img:hover {
-    transform: scale(1.05);
+    transform: scale(1.1) rotate(-3deg);
 }
 
-/* Sidebar / Drawer Navigation */
+/* Sidebar - Professional Vibrant Gradient */
 .mud-drawer {
-    background-color: var(--mud-palette-drawer-background) !important;
-    color: var(--mud-palette-drawer-text) !important;
+    background: var(--lsmch-sidebar-grad) !important;
+    color: rgba(255, 255, 255, 0.85) !important;
+    box-shadow: 8px 0 24px rgba(0, 0, 0, 0.15) !important;
 }
 
+.sidebar-header {
+    background: rgba(255, 255, 255, 0.06);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+    backdrop-filter: blur(4px);
+}
+
+/* NavLinks with "Essence" */
 .mud-nav-link {
-    border-radius: 8px !important;
-    margin: 4px 12px !important;
-    transition: background-color 0.2s, color 0.2s;
+    border-radius: 14px !important;
+    margin: 6px 16px !important;
+    padding: 10px 16px !important;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+    color: rgba(255, 255, 255, 0.7) !important;
 }
 
 .mud-nav-link:hover {
     background-color: rgba(255, 255, 255, 0.1) !important;
-    color: white !important;
+    transform: translateX(6px);
+    color: #fff !important;
 }
 
 .mud-nav-link.active {
-    background-color: var(--lsmch-primary) !important;
-    color: white !important;
-    font-weight: 500;
+    background: linear-gradient(90deg, #3b82f6 0%, #1d4ed8 100%) !important;
+    box-shadow: 0 4px 15px rgba(37, 99, 235, 0.4) !important;
+    color: #fff !important;
+    font-weight: 600 !important;
 }
 
 .mud-nav-link .mud-nav-link-icon-default {
     color: rgba(255, 255, 255, 0.5) !important;
+    font-size: 1.4rem !important;
 }
 
 .mud-nav-link.active .mud-nav-link-icon-default {
-    color: white !important;
+    color: #fff !important;
+    filter: drop-shadow(0 0 8px rgba(255, 255, 255, 0.4));
 }
 
-/* Professional Cards */
+/* Professional Cards with Color Indicators */
 .mud-card {
-    border-radius: 12px !important;
-    box-shadow: var(--mud-elevation-1) !important;
-    border: 1px solid var(--mud-palette-divider) !important;
-    transition: box-shadow 0.3s ease;
+    border-radius: 16px !important;
+    box-shadow: var(--lsmch-card-shadow) !important;
+    border: 1px solid rgba(226, 232, 240, 0.8) !important;
+    transition: all 0.3s ease !important;
+    overflow: hidden;
 }
 
 .mud-card:hover {
-    box-shadow: var(--mud-elevation-4) !important;
+    transform: translateY(-4px);
+    box-shadow: 0 12px 30px -5px rgba(0, 0, 0, 0.12) !important;
 }
 
-/* Tables */
-.mud-table-root {
-    background-color: transparent !important;
+.card-status-indicator {
+    position: absolute;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    width: 6px;
+    background: var(--lsmch-vibrant);
 }
 
+/* Tables - High Contrast and Color essence */
 .mud-table-head {
-    background-color: var(--mud-palette-background-grey) !important;
+    background-color: #f1f5f9 !important;
+    position: relative;
+}
+
+.mud-table-head::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 3px;
+    background: linear-gradient(90deg, var(--lsmch-primary), var(--lsmch-vibrant));
+}
+
+.mud-table-cell {
+    padding: 16px !important;
 }
 
 .mud-table-head .mud-table-cell {
-    font-weight: 600 !important;
-    color: var(--mud-palette-text-primary) !important;
+    color: var(--lsmch-primary) !important;
+    font-weight: 800 !important;
     text-transform: uppercase;
     font-size: 0.75rem;
-    letter-spacing: 0.05em;
+    letter-spacing: 0.08em;
 }
 
-/* Buttons */
+/* Professional Buttons - Premium Gradient */
 .mud-button-filled.mud-button-filled-primary {
-    background-color: var(--lsmch-primary) !important;
-    box-shadow: 0 4px 14px 0 rgba(30, 58, 138, 0.39) !important;
+    background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%) !important;
+    box-shadow: 0 4px 14px rgba(30, 58, 138, 0.3) !important;
+    border-radius: 12px !important;
+    font-weight: 700 !important;
+    text-transform: none !important;
+    letter-spacing: 0.5px;
+    padding: 10px 24px !important;
 }
 
 .mud-button-filled.mud-button-filled-primary:hover {
-    background-color: #1e40af !important;
+    filter: brightness(1.1);
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(30, 58, 138, 0.4) !important;
+}
+
+/* Dashboard Specific Gradients (Vibrant but Formal) */
+.gradient-blue {
+    background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%) !important;
+    color: white !important;
+}
+
+.gradient-red {
+    background: linear-gradient(135deg, #991b1b 0%, #ef4444 100%) !important;
+    color: white !important;
+}
+
+.gradient-orange {
+    background: linear-gradient(135deg, #9a3412 0%, #f97316 100%) !important;
+    color: white !important;
+}
+
+.gradient-green {
+    background: linear-gradient(135deg, #065f46 0%, #10b981 100%) !important;
+    color: white !important;
+}
+
+/* Spacing Utilities */
+.btn-spacing {
+    margin-right: 1.5rem !important;
+}
+
+.section-header {
+    border-left: 4px solid var(--lsmch-vibrant);
+    padding-left: 1rem;
+    margin-bottom: 2rem;
 }

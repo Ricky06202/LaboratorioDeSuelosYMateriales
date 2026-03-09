@@ -10,42 +10,47 @@
         <MudIconButton Icon="@Icons.Material.Filled.Menu" Color="Color.Inherit" Edge="Edge.Start" OnClick="@((e) => DrawerToggle())" />
         
         <div class="d-flex align-center ml-4">
-            <img src="images/LSMCH.png" class="logo-img" alt="LSMCH Logo" />
+            <img src="/images/LSMCH.png" class="logo-img" alt="LSMCH Logo" />
             <div class="d-none d-sm-flex flex-column">
                 <MudText Typo="Typo.h6" Class="lsmch-title mb-n1">LABORATORIO DE SUELOS</MudText>
-                <MudText Typo="Typo.caption" Class="lsmch-subtitle">Y MATERIALES DE CHIRIQUÍ</MudText>
+                <MudText Typo="Typo.caption" Class="lsmch-subtitle font-weight-bold" Style="color: #64748b;">Y MATERIALES DE CHIRIQUÍ</MudText>
             </div>
         </div>
 
         <MudSpacer />
         
-        <div class="d-none d-md-flex align-center mr-6">
-            <img src="images/UTP.png" style="height: 35px;" alt="UTP Logo" />
-            <MudText Typo="Typo.caption" Class="ml-2 font-weight-bold" Style="line-height: 1; font-size: 0.65rem;">UNIVERSIDAD<br/>TECNOLÓGICA DE PANAMÁ</MudText>
+        <div class="d-none d-md-flex align-center mr-6 px-4 py-2" style="border-radius: 24px; background: rgba(30,58,138,0.06); border: 1px solid rgba(30,58,138,0.1);">
+            <img src="/images/UTP.png" style="height: 38px;" alt="UTP Logo" />
+            <div class="ml-3 d-flex flex-column">
+                <MudText Typo="Typo.caption" Class="font-weight-bold" Style="line-height: 1; font-size: 0.65rem; color: #1e3a8a; letter-spacing: 0.5px;">UNIVERSIDAD</MudText>
+                <MudText Typo="Typo.caption" Class="font-weight-bold" Style="line-height: 1; font-size: 0.65rem; color: #1e3a8a; letter-spacing: 0.5px;">TECNOLÓGICA DE PANAMÁ</MudText>
+            </div>
         </div>
 
         <MudTooltip Text="Alternar Modo Oscuro">
-            <MudIconButton Icon="@(_isDarkMode ? Icons.Material.Filled.LightMode : Icons.Material.Filled.DarkMode)" Color="Color.Inherit" OnClick="@((e) => DarkModeToggle())" />
+            <MudIconButton Icon="@(_isDarkMode ? Icons.Material.Filled.LightMode : Icons.Material.Filled.DarkMode)" Color="Color.Primary" Variant="Variant.Filled" Size="Size.Small" Class="rounded-lg shadow-sm" OnClick="@((e) => DarkModeToggle())" />
         </MudTooltip>
         
-        <MudMenu Icon="@Icons.Material.Filled.AccountCircle" Color="Color.Inherit" AnchorOrigin="Origin.BottomRight" TransformOrigin="Origin.TopRight" Class="ml-2">
-            <MudMenuItem Icon="@Icons.Material.Filled.Person">Mi Perfil</MudMenuItem>
-            <MudMenuItem Icon="@Icons.Material.Filled.Settings">Ajustes</MudMenuItem>
+        <MudMenu Icon="@Icons.Material.Filled.AccountCircle" Color="Color.Primary" AnchorOrigin="Origin.BottomRight" TransformOrigin="Origin.TopRight" Class="ml-4">
+            <MudMenuItem Icon="@Icons.Material.Filled.Person" IconColor="Color.Primary">Mi Perfil</MudMenuItem>
+            <MudMenuItem Icon="@Icons.Material.Filled.Settings" IconColor="Color.Secondary">Ajustes</MudMenuItem>
             <MudDivider />
-            <MudMenuItem Icon="@Icons.Material.Filled.Logout">Cerrar Sesión</MudMenuItem>
+            <MudMenuItem Icon="@Icons.Material.Filled.Logout" IconColor="Color.Error">Cerrar Sesión</MudMenuItem>
         </MudMenu>
     </MudAppBar>
 
     <MudDrawer @bind-Open="_drawerOpen" ClipMode="DrawerClipMode.Always" Elevation="0" MiniMode="false" Fixed="true" Width="280px">
-        <div class="pa-4 d-flex justify-center border-b border-solid border-white-5 mb-4" style="background: rgba(255,255,255,0.03);">
-            <MudText Typo="Typo.overline" Style="color: rgba(255,255,255,0.5); letter-spacing: 2px;">MENÚ PRINCIPAL</MudText>
+        <div class="pa-5 d-flex justify-center mb-4 sidebar-header">
+            <MudText Typo="Typo.overline" Style="color: rgba(255,255,255,0.7); letter-spacing: 2.5px; font-weight: 800; font-size: 0.75rem;">PANEL DE CONTROL</MudText>
         </div>
         <NavMenu />
     </MudDrawer>
 
     <MudMainContent Class="pt-16 px-4 pb-4">
-        <MudContainer MaxWidth="MaxWidth.ExtraLarge" Class="mt-6">
-            @Body
+        <MudContainer MaxWidth="MaxWidth.ExtraLarge" Class="mt-8">
+            <div class="animate__animated animate__fadeIn">
+                @Body
+            </div>
         </MudContainer>
     </MudMainContent>
 </MudLayout>
@@ -68,18 +73,23 @@
     {
         PaletteLight = new PaletteLight()
         {
-            Primary = "#1e3a8a",
-            Secondary = "#64748b",
-            AppbarBackground = "rgba(255, 255, 255, 0.75)",
+            Primary = "#1e3a8a",       // Deep Laboratory Blue
+            Secondary = "#3b82f6",     // Vibrant Royal Blue
+            AppbarBackground = "rgba(255, 255, 255, 0.95)",
             Background = "#f8fafc",
             DrawerBackground = "#0f172a",
-            DrawerText = "rgba(255,255,255, 0.85)",
-            DrawerIcon = "rgba(255,255,255, 0.5)",
+            DrawerText = "#f8fafc",
+            DrawerIcon = "rgba(255,255,255, 0.65)",
             Surface = "#ffffff",
-            TextPrimary = "#1e293b",
+            TextPrimary = "#0f172a",
             TextSecondary = "#475569",
             ActionDefault = "#1e3a8a",
-            Divider = "rgba(0,0,0,0.08)"
+            Info = "#2563eb",
+            Success = "#10b981",
+            Warning = "#f59e0b",
+            Error = "#ef4444",
+            Divider = "rgba(0,0,0,0.06)",
+            TableLines = "rgba(0,0,0,0.04)"
         },
         PaletteDark = new PaletteDark()
         {
@@ -87,22 +97,18 @@
             Secondary = "#94a3b8",
             Background = "#0f172a",
             Surface = "#1e293b",
-            AppbarBackground = "rgba(15, 23, 42, 0.75)",
-            AppbarText = "#f8fafc",
-            DrawerBackground = "rgba(2, 6, 23, 0.8)",
-            DrawerText = "#f8fafc",
+            AppbarBackground = "rgba(15, 23, 42, 0.9)",
+            AppbarText = "#f1f5f9",
+            DrawerBackground = "#020617",
             TextPrimary = "#f1f5f9",
             TextSecondary = "#94a3b8",
             ActionDefault = "#60a5fa",
-            ActionDisabled = "rgba(255,255,255, 0.26)",
-            Divider = "rgba(255,255,255, 0.12)",
-            TableLines = "rgba(255,255,255, 0.12)",
-            LinesDefault = "rgba(255,255,255, 0.12)"
+            Divider = "rgba(255,255,255, 0.12)"
         },
         LayoutProperties = new LayoutProperties()
         {
             DefaultBorderRadius = "16px",
-            AppbarHeight = "72px"
+            AppbarHeight = "76px"
         }
     };
 }

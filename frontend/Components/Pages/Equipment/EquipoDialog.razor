@@ -53,8 +53,9 @@
         </MudForm>
     </DialogContent>
     <DialogActions>
-        <MudButton OnClick="Cancel">Cancelar</MudButton>
-        <MudButton Color="Color.Primary" Disabled="@(!_isValid || _processing)" OnClick="Submit">
+        <MudButton OnClick="Cancel" Variant="Variant.Text" Class="mr-2 px-6 rounded-pill">Cancelar</MudButton>
+        <MudButton Color="Color.Primary" Variant="Variant.Filled" Disabled="@(!_isValid || _processing)" 
+                   OnClick="Submit" Class="px-8 rounded-pill shadow-sm">
             @if (_processing)
             {
                 <MudProgressCircular Class="ms-n1" Size="Size.Small" Indeterminate="true" />
@@ -62,7 +63,7 @@
             }
             else
             {
-                <MudText>Guardar</MudText>
+                <MudText>Confirmar</MudText>
             }
         </MudButton>
     </DialogActions>
