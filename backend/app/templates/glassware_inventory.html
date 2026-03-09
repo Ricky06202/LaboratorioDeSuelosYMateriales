@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Inventario de Cristalería</title>
+    <style>
+        @page {
+            size: letter landscape;
+            margin: 10mm;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            font-size: 9px;
+            color: #000;
+            line-height: 1.2;
+            margin: 0;
+            padding: 0;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th,
+        td {
+            border: 1px solid #000;
+            padding: 4px 2px;
+            text-align: center;
+        }
+
+        .header-table {
+            border: 1px solid #000;
+            margin-bottom: 10px;
+        }
+
+        .header-table td {
+            border: 1px solid #000;
+            vertical-align: middle;
+            padding: 5px;
+        }
+
+        .bold {
+            font-weight: bold;
+        }
+
+        .title-text {
+            font-size: 11px;
+            font-weight: bold;
+        }
+
+        .inventory-table th {
+            font-weight: bold;
+            font-size: 9px;
+        }
+
+        .inventory-table td {
+            vertical-align: middle;
+            font-size: 9px;
+        }
+    </style>
+</head>
+
+<body>
+
+    <table class="header-table">
+        <tr>
+            <td style="width: 25%; text-align: center; border-right: 1px solid #000;">
+                <img src="{{ assets_dir }}/UTP.png" style="max-height: 50px;"><br>
+                <div style="font-size: 8px; font-weight: bold; margin-top: 4px;">UNIVERSIDAD TECNOLÓGICA DE PANAMÁ</div>
+            </td>
+            <td style="width: 50%; text-align: center; border-right: 1px solid #000;">
+                <div class="title-text">LABORATORIO DE SUELOS Y MATERIALES DE CHIRIQUÍ</div>
+                <div class="bold">DOCUMENTOS TÉCNICOS</div>
+                <div class="bold">DT-LSMCH-011</div>
+                <div class="bold">Revisión 01</div>
+            </td>
+            <td style="width: 25%; text-align: center;">
+                <img src="{{ assets_dir }}/LSMCH.png" style="max-height: 50px;"><br>
+                <div style="font-size: 8px; font-weight: bold; margin-top: 4px;">LABORATORIO DE SUELOS Y MATERIALES
+                </div>
+            </td>
+        </tr>
+        <tr>
+            <td colspan="3" class="bold"
+                style="font-size: 11px; text-align: center; border-top: 1px solid #000; padding: 4px;">
+                INVENTARIO DE CRISTALERÍA
+            </td>
+        </tr>
+    </table>
+
+    <table class="inventory-table">
+        <thead>
+            <tr>
+                <th style="width: 3%;">No.</th>
+                <th style="width: 10%;">Código de<br>identificación<br>o número de<br>inventario</th>
+                <th style="width: 7%;">No. De<br>Activo</th>
+                <th style="width: 15%;">Equipo</th>
+                <th style="width: 10%;">Fabricante</th>
+                <th style="width: 7%;">No. de serie</th>
+                <th style="width: 7%;">Capacidad</th>
+                <th style="width: 8%;">Ubicación<br>actual</th>
+                <th style="width: 9%;">Método o<br>procedimiento<br>de<br>mantenimiento</th>
+                <th style="width: 9%;">Método o<br>procedimiento<br>de calibración</th>
+                <th style="width: 6%;">Período de<br>calibración</th>
+                <th style="width: 5%;">Última<br>calibración</th>
+                <th style="width: 4%;">Calibrado<br>por:<br>(Empresa)</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for item in items %}
+            <tr>
+                <td>{{ loop.index }}</td>
+                <td>{{ item.inventory_code or '' }}</td>
+                <td>{{ item.asset_number or 'No Aplica' }}</td>
+                <td style="text-align: left;">{{ item.equipment_name or '' }}</td>
+                <td>{{ item.manufacturer or '' }}</td>
+                <td>{{ item.serial_number or '' }}</td>
+                <td>{{ item.capacity or '' }}</td>
+                <td>{{ item.location or '' }}</td>
+                <td>{{ item.maintenance_method or '' }}</td>
+                <td>{{ item.calibration_method or '' }}</td>
+                <td>{{ item.calibration_period or '' }}</td>
+                <td>{{ item.last_calibration or '' }}</td>
+                <td>{{ item.calibrated_by or '' }}</td>
+            </tr>
+            {% endfor %}
+            {% if not items or items|length == 0 %}
+            {% for i in range(1, 16) %}
+            <tr>
+                <td>{{ i }}</td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+            </tr>
+            {% endfor %}
+            {% endif %}
+        </tbody>
+    </table>
+
+</body>
+
+</html>

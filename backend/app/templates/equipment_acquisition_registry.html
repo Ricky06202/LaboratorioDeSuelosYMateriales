@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Registro de Adquisición de Equipos</title>
+    <style>
+        @page {
+            size: letter landscape;
+            margin: 10mm;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            font-size: 8px;
+            /* Small font to fit many columns */
+            color: #000;
+            line-height: 1.2;
+            margin: 0;
+            padding: 0;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th,
+        td {
+            border: 1px solid #000;
+            padding: 4px;
+            text-align: center;
+            vertical-align: middle;
+        }
+
+        .header-table {
+            border: 1px solid #000;
+            margin-bottom: 2px;
+        }
+
+        .header-table td {
+            vertical-align: middle;
+            padding: 5px;
+        }
+
+        .bold {
+            font-weight: bold;
+        }
+
+        .title-text {
+            font-size: 13px;
+            font-weight: bold;
+        }
+
+        .sub-header-table td {
+            font-size: 8px;
+            padding: 5px;
+            vertical-align: top;
+        }
+
+        .main-table th {
+            font-weight: bold;
+            font-size: 9px;
+            background-color: #6a3d9a;
+            /* Purple-ish header from image */
+            color: white;
+            vertical-align: middle;
+        }
+
+        .main-table td {
+            height: 25px;
+        }
+
+        .footer-note {
+            font-size: 9px;
+            margin-top: 20px;
+            text-align: left;
+        }
+    </style>
+</head>
+
+<body>
+
+    <table class="header-table">
+        <tr>
+            <td style="width: 20%; border-right: 1px solid #000;">
+                <img src="{{ assets_dir }}/UTP.png" style="max-height: 55px;"><br>
+                <div style="font-size: 8px; font-weight: bold; margin-top: 4px;">UNIVERSIDAD TECNOLÓGICA DE<br>PANAMÁ
+                </div>
+            </td>
+            <td style="width: 60%; border-right: 1px solid #000;">
+                <div class="title-text">LABORATORIO DE SUELOS Y MATERIALES DE CHIRIQUÍ</div>
+                <div class="bold" style="font-size: 12px; margin-top: 4px;">REGISTROS TÉCNICOS</div>
+                <div class="bold" style="font-size: 11px; margin-top: 4px;">RT-LSMCH-006</div>
+            </td>
+            <td style="width: 20%;">
+                <img src="{{ assets_dir }}/LSMCH.png" style="max-height: 55px;"><br>
+                <div style="font-size: 8px; font-weight: bold; margin-top: 4px;">LABORATORIO DE SUELOS Y<br>MATERIALES
+                </div>
+            </td>
+        </tr>
+        <tr>
+            <td colspan="3" class="bold"
+                style="font-size: 12px; text-align: center; border-top: 1px solid #000; padding: 6px;">
+                REGISTRO DE ADQUISICIÓN, INSPECCIÓN, EVALUACIÓN Y ALMACENAJE DE EQUIPOS DE MEDICIÓN,<br>AUXILIARES Y DE
+                CAMPO
+            </td>
+        </tr>
+    </table>
+
+    <table class="sub-header-table" style="width: 100%; border-collapse: collapse; margin-bottom: 10px;">
+        <tr>
+            <td style="width: 15%; border: 1px solid #000; text-align: center; vertical-align: middle;">REVISIÓN<br>01
+            </td>
+            <td style="width: 25%; border: 1px solid #000; text-align: center; vertical-align: middle;">
+                GENERADO POR:<br>
+                LICDO. JUAN QUIEL<br>
+                RESPONSABLE TÉCNICO
+            </td>
+            <td style="width: 30%; border: 1px solid #000; text-align: center; vertical-align: middle;">
+                REVISADO POR:<br>
+                ING. AMIR ATENCIO<br>
+                REPRESENTANTE DEL SISTEMA DE GESTIÓN
+            </td>
+            <td style="width: 20%; border: 1px solid #000; text-align: center; vertical-align: middle;">
+                APROBADO POR:<br><br>
+                <span
+                    style="text-decoration: underline;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><br>
+                ING. AMIR ATENCIO<br>JEFE DE LABORATORIO<br>FECHA: 2023-01-05
+            </td>
+            <td style="width: 10%; border: 1px solid #000; text-align: center; vertical-align: middle;">PÁGINA <span
+                    class="bold">1</span> DE <span class="bold">1</span></td>
+        </tr>
+    </table>
+
+    <table class="main-table">
+        <thead>
+            <tr>
+                <th rowspan="2" style="width: 8%;">Fecha de<br>recepción</th>
+                <th rowspan="2" style="width: 10%;">Nombre del<br>equipo/bien</th>
+                <th rowspan="2" style="width: 8%;">No.<br>Activo<br>UTP</th>
+                <th rowspan="2" style="width: 6%;">Fondos<br>de**</th>
+                <th colspan="4" style="width: 38%;">ESPECIFICACIÓN</th>
+                <th rowspan="2" style="width: 8%;">Evaluado<br>por</th>
+                <th rowspan="2" style="width: 8%;">Área de<br>almacenaje</th>
+                <th rowspan="2" style="width: 8%;">No. ID<br>asignado *</th>
+                <th rowspan="2" style="width: 8%;">Recibido por</th>
+            </tr>
+            <tr>
+                <th style="width: 8%;">Marca</th>
+                <th style="width: 12%;">Descripción</th>
+                <th style="width: 8%;">Catálogo</th>
+                <th style="width: 10%;">Proveedor</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for item in items %}
+            <tr>
+                <td>{{ item.receive_date or '' }}</td>
+                <td style="text-align: left;">{{ item.item_name or '' }}</td>
+                <td>{{ item.utp_active_no or '' }}</td>
+                <td>{{ item.funds or '' }}</td>
+                <td>{{ item.brand or '' }}</td>
+                <td style="text-align: left;">{{ item.description or '' }}</td>
+                <td>{{ item.catalog or '' }}</td>
+                <td>{{ item.provider or '' }}</td>
+                <td>{{ item.evaluated_by or '' }}</td>
+                <td>{{ item.storage_area or '' }}</td>
+                <td>{{ item.assigned_id or '' }}</td>
+                <td>{{ item.received_by or '' }}</td>
+            </tr>
+            {% endfor %}
+
+            {% if not items or items|length == 0 %}
+            {% for i in range(1, 8) %}
+            <tr>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+            </tr>
+            {% endfor %}
+            {% endif %}
+        </tbody>
+    </table>
+
+    <div class="footer-note">
+        * PARA ASIGNAR UN No. ID, UTILICE EL INVENTARIO CORRESPONDIENTE (INVENTARIO DE EQUIPOS DE MEDICIÓN, EQUIPOS
+        AUXILIARES O EQUIPOS DE APOYO (HERRAMIENTAS)).<br>
+        ** FONDOS: A= AUTOGESTIÓN, F.C = FONDO CENTRAL, INV.= INVERSIONES, FTP = FUNDACIÓN TECNOLÓGICA<br>
+        N.A = NO APLICA
+    </div>
+
+</body>
+
+</html>

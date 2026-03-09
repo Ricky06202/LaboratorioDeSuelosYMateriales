@@ -1,5 +1,6 @@
 from fastapi import APIRouter, Depends, HTTPException, UploadFile, File, Query, Form
-from fastapi.responses import FileResponse
+from fastapi.responses import FileResponse, Response
+from app.api.endpoints.pdf_utils import render_pdf
 import os
 from sqlalchemy.orm import Session
 from typing import List, Optional
@@ -148,3 +149,228 @@ def download_file(
         raise HTTPException(status_code=404, detail="Archivo no encontrado")
         
     return FileResponse(full_path)
+
+@router.get("/reports/glassware", response_class=Response)
+def generate_glassware_report(
+    db: Session = Depends(deps.get_db),
+    # If a valid JWT token is needed, we could add dependecy here, e.g.
+    # current_user = Depends(deps.get_current_active_user)
+):
+    equipos, _ = equipment_service.get_equipos(db, skip=0, limit=1000)
+    items = []
+    
+    for equipo in equipos:
+        items.append({
+            "inventory_code": equipo.numero_serie or "",
+            "asset_number": "No Aplica",
+            "equipment_name": equipo.nombre or "",
+            "manufacturer": equipo.marca or "",
+            "serial_number": equipo.numero_serie or "",
+            "capacity": equipo.modelo or "",
+            "location": "AREA-1",
+            "maintenance_method": "N/A",
+            "calibration_method": "N/A",
+            "calibration_period": "N/A",
+            "last_calibration": "",
+            "calibrated_by": ""
+        })
+        
+    pdf_bytes = render_pdf("glassware_inventory.html", {"items": items})
+    return Response(content=pdf_bytes, media_type="application/pdf")
+
+@router.get("/reports/calibration", response_class=Response)
+def generate_calibration_report(
+    db: Session = Depends(deps.get_db)
+):
+    equipos, _ = equipment_service.get_equipos(db, skip=0, limit=1000)
+    items = []
+    for equipo in equipos:
+        # Get the most recent calibration if available
+        # Need to safely access relationships. Assuming equipo.calibraciones is populated
+        last_calib = equipo.calibraciones[-1] if (hasattr(equipo, "calibraciones") and equipo.calibraciones) else None
+        
+        items.append({
+            "internal_inventory_number": equipo.numero_serie or "",
+            "utp_asset_number": "No Aplica",
+            "brand_model": f"{equipo.marca or ''} / {equipo.modelo or ''}",
+            "equipment_instrument": equipo.nombre or "",
+            "calibration_name": equipo.nombre or "",
+            "calibration_range": "N/A",
+            "calibrated_by": last_calib.empresa_certificadora if last_calib else "N/A",
+            "calibration_frequency": "1 Año" if last_calib else "N/A",
+            "last_calibration_date": str(last_calib.fecha_calibracion) if last_calib else "N/A",
+            "next_calibration_date": str(last_calib.fecha_vencimiento) if last_calib else "N/A"
+        })
+        
+    pdf_bytes = render_pdf("calibration_program.html", {"items": items})
+    return Response(content=pdf_bytes, media_type="application/pdf")
+
+@router.get("/reports/measurement", response_class=Response)
+def generate_measurement_equipment_report(
+    db: Session = Depends(deps.get_db)
+):
+    equipos, _ = equipment_service.get_equipos(db, skip=0, limit=1000)
+    items = []
+    
+    for equipo in equipos:
+        last_calib = equipo.calibraciones[-1] if (hasattr(equipo, "calibraciones") and equipo.calibraciones) else None
+
+        items.append({
+            "inventory_code": equipo.numero_serie or "",
+            "equipment_name": equipo.nombre or "",
+            "manufacturer": equipo.marca or "",
+            "serial_number": equipo.numero_serie or "",
+            "capacity": equipo.modelo or "",
+            "location": "AREA-1",
+            "maintenance_method": "N/A",
+            "calibration_method": "N/A",
+            "calibration_period": "1 Año" if last_calib else "N/A",
+            "last_calibration": str(last_calib.fecha_calibracion) if last_calib else "",
+            "calibrated_by": last_calib.empresa_certificadora if last_calib else "",
+            "reference_material": "N/A",
+            "damage_assessment": "No" if equipo.estado == "Activo" else "Sí"
+        })
+        
+    pdf_bytes = render_pdf("measurement_equipment_inventory.html", {"items": items})
+    return Response(content=pdf_bytes, media_type="application/pdf")
+
+@router.get("/reports/field_aux", response_class=Response)
+def generate_field_aux_equipment_report(
+    db: Session = Depends(deps.get_db)
+):
+    equipos, _ = equipment_service.get_equipos(db, skip=0, limit=1000)
+    items = []
+    
+    for equipo in equipos:
+        items.append({
+            "lab_id": equipo.numero_serie or "",
+            "utp_active_number": "No Aplica",
+            "equipment_name": equipo.nombre or "",
+            "manufacturer_name": equipo.marca or "",
+            "brand": equipo.marca or "",
+            "model": equipo.modelo or "",
+            "serial_number": equipo.numero_serie or "",
+            "ranges": "N/A",
+            "status": equipo.estado or "",
+            "location": "AREA-1"
+        })
+        
+    pdf_bytes = render_pdf("field_aux_equipment_inventory.html", {"items": items})
+    return Response(content=pdf_bytes, media_type="application/pdf")
+
+@router.get("/reports/maintenance_plan", response_class=Response)
+def generate_maintenance_plan_report(
+    db: Session = Depends(deps.get_db)
+):
+    equipos, _ = equipment_service.get_equipos(db, skip=0, limit=1000)
+    items = []
+    
+    for equipo in equipos:
+        last_calib = equipo.calibraciones[-1] if (hasattr(equipo, "calibraciones") and equipo.calibraciones) else None
+
+        items.append({
+            "equipment_id": equipo.numero_serie or "",
+            "equipment_name": equipo.nombre or "",
+            "criteria": "Manual del fabricante", # Default example
+            "activity": "Mantenimiento / Calibración",
+            "frequency": "1 Año",
+            "internal_resp": "LSMCH" if not last_calib else "",
+            "external_resp": last_calib.empresa_certificadora if last_calib else ""
+        })
+        
+    pdf_bytes = render_pdf("verification_maintenance_plan.html", {"items": items})
+    return Response(content=pdf_bytes, media_type="application/pdf")
+
+@router.get("/reports/reagents", response_class=Response)
+def generate_reagents_registry_report(
+    db: Session = Depends(deps.get_db)
+):
+    equipos, _ = equipment_service.get_equipos(db, skip=0, limit=1000)
+    items = []
+    
+    # In a real scenario, this would likely query a different model (e.g. Reactivos) 
+    # instead of Equipos, but for now we map it as an example.
+    for equipo in equipos:
+        items.append({
+            "receive_date": "N/A",
+            "item_name": equipo.nombre or "",
+            "purchase_ref": "N/A",
+            "brand": equipo.marca or "",
+            "description": equipo.modelo or "",
+            "presentation": "N/A",
+            "quantity": "1",
+            "reagent_type": "N/A",
+            "catalog_batch": equipo.numero_serie or "",
+            "provider": "N/A",
+            "expiry_date": "N/A",
+            "assigned_id": equipo.numero_serie or "",
+            "storage_area": "AREA-1",
+            "container_eval": "",
+            "label_eval": "",
+            "cert_eval": "",
+            "evaluator_tech": "",
+            "observations": ""
+        })
+        
+    pdf_bytes = render_pdf("chemical_reagents_registry.html", {"items": items})
+    return Response(content=pdf_bytes, media_type="application/pdf")
+
+@router.get("/reports/purchase_verification", response_class=Response)
+def generate_purchase_verification_report(
+    db: Session = Depends(deps.get_db)
+):
+    # In a real scenario, this would likely query a different model (e.g. Purchases/Recepciones)
+    # but for now we map it with dummy data to demonstrate the PDF generation.
+    data = {
+        "fund_type": "Funcionamiento",
+        "purchase_order_no": "OC-2025-001",
+        "request_no": "REQ-2025-001",
+        "item_type": "Equipo de Medición",
+        "item_name": "Balanza Analítica",
+        "brand": "Ohaus",
+        "model": "Explorer",
+        "serial": "SN-123456789",
+        "provider": "Equipos de Laboratorio S.A.",
+        "receive_date": "2025-10-15",
+        "assigned_id": "001",
+        "criteria_1": "SI", "criteria_2": "SI", "criteria_3": "SI",
+        "criteria_4": "SI", "criteria_5": "SI", "criteria_6": "SI",
+        "criteria_7": "SI", "criteria_8": "SI", "criteria_9": "NO",
+        "criteria_10": "SI", "criteria_11": "SI", "criteria_12": "SI",
+        "criteria_13": "NO", "criteria_14": "SI",
+        "approval_status": "Aprobado para Uso",
+        "observations": "Ninguna",
+        "verified_by": "Lic. Juan Perez",
+        "reviewed_by": "Lic. María Gonzalez",
+        "verification_date": "2025-10-16",
+        "review_date": "2025-10-17"
+    }
+        
+    pdf_bytes = render_pdf("purchase_verification.html", {"data": data})
+    return Response(content=pdf_bytes, media_type="application/pdf")
+
+@router.get("/reports/acquisition_registry", response_class=Response)
+def generate_acquisition_registry_report(
+    db: Session = Depends(deps.get_db)
+):
+    equipos, _ = equipment_service.get_equipos(db, skip=0, limit=1000)
+    items = []
+    
+    for equipo in equipos:
+        items.append({
+            "receive_date": str(equipo.fecha_adquisicion) if hasattr(equipo, 'fecha_adquisicion') and equipo.fecha_adquisicion else "N/A",
+            "item_name": equipo.nombre or "",
+            "utp_active_no": "N/A",
+            "funds": "A", # Default: Autogestión
+            "brand": equipo.marca or "",
+            "description": equipo.modelo or "",
+            "catalog": equipo.numero_serie or "",
+            "provider": "N/A",
+            "evaluated_by": "J. Quiel",
+            "storage_area": "AREA-1",
+            "assigned_id": equipo.numero_serie or "",
+            "received_by": "LSMCH"
+        })
+        
+    pdf_bytes = render_pdf("equipment_acquisition_registry.html", {"items": items})
+    return Response(content=pdf_bytes, media_type="application/pdf")

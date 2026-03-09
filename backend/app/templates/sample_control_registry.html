@@ -1,0 +1,323 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Control de Número de Muestras</title>
+    <style>
+        @page {
+            size: letter landscape;
+            margin: 10mm;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            font-size: 9px;
+            color: #000;
+            line-height: 1.2;
+            margin: 0;
+            padding: 0;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th,
+        td {
+            border: 1px solid #000;
+            padding: 4px;
+            text-align: center;
+        }
+
+        .header-table {
+            border: 1px solid #000;
+            margin-bottom: 2px;
+        }
+
+        .header-table td {
+            vertical-align: middle;
+            padding: 5px;
+        }
+
+        .bold {
+            font-weight: bold;
+        }
+
+        .title-text {
+            font-size: 13px;
+            font-weight: bold;
+        }
+
+        .sub-header-table td {
+            font-size: 8px;
+            padding: 5px;
+            vertical-align: top;
+        }
+
+        .inventory-table th {
+            font-weight: bold;
+            font-size: 8px;
+            background-color: #dbe5f1;
+            /* Light blue header */
+            vertical-align: middle;
+        }
+
+        /* The first few columns don't have the blue background for the very top header */
+        .inventory-table th.no-bg {
+            background-color: transparent;
+        }
+
+        .inventory-table td {
+            vertical-align: middle;
+            font-size: 8px;
+        }
+
+        .activity-td {
+            padding: 0;
+            height: 40px;
+            /* Minimum height for two rows of activity */
+        }
+
+        .activity-inner-table {
+            width: 100%;
+            height: 100%;
+            border-collapse: collapse;
+            border: none;
+        }
+
+        .activity-inner-table td {
+            border: none;
+            border-bottom: 1px solid #000;
+            text-align: left;
+            padding: 2px 4px;
+            height: 50%;
+        }
+
+        .activity-inner-table tr:last-child td {
+            border-bottom: none;
+        }
+    </style>
+</head>
+
+<body>
+
+    <table class="header-table">
+        <tr>
+            <td style="width: 25%; text-align: center; border-right: 1px solid #000;">
+                <img src="{{ assets_dir }}/UTP.png" style="max-height: 55px;"><br>
+                <div style="font-size: 9px; font-weight: bold; margin-top: 4px;">UNIVERSIDAD TECNOLÓGICA DE<br>PANAMÁ
+                </div>
+            </td>
+            <td style="width: 50%; text-align: center; border-right: 1px solid #000;">
+                <div class="title-text">LABORATORIO DE SUELOS Y MATERIALES DE CHIRIQUÍ</div>
+                <div class="bold" style="font-size: 14px; margin-top: 4px;">REGISTROS TÉCNICOS</div>
+                <div class="bold" style="font-size: 13px; margin-top: 4px;">RT-LSMCH-026</div>
+            </td>
+            <td style="width: 25%; text-align: center;">
+                <img src="{{ assets_dir }}/LSMCH.png" style="max-height: 50px;"><br>
+                <div style="font-size: 9px; font-weight: bold; margin-top: 4px;">LABORATORIO DE SUELOS Y<br>MATERIALES
+                </div>
+            </td>
+        </tr>
+        <tr>
+            <td colspan="3" class="bold"
+                style="font-size: 11px; text-align: center; border-top: 1px solid #000; background-color: #f2f2f2; padding: 6px;">
+                CONTROL DE NÚMERO DE MUESTRAS Y SU TRAZABILIDAD EN EL LABORATORIO
+            </td>
+        </tr>
+    </table>
+
+    <table class="sub-header-table" style="width: 100%; border-collapse: collapse; margin-bottom: 5px;">
+        <tr>
+            <td style="width: 15%; border: 1px solid #000; text-align: center; vertical-align: middle;">REVISIÓN<br>02
+            </td>
+            <td style="width: 30%; border: 1px solid #000; text-align: center; vertical-align: middle;">
+                GENERADO POR:<br>
+                LICDO. ARISTIDES PERÉN<br>
+                RESPONSABLE TÉCNICO
+            </td>
+            <td style="width: 30%; border: 1px solid #000; text-align: center; vertical-align: middle;">
+                REVISADO POR:<br>
+                LICDA. CARMEN JURADO<br>
+                REPRESENTANTE DEL SISTEMA DE GESTIÓN
+            </td>
+            <td style="width: 20%; border: 1px solid #000; text-align: center; vertical-align: middle;">
+                APROBADO POR:<br><br>
+                <span
+                    style="text-decoration: underline;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><br>
+                ING. AMIR ATENCIO<br>JEFE DE LABORATORIO<br>FECHA: 2024-12-13
+            </td>
+            <td style="width: 5%; border: 1px solid #000; text-align: center; vertical-align: middle;">PÁGINA 1 DE 1
+            </td>
+        </tr>
+    </table>
+
+    <table class="inventory-table">
+        <thead>
+            <tr>
+                <td colspan="4" style="border: none;"></td>
+                <th colspan="6" style="border: 1px solid #000;">FECHA DE CAMBIO DE ESTATUS DE LA MUESTRA SEGÚN LAS ZONAS
+                    DE ALMACENAMIENTO</th>
+            </tr>
+            <tr>
+                <th rowspan="2" class="no-bg" style="width: 6%;">No.<br>RECIBO</th>
+                <th rowspan="2" class="no-bg" style="width: 15%;">SOLICITUD DE TRABAJO<br>No.<br><br>LSMCH</th>
+                <th rowspan="2" class="no-bg" style="width: 10%;">ID. DEL<br>LABORATORIO<br><br>LSMCH</th>
+                <th rowspan="2" class="no-bg" style="width: 8%;">FECHA DE<br>ENTRADA</th>
+                <th rowspan="2" class="no-bg" style="width: 10%;"></th>
+                <th rowspan="2" style="width: 12%;">ALMACENADA<br>ZONA DE<br>MUESTRAS PARA<br>ENSAYAR</th>
+                <th rowspan="2" style="width: 12%;">ALMACENADA<br>ZONA DE<br>MUESTRAS<br>ENSAYADAS</th>
+                <th rowspan="2" style="width: 10%;">ALMACENADA<br>ZONA DE<br>DESCARTE</th>
+                <th rowspan="2" style="width: 8%;">RETIRADA<br>POR CLIENTE</th>
+                <th rowspan="2" style="width: 9%;">DESCARTE DE LA<br>MUESTRA</th>
+            </tr>
+            <tr></tr>
+        </thead>
+        <tbody>
+            {% for item in items %}
+            <tr>
+                <td>{{ item.receipt_no or '' }}</td>
+                <td>{{ item.work_request_no or '' }}</td>
+                <td>{{ item.lab_id or '' }}</td>
+                <td>{{ item.entry_date or '' }}</td>
+                <td class="activity-td">
+                    <table class="activity-inner-table">
+                        <tr>
+                            <td>Realizado por:</td>
+                        </tr>
+                        <tr>
+                            <td>Fecha:</td>
+                        </tr>
+                    </table>
+                </td>
+                <td class="activity-td">
+                    <table class="activity-inner-table">
+                        <tr>
+                            <td style="text-align: center;">{{ item.to_test_by or '' }}</td>
+                        </tr>
+                        <tr>
+                            <td style="text-align: center;">{{ item.to_test_date or '' }}</td>
+                        </tr>
+                    </table>
+                </td>
+                <td class="activity-td">
+                    <table class="activity-inner-table">
+                        <tr>
+                            <td style="text-align: center;">{{ item.tested_by or '' }}</td>
+                        </tr>
+                        <tr>
+                            <td style="text-align: center;">{{ item.tested_date or '' }}</td>
+                        </tr>
+                    </table>
+                </td>
+                <td class="activity-td">
+                    <table class="activity-inner-table">
+                        <tr>
+                            <td style="text-align: center;">{{ item.discard_zone_by or '' }}</td>
+                        </tr>
+                        <tr>
+                            <td style="text-align: center;">{{ item.discard_zone_date or '' }}</td>
+                        </tr>
+                    </table>
+                </td>
+                <td class="activity-td">
+                    <table class="activity-inner-table">
+                        <tr>
+                            <td style="text-align: center;">{{ item.client_retrieved_by or '' }}</td>
+                        </tr>
+                        <tr>
+                            <td style="text-align: center;">{{ item.client_retrieved_date or '' }}</td>
+                        </tr>
+                    </table>
+                </td>
+                <td class="activity-td">
+                    <table class="activity-inner-table">
+                        <tr>
+                            <td style="text-align: center;">{{ item.discard_by or '' }}</td>
+                        </tr>
+                        <tr>
+                            <td style="text-align: center;">{{ item.discard_date or '' }}</td>
+                        </tr>
+                    </table>
+                </td>
+            </tr>
+            {% endfor %}
+
+            {% if not items or items|length == 0 %}
+            {% for i in range(1, 6) %}
+            <tr>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td class="activity-td">
+                    <table class="activity-inner-table">
+                        <tr>
+                            <td>Realizado por:</td>
+                        </tr>
+                        <tr>
+                            <td>Fecha:</td>
+                        </tr>
+                    </table>
+                </td>
+                <td class="activity-td">
+                    <table class="activity-inner-table">
+                        <tr>
+                            <td></td>
+                        </tr>
+                        <tr>
+                            <td></td>
+                        </tr>
+                    </table>
+                </td>
+                <td class="activity-td">
+                    <table class="activity-inner-table">
+                        <tr>
+                            <td></td>
+                        </tr>
+                        <tr>
+                            <td></td>
+                        </tr>
+                    </table>
+                </td>
+                <td class="activity-td">
+                    <table class="activity-inner-table">
+                        <tr>
+                            <td></td>
+                        </tr>
+                        <tr>
+                            <td></td>
+                        </tr>
+                    </table>
+                </td>
+                <td class="activity-td">
+                    <table class="activity-inner-table">
+                        <tr>
+                            <td></td>
+                        </tr>
+                        <tr>
+                            <td></td>
+                        </tr>
+                    </table>
+                </td>
+                <td class="activity-td">
+                    <table class="activity-inner-table">
+                        <tr>
+                            <td></td>
+                        </tr>
+                        <tr>
+                            <td></td>
+                        </tr>
+                    </table>
+                </td>
+            </tr>
+            {% endfor %}
+            {% endif %}
+        </tbody>
+    </table>
+
+</body>
+
+</html>

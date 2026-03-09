@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Registro de Adquisición y Almacenaje</title>
+    <style>
+        @page {
+            size: legal landscape;
+            margin: 10mm;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            font-size: 8px;
+            /* Very small font to fit 16 columns */
+            color: #000;
+            line-height: 1.2;
+            margin: 0;
+            padding: 0;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            table-layout: fixed;
+            /* Force equal-ish sizing where possible */
+        }
+
+        th,
+        td {
+            border: 1px solid #000;
+            padding: 2px;
+            text-align: center;
+            overflow: hidden;
+            word-wrap: break-word;
+        }
+
+        .header-table {
+            border: 1px solid #000;
+            margin-bottom: 2px;
+            /* Small gap before main content */
+        }
+
+        .header-table td {
+            vertical-align: middle;
+            padding: 5px;
+        }
+
+        .bold {
+            font-weight: bold;
+        }
+
+        .title-text {
+            font-size: 13px;
+            font-weight: bold;
+        }
+
+        .sub-header-table td {
+            font-size: 8px;
+            padding: 5px;
+            vertical-align: top;
+        }
+
+        .inventory-table th {
+            font-weight: bold;
+            font-size: 8px;
+            background-color: #e6e6e6;
+            /* Light gray header */
+            vertical-align: middle;
+        }
+
+        /* Specific column widths to match the image proportions approximately */
+        .col-date {
+            width: 4.5%;
+        }
+
+        .col-name {
+            width: 7.5%;
+        }
+
+        .col-ref {
+            width: 5%;
+        }
+
+        .col-brand {
+            width: 5%;
+        }
+
+        .col-desc {
+            width: 8.5%;
+        }
+
+        .col-pres {
+            width: 6%;
+        }
+
+        .col-qty {
+            width: 3.5%;
+        }
+
+        .col-type {
+            width: 5.5%;
+        }
+
+        .col-catalog {
+            width: 6.5%;
+        }
+
+        .col-provider {
+            width: 8%;
+        }
+
+        .col-expiry {
+            width: 5.5%;
+        }
+
+        .col-id {
+            width: 4.5%;
+        }
+
+        .col-area {
+            width: 5.5%;
+        }
+
+        .col-envase {
+            width: 4.5%;
+        }
+
+        .col-etiqueta {
+            width: 4.5%;
+        }
+
+        .col-cert {
+            width: 4.5%;
+        }
+
+        .col-eval {
+            width: 5.5%;
+        }
+
+        .col-obs {
+            width: 5.5%;
+        }
+
+        .inventory-table td {
+            vertical-align: middle;
+            font-size: 8px;
+            height: 25px;
+            /* ensure minimum height for rows */
+        }
+    </style>
+</head>
+
+<body>
+
+    <table class="header-table">
+        <tr>
+            <td style="width: 20%; text-align: center; border-right: 1px solid #000;">
+                <img src="{{ assets_dir }}/UTP.png" style="max-height: 55px;"><br>
+                <div style="font-size: 9px; font-weight: bold; margin-top: 4px;">UNIVERSIDAD TECNOLÓGICA DE PANAMÁ</div>
+            </td>
+            <td style="width: 60%; text-align: center; border-right: 1px solid #000;">
+                <div class="title-text">LABORATORIO DE SUELOS Y MATERIALES DE CHIRIQUÍ</div>
+                <div class="bold" style="font-size: 12px; margin-top: 2px;">REGISTROS TÉCNICOS</div>
+                <div class="bold" style="font-size: 11px; margin-top: 2px;">RT-LSMCH-067</div>
+            </td>
+            <td style="width: 20%; text-align: center;">
+                <img src="{{ assets_dir }}/LSMCH.png" style="max-height: 55px;"><br>
+                <div style="font-size: 8px; font-weight: bold; margin-top: 4px;">LABORATORIO DE SUELOS Y MATERIALES
+                </div>
+            </td>
+        </tr>
+        <tr>
+            <td colspan="3" class="bold"
+                style="font-size: 10px; text-align: center; border-top: 1px solid #000; padding: 6px;">
+                REGISTRO DE ADQUISICIÓN, INSPECCIÓN, EVALUACIÓN Y ALMACENAJE DE: REACTIVOS QUÍMICOS, CRISTALERÍA Y
+                MATERIALES CONSUMIBLES DEL LABORATORIO
+            </td>
+        </tr>
+    </table>
+
+    <table class="sub-header-table" style="width: 100%; border-collapse: collapse; margin-bottom: 20px;">
+        <tr>
+            <td style="width: 15%; border: 1px solid #000; text-align: center; vertical-align: middle;">REVISIÓN 01</td>
+            <td style="width: 25%; border: 1px solid #000; text-align: center; vertical-align: middle;">
+                GENERADO POR:<br>
+                LICDO. RICARDO MONTERO<br>
+                RESPONSABLE TÉCNICO
+            </td>
+            <td style="width: 30%; border: 1px solid #000; text-align: center; vertical-align: middle;">
+                REVISADO POR:<br>
+                LICDA. CARMEN JURADO<br>
+                REPRESENTANTE DEL SISTEMA DE GESTIÓN
+            </td>
+            <td style="width: 20%; border: 1px solid #000; text-align: center; vertical-align: middle;">
+                APROBADO POR:<br><br>
+                <span
+                    style="text-decoration: underline;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><br>
+                ING. AMIR ATENCIO<br>JEFE DE LABORATORIO<br>FECHA: 2025-04-22
+            </td>
+            <td style="width: 10%; border: 1px solid #000; text-align: center; vertical-align: middle;">PÁGINA 1 DE 1
+            </td>
+        </tr>
+    </table>
+
+    <table class="inventory-table">
+        <thead>
+            <tr>
+                <th rowspan="2" class="col-date">Fecha de<br>Recepción<br>(año-mes-día)</th>
+                <th rowspan="2" class="col-name">Nombre del<br>Reactivo /<br>accesorio /<br>Cristalería /<br>Material
+                    consumible</th>
+                <th rowspan="2" class="col-ref">Referencia<br>de compra</th>
+                <th colspan="7">Especificaciones</th>
+                <th colspan="2">Almacenamiento</th>
+                <th colspan="3">Evaluación/ Inspección</th>
+                <th rowspan="2" class="col-eval">Técnico<br>Evaluador</th>
+                <th rowspan="2" class="col-obs">Observaciones</th>
+            </tr>
+            <tr>
+                <th class="col-brand">Marca</th>
+                <th class="col-desc">Descripción</th>
+                <th class="col-pres">Presentación</th>
+                <th class="col-qty">Cant.</th>
+                <th class="col-type">Tipo de<br>Reactivo</th>
+                <th class="col-catalog">Catálogo /<br>Lote o<br>batch /<br>Modelo<br>de Equipo</th>
+                <th class="col-provider">Proveedor</th>
+                <th class="col-expiry">Fecha de<br>caducidad</th>
+                <th class="col-id">ID<br>asignado</th>
+                <th class="col-area">Área de<br>almacenamiento</th>
+                <th class="col-envase">Envase</th>
+                <th class="col-etiqueta">Etiqueta</th>
+                <th class="col-cert">Cert. De<br>Análisis</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for item in items %}
+            <tr>
+                <td>{{ item.receive_date or '' }}</td>
+                <td style="text-align: left;">{{ item.item_name or '' }}</td>
+                <td>{{ item.purchase_ref or '' }}</td>
+                <td>{{ item.brand or '' }}</td>
+                <td style="text-align: left;">{{ item.description or '' }}</td>
+                <td>{{ item.presentation or '' }}</td>
+                <td>{{ item.quantity or '' }}</td>
+                <td>{{ item.reagent_type or '' }}</td>
+                <td>{{ item.catalog_batch or '' }}</td>
+                <td>{{ item.provider or '' }}</td>
+                <td>{{ item.expiry_date or '' }}</td>
+                <td>{{ item.assigned_id or '' }}</td>
+                <td>{{ item.storage_area or '' }}</td>
+                <td>{{ item.container_eval or '' }}</td>
+                <td>{{ item.label_eval or '' }}</td>
+                <td>{{ item.cert_eval or '' }}</td>
+                <td>{{ item.evaluator_tech or '' }}</td>
+                <td>{{ item.observations or '' }}</td>
+            </tr>
+            {% endfor %}
+
+            {% if not items or items|length == 0 %}
+            {% for i in range(1, 5) %}
+            <tr>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+            </tr>
+            {% endfor %}
+            {% endif %}
+        </tbody>
+    </table>
+
+</body>
+
+</html>

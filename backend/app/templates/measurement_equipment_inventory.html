@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Inventario de Equipos de Medición</title>
+    <style>
+        @page {
+            size: letter landscape;
+            margin: 10mm;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            font-size: 9px;
+            color: #000;
+            line-height: 1.2;
+            margin: 0;
+            padding: 0;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th,
+        td {
+            border: 1px solid #000;
+            padding: 4px 2px;
+            text-align: center;
+        }
+
+        .header-table {
+            border: 1px solid #000;
+            margin-bottom: 10px;
+        }
+
+        .header-table td {
+            border: 1px solid #000;
+            vertical-align: middle;
+            padding: 5px;
+        }
+
+        .bold {
+            font-weight: bold;
+        }
+
+        .title-text {
+            font-size: 11px;
+            font-weight: bold;
+        }
+
+        .inventory-table th {
+            font-weight: bold;
+            font-size: 8px;
+            /* Slightly smaller for this table due to many columns */
+        }
+
+        .inventory-table td {
+            vertical-align: middle;
+            font-size: 8px;
+            height: 15px;
+            /* ensure empty rows have height */
+        }
+
+        .empty-row td {
+            color: #add8e6;
+            /* Light blue color for the line in the empty row, imitating the image */
+            border-bottom: 1px solid #add8e6;
+        }
+    </style>
+</head>
+
+<body>
+
+    <table class="header-table">
+        <tr>
+            <td style="width: 25%; text-align: center; border-right: 1px solid #000;">
+                <img src="{{ assets_dir }}/UTP.png" style="max-height: 50px;"><br>
+                <div style="font-size: 8px; font-weight: bold; margin-top: 4px;">UNIVERSIDAD TECNOLÓGICA DE PANAMÁ</div>
+            </td>
+            <td style="width: 50%; text-align: center; border-right: 1px solid #000;">
+                <div class="title-text" style="font-size: 13px;">LABORATORIO DE SUELOS Y MATERIALES DE CHIRIQUÍ</div>
+                <div class="bold" style="font-size: 12px; margin-top: 2px;">DOCUMENTOS TÉCNICOS</div>
+                <div class="bold" style="font-size: 11px; margin-top: 2px;">DT-LSMCH-009</div>
+                <div class="bold" style="font-size: 11px; margin-top: 2px;">Revisión 01</div>
+            </td>
+            <td style="width: 25%; text-align: center;">
+                <img src="{{ assets_dir }}/LSMCH.png" style="max-height: 50px;"><br>
+                <div style="font-size: 8px; font-weight: bold; margin-top: 4px;">LABORATORIO DE SUELOS Y MATERIALES
+                </div>
+            </td>
+        </tr>
+        <tr>
+            <td colspan="3" class="bold"
+                style="font-size: 12px; text-align: center; border-top: 1px solid #000; padding: 4px;">
+                INVENTARIO DE EQUIPOS DE MEDICIÓN
+            </td>
+        </tr>
+    </table>
+
+    <table class="inventory-table">
+        <thead>
+            <tr>
+                <th style="width: 3%;">N.º</th>
+                <th style="width: 8%;">Código de<br>identificació<br>n o número<br>de inventario</th>
+                <th style="width: 10%;">Equipo<br>(incluya la<br>versión del<br>software y<br>del<br>firmware)</th>
+                <th style="width: 8%;">Fabricant<br>e</th>
+                <th style="width: 6%;">Nro. de<br>serie</th>
+                <th style="width: 6%;">Capacida<br>d</th>
+                <th style="width: 7%;">Ubicació<br>n actual</th>
+                <th style="width: 9%;">Método o<br>procedimiento<br>de<br>mantenimiento<br>(Si lo efectúa un<br>tercero
+                    indicarlo)</th>
+                <th style="width: 8%;">Método o<br>procedimient<br>o de<br>calibración</th>
+                <th style="width: 6%;">Período<br>de<br>calibració<br>n</th>
+                <th style="width: 6%;">Última<br>calibració<br>n</th>
+                <th style="width: 7%;">Calibrado<br>por:<br>(Empresa)</th>
+                <th style="width: 6%;">Material<br>de<br>referenci<br>a</th>
+                <th style="width: 10%;">¿Ha<br>sufrido<br>algún<br>daño?<br>Indicarlo</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for item in items %}
+            <tr>
+                <td style="border-bottom: 1px solid #add8e6;">{{ loop.index }}</td>
+                <td style="border-bottom: 1px solid #add8e6;">{{ item.inventory_code or '' }}</td>
+                <td style="text-align: left; border-bottom: 1px solid #add8e6;">{{ item.equipment_name or '' }}</td>
+                <td style="border-bottom: 1px solid #add8e6;">{{ item.manufacturer or '' }}</td>
+                <td style="border-bottom: 1px solid #add8e6;">{{ item.serial_number or '' }}</td>
+                <td style="border-bottom: 1px solid #add8e6;">{{ item.capacity or '' }}</td>
+                <td style="border-bottom: 1px solid #add8e6;">{{ item.location or '' }}</td>
+                <td style="border-bottom: 1px solid #add8e6;">{{ item.maintenance_method or '' }}</td>
+                <td style="border-bottom: 1px solid #add8e6;">{{ item.calibration_method or '' }}</td>
+                <td style="border-bottom: 1px solid #add8e6;">{{ item.calibration_period or '' }}</td>
+                <td style="border-bottom: 1px solid #add8e6;">{{ item.last_calibration or '' }}</td>
+                <td style="border-bottom: 1px solid #add8e6;">{{ item.calibrated_by or '' }}</td>
+                <td style="border-bottom: 1px solid #add8e6;">{{ item.reference_material or '' }}</td>
+                <td style="border-bottom: 1px solid #add8e6;">{{ item.damage_assessment or '' }}</td>
+            </tr>
+            {% endfor %}
+
+            {% if not items or items|length == 0 %}
+            {% for i in range(1, 6) %}
+            <tr class="empty-row">
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+            </tr>
+            {% endfor %}
+            {% endif %}
+        </tbody>
+    </table>
+
+</body>
+
+</html>

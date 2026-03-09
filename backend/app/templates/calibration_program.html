@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Programa de Verificación Y/O Calibración</title>
+    <style>
+        @page {
+            size: letter landscape;
+            margin: 10mm;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            font-size: 9px;
+            color: #000;
+            line-height: 1.2;
+            margin: 0;
+            padding: 0;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th,
+        td {
+            border: 1px solid #000;
+            padding: 4px 2px;
+            text-align: center;
+        }
+
+        .header-table {
+            border: 1px solid #000;
+            margin-bottom: 20px;
+        }
+
+        .header-table td {
+            border: 1px solid #000;
+            vertical-align: middle;
+            padding: 5px;
+        }
+
+        .bold {
+            font-weight: bold;
+        }
+
+        .title-text {
+            font-size: 11px;
+            font-weight: bold;
+        }
+
+        .program-table th {
+            font-weight: bold;
+            font-size: 9px;
+            vertical-align: middle;
+        }
+
+        .program-table td {
+            vertical-align: middle;
+            font-size: 9px;
+            height: 15px;
+            /* Minimum height for rows */
+        }
+    </style>
+</head>
+
+<body>
+
+    <table class="header-table">
+        <tr>
+            <td style="width: 20%; text-align: center; border-right: 1px solid #000;">
+                <img src="{{ assets_dir }}/UTP.png" style="max-height: 50px;"><br>
+                <div style="font-size: 8px; font-weight: bold; margin-top: 4px;">UNIVERSIDAD<br>TECNOLÓGICA DE PANAMÁ
+                </div>
+            </td>
+            <td style="width: 60%; text-align: center; border-right: 1px solid #000;">
+                <div class="title-text" style="font-size: 13px;">LABORATORIO DE SUELOS Y MATERIALES DE CHIRIQUÍ</div>
+                <div class="bold" style="font-size: 12px; margin-top: 2px;">DOCUMENTOS DE TÉCNICOS</div>
+                <div class="bold" style="font-size: 11px; margin-top: 2px;">DT-LSMCH-008</div>
+                <div class="bold" style="font-size: 11px; margin-top: 2px;">Revisión 01</div>
+            </td>
+            <td style="width: 20%; text-align: center;">
+                <img src="{{ assets_dir }}/LSMCH.png" style="max-height: 50px;"><br>
+                <div style="font-size: 8px; font-weight: bold; margin-top: 4px;">LABORATORIO DE SUELOS Y<br>MATERIALES
+                </div>
+            </td>
+        </tr>
+        <tr>
+            <td colspan="3" class="bold"
+                style="font-size: 12px; text-align: center; border-top: 1px solid #000; padding: 6px;">
+                PROGRAMA DE VERIFICACIÓN Y/O CALIBRACIÓN DE EQUIPOS E INSTRUMENTOS DE ENSAYO
+            </td>
+        </tr>
+    </table>
+
+    <table class="program-table">
+        <thead>
+            <tr>
+                <th rowspan="2" style="width: 8%;">NUMERO DE<br>INVENTARIO<br>INTERNO</th>
+                <th rowspan="2" style="width: 9%;">No. DE<br>ACTIVO UTP</th>
+                <th rowspan="2" style="width: 9%;">MARCA<br>/MODELO</th>
+                <th rowspan="2" style="width: 13%;">EQUIPO /<br>INSTRUMENTO</th>
+                <th colspan="3" style="width: 30%;">EQUIPO / INSTRUMENTO</th>
+                <th rowspan="2" style="width: 10%;">FRECUENCIA<br>DE<br>CALIBRACIÓN<br>/<br>VERIFICACIÓN</th>
+                <th rowspan="2" style="width: 10%;">FECHA<br>ULTIMA DE<br>CALIBRACIÓN<br>/<br>VERIFICACIÓN</th>
+                <th rowspan="2" style="width: 11%;">FECHA<br>APROXIMADA<br>DE<br>CALIBRACIÓN<br>/<br>VERIFICACIÓN</th>
+            </tr>
+            <tr>
+                <th style="width: 10%;">NOMBRE</th>
+                <th style="width: 10%;">RANGO O<br>PUNTOS DE<br>CALIBRACIÓN</th>
+                <th style="width: 10%;">CALIBRADO<br>POR</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for item in items %}
+            <tr>
+                <td>{{ item.internal_inventory_number or '' }}</td>
+                <td>{{ item.utp_asset_number or '' }}</td>
+                <td>{{ item.brand_model or '' }}</td>
+                <td style="text-align: left; padding-left: 4px;">{{ item.equipment_instrument or '' }}</td>
+                <td style="text-align: left; padding-left: 4px;">{{ item.calibration_name or '' }}</td>
+                <td>{{ item.calibration_range or '' }}</td>
+                <td>{{ item.calibrated_by or '' }}</td>
+                <td>{{ item.calibration_frequency or '' }}</td>
+                <td>{{ item.last_calibration_date or '' }}</td>
+                <td>{{ item.next_calibration_date or '' }}</td>
+            </tr>
+            {% endfor %}
+
+            {% if not items or items|length == 0 %}
+            {% for i in range(5) %}
+            <tr>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+            </tr>
+            {% endfor %}
+            {% endif %}
+        </tbody>
+    </table>
+
+</body>
+
+</html>

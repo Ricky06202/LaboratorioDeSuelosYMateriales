@@ -1,0 +1,482 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Verificación de Equipos Adquiridos</title>
+    <style>
+        @page {
+            size: letter portrait;
+            margin: 10mm;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            font-size: 11px;
+            color: #000;
+            line-height: 1.2;
+            margin: 0;
+            padding: 0;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th,
+        td {
+            border: 1px solid #000;
+            padding: 4px;
+            text-align: left;
+        }
+
+        .header-table {
+            border: 1px solid #000;
+            margin-bottom: 0px;
+            text-align: center;
+        }
+
+        .header-table td {
+            border: 1px solid #000;
+            vertical-align: middle;
+            padding: 5px;
+            text-align: center;
+        }
+
+        .bold {
+            font-weight: bold;
+        }
+
+        .title-text {
+            font-size: 14px;
+            font-weight: bold;
+        }
+
+        .sub-header-table td {
+            font-size: 9px;
+            padding: 5px;
+            vertical-align: top;
+            text-align: center;
+        }
+
+        .checkbox {
+            display: inline-block;
+            width: 10px;
+            height: 10px;
+            border: 1px solid #000;
+            vertical-align: middle;
+            text-align: center;
+            line-height: 10px;
+            font-weight: bold;
+            margin-right: 5px;
+            font-size: 9px;
+            background-color: transparent;
+            /* white bg as per images */
+        }
+
+        .checked::after {
+            content: 'x';
+            /* Or checkmark */
+        }
+
+        .gray-header {
+            background-color: #d9d9d9;
+            font-weight: bold;
+            text-align: center;
+            font-size: 12px;
+            padding: 6px;
+        }
+
+        .info-table {
+            margin-top: 5px;
+            margin-bottom: 20px;
+        }
+
+        .info-table td {
+            padding: 5px;
+        }
+
+        .criteria-table th {
+            font-size: 11px;
+            text-align: center;
+            font-weight: bold;
+        }
+
+        .criteria-table td {
+            vertical-align: middle;
+            padding: 6px;
+        }
+
+        .page-break {
+            page-break-before: always;
+        }
+
+        .footer-table td {
+            padding: 6px;
+            vertical-align: middle;
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- PÁGINA 1 -->
+    <table class="header-table">
+        <tr>
+            <td style="width: 20%; border-right: 1px solid #000;">
+                <img src="{{ assets_dir }}/UTP.png" style="max-height: 55px;"><br>
+                <div style="font-size: 9px; font-weight: bold; margin-top: 4px;">UNIVERSIDAD<br>TECNOLÓGICA DE<br>PANAMÁ
+                </div>
+            </td>
+            <td style="width: 60%; border-right: 1px solid #000;">
+                <div class="title-text">LABORATORIO DE SUELOS Y<br>MATERIALES DE CHIRIQUÍ</div>
+                <div class="bold" style="font-size: 13px; margin-top: 4px;">REGISTROS TÉCNICOS</div>
+                <div class="bold" style="font-size: 12px; margin-top: 4px;">RT-LSMCH-008</div>
+            </td>
+            <td style="width: 20%;">
+                <img src="{{ assets_dir }}/LSMCH.png" style="max-height: 55px;"><br>
+                <div style="font-size: 8px; font-weight: bold; margin-top: 4px;">LABORATORIO DE SUELOS<br>Y MATERIALES
+                </div>
+            </td>
+        </tr>
+        <tr>
+            <td colspan="3" class="bold"
+                style="font-size: 12px; text-align: center; border-top: 1px solid #000; padding: 6px;">
+                VERIFICACIÓN DE LOS EQUIPOS, INSUMOS O HERRAMIENTAS ADQUIRIDAS<br>MEDIANTE COMPRA
+            </td>
+        </tr>
+    </table>
+
+    <table class="sub-header-table" style="width: 100%; border-collapse: collapse; margin-bottom: 0px;">
+        <tr>
+            <td style="width: 15%; border: 1px solid #000; text-align: center; vertical-align: middle;">REVISIÓN<br>01
+            </td>
+            <td style="width: 25%; border: 1px solid #000; text-align: center; vertical-align: middle;">
+                GENERADO POR:<br>
+                LICDO. JUAN QUIEL<br>
+                RESPONSABLE TÉCNICO
+            </td>
+            <td style="width: 30%; border: 1px solid #000; text-align: center; vertical-align: middle;">
+                REVISADO POR:<br>
+                LICDA. CARMEN JURADO<br>
+                REPRESENTANTE DEL SISTEMA<br>DE GESTIÓN
+            </td>
+            <td style="width: 20%; border: 1px solid #000; text-align: center; vertical-align: middle;">
+                APROBADO POR:<br><br>
+                <span
+                    style="text-decoration: underline;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><br>
+                ING. AMIR ATENCIO<br>JEFE DE LABORATORIO<br>FECHA: 2025-11-26
+            </td>
+            <td
+                style="width: 10%; border: 1px solid #000; text-align: center; vertical-align: middle; background-color: #f2f2f2;">
+                PÁGINA <span class="bold">1</span> DE <span class="bold">2</span></td>
+        </tr>
+    </table>
+
+    <table class="info-table">
+        <tr>
+            <td style="width: 30%; text-align: center;">Tipo de Fondo</td>
+            <td style="width: 30%;">
+                <span class="checkbox {% if data.fund_type == 'Funcionamiento' %}checked{% endif %}"></span>
+                Funcionamiento
+            </td>
+            <td style="width: 20%;">
+                <span class="checkbox {% if data.fund_type == 'Inversiones' %}checked{% endif %}"></span> Inversiones
+            </td>
+            <td style="width: 20%;">
+                <span class="checkbox {% if data.fund_type == 'FTP' %}checked{% endif %}"></span> FTP
+            </td>
+        </tr>
+        <tr>
+            <td>Orden de Compra No.:</td>
+            <td colspan="2">{{ data.purchase_order_no or '' }}</td>
+            <td>Solicitud No.: {{ data.request_no or '' }}</td>
+        </tr>
+        <tr>
+            <td rowspan="2">Tipo de bien Adquirido:</td>
+            <td><span class="checkbox {% if data.item_type == 'Equipo de Medición' %}checked{% endif %}"></span> Equipo
+                de Medición</td>
+            <td><span class="checkbox {% if data.item_type == 'Equipo Auxiliar' %}checked{% endif %}"></span> Equipo
+                Auxiliar</td>
+            <td><span class="checkbox {% if data.item_type == 'Insumos' %}checked{% endif %}"></span> Insumos</td>
+        </tr>
+        <tr>
+            <td><span class="checkbox {% if data.item_type == 'Herramientas' %}checked{% endif %}"></span> Herramientas
+            </td>
+            <td><span class="checkbox {% if data.item_type == 'Accesorio de Equipo' %}checked{% endif %}"></span>
+                Accesorio de Equipo</td>
+            <td><span class="checkbox {% if data.item_type == 'Otros' %}checked{% endif %}"></span> Otros</td>
+        </tr>
+        <tr>
+            <td>Nombre del bien Adquirido:</td>
+            <td colspan="3">{{ data.item_name or '' }}</td>
+        </tr>
+        <tr>
+            <td>Marca:</td>
+            <td colspan="2">{{ data.brand or '' }}</td>
+            <td>Modelo: {{ data.model or '' }}</td>
+        </tr>
+        <tr>
+            <td>Serie:</td>
+            <td>{{ data.serial or '' }}</td>
+            <td colspan="2">Proveedor: {{ data.provider or '' }}</td>
+        </tr>
+        <tr>
+            <td>Fecha de recibido:</td>
+            <td>{{ data.receive_date or '' }}</td>
+            <td colspan="2">ID Asignado: LSMCH-{{ data.assigned_id or '' }}</td>
+        </tr>
+    </table>
+
+    <table class="criteria-table" style="margin-bottom: 20px;">
+        <thead>
+            <tr>
+                <td colspan="5" class="gray-header">VERIFICACIÓN DE LAS ESPECIFICACIONES TÉCNICAS SOLICITADAS</td>
+            </tr>
+            <tr class="gray-header" style="font-size: 11px;">
+                <th rowspan="2" style="width: 5%;">No.</th>
+                <th rowspan="2" style="width: 65%;">DESCRIPCIÓN</th>
+                <th colspan="3" style="width: 30%;">CUMPLE</th>
+            </tr>
+            <tr class="gray-header" style="font-size: 11px;">
+                <th style="width: 10%;">SI</th>
+                <th style="width: 10%;">NO</th>
+                <th style="width: 10%;">N.A.</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td style="text-align: center;">1</td>
+                <td>Cumple con los parámetros de exactitud, precisión, linealidad, tolerancias o concentraciones
+                    solicitadas en las especificaciones técnicas.</td>
+                <td style="text-align: center;"><span
+                        class="checkbox {% if data.criteria_1 == 'SI' %}checked{% endif %}"></span></td>
+                <td style="text-align: center;"><span
+                        class="checkbox {% if data.criteria_1 == 'NO' %}checked{% endif %}"></span></td>
+                <td style="text-align: center;"><span
+                        class="checkbox {% if data.criteria_1 == 'NA' %}checked{% endif %}"></span></td>
+            </tr>
+            <tr>
+                <td style="text-align: center;">2</td>
+                <td>Cumple con las especificaciones técnicas de la orden de compra (normas ASTM/ISO, rangos, tamaño,
+                    dureza, capacidad, etc.).</td>
+                <td style="text-align: center;"><span
+                        class="checkbox {% if data.criteria_2 == 'SI' %}checked{% endif %}"></span></td>
+                <td style="text-align: center;"><span
+                        class="checkbox {% if data.criteria_2 == 'NO' %}checked{% endif %}"></span></td>
+                <td style="text-align: center;"><span
+                        class="checkbox {% if data.criteria_2 == 'NA' %}checked{% endif %}"></span></td>
+            </tr>
+            <tr>
+                <td style="text-align: center;">3</td>
+                <td>Las unidades de medida del equipo son coherentes con los métodos del laboratorio.</td>
+                <td style="text-align: center;"><span
+                        class="checkbox {% if data.criteria_3 == 'SI' %}checked{% endif %}"></span></td>
+                <td style="text-align: center;"><span
+                        class="checkbox {% if data.criteria_3 == 'NO' %}checked{% endif %}"></span></td>
+                <td style="text-align: center;"><span
+                        class="checkbox {% if data.criteria_3 == 'NA' %}checked{% endif %}"></span></td>
+            </tr>
+            <tr>
+                <td style="text-align: center;">4</td>
+                <td>El equipo es apto para el uso previsto (ensayo o medición específica).</td>
+                <td style="text-align: center;"><span
+                        class="checkbox {% if data.criteria_4 == 'SI' %}checked{% endif %}"></span></td>
+                <td style="text-align: center;"><span
+                        class="checkbox {% if data.criteria_4 == 'NO' %}checked{% endif %}"></span></td>
+                <td style="text-align: center;"><span
+                        class="checkbox {% if data.criteria_4 == 'NA' %}checked{% endif %}"></span></td>
+            </tr>
+            <tr>
+                <td style="text-align: center;">5</td>
+                <td>Se dispone de certificado de calibración (de fábrica o laboratorio externo).</td>
+                <td style="text-align: center;"><span
+                        class="checkbox {% if data.criteria_5 == 'SI' %}checked{% endif %}"></span></td>
+                <td style="text-align: center;"><span
+                        class="checkbox {% if data.criteria_5 == 'NO' %}checked{% endif %}"></span></td>
+                <td style="text-align: center;"><span
+                        class="checkbox {% if data.criteria_5 == 'NA' %}checked{% endif %}"></span></td>
+            </tr>
+            <tr>
+                <td style="text-align: center;">6</td>
+                <td>El equipo requiere calibración/verificación inicial antes de su puesta en servicio.</td>
+                <td style="text-align: center;"><span
+                        class="checkbox {% if data.criteria_6 == 'SI' %}checked{% endif %}"></span></td>
+                <td style="text-align: center;"><span
+                        class="checkbox {% if data.criteria_6 == 'NO' %}checked{% endif %}"></span></td>
+                <td style="text-align: center;"><span
+                        class="checkbox {% if data.criteria_6 == 'NA' %}checked{% endif %}"></span></td>
+            </tr>
+            <tr>
+                <td style="text-align: center;">7</td>
+                <td>El equipo incluye todos los componentes necesarios para su puesta en marcha (cables, baterías,
+                    sensores, accesorios).</td>
+                <td style="text-align: center;"><span
+                        class="checkbox {% if data.criteria_7 == 'SI' %}checked{% endif %}"></span></td>
+                <td style="text-align: center;"><span
+                        class="checkbox {% if data.criteria_7 == 'NO' %}checked{% endif %}"></span></td>
+                <td style="text-align: center;"><span
+                        class="checkbox {% if data.criteria_7 == 'NA' %}checked{% endif %}"></span></td>
+            </tr>
+            <tr>
+                <td style="text-align: center;">8</td>
+                <td>El equipo enciende y opera correctamente.</td>
+                <td style="text-align: center;"><span
+                        class="checkbox {% if data.criteria_8 == 'SI' %}checked{% endif %}"></span></td>
+                <td style="text-align: center;"><span
+                        class="checkbox {% if data.criteria_8 == 'NO' %}checked{% endif %}"></span></td>
+                <td style="text-align: center;"><span
+                        class="checkbox {% if data.criteria_8 == 'NA' %}checked{% endif %}"></span></td>
+            </tr>
+            <tr>
+                <td style="text-align: center;">9</td>
+                <td>No presenta daños físicos ni defectos visibles.</td>
+                <td style="text-align: center;"><span
+                        class="checkbox {% if data.criteria_9 == 'SI' %}checked{% endif %}"></span></td>
+                <td style="text-align: center;"><span
+                        class="checkbox {% if data.criteria_9 == 'NO' %}checked{% endif %}"></span></td>
+                <td style="text-align: center;"><span
+                        class="checkbox {% if data.criteria_9 == 'NA' %}checked{% endif %}"></span></td>
+            </tr>
+            <tr>
+                <td style="text-align: center;">10</td>
+                <td>Se entrega manual de uso y mantenimiento (físico o digital).</td>
+                <td style="text-align: center;"><span
+                        class="checkbox {% if data.criteria_10 == 'SI' %}checked{% endif %}"></span></td>
+                <td style="text-align: center;"><span
+                        class="checkbox {% if data.criteria_10 == 'NO' %}checked{% endif %}"></span></td>
+                <td style="text-align: center;"><span
+                        class="checkbox {% if data.criteria_10 == 'NA' %}checked{% endif %}"></span></td>
+            </tr>
+            <tr>
+                <td style="text-align: center;">11</td>
+                <td>Cuenta con garantía mínima de un (1) año.</td>
+                <td style="text-align: center;"><span
+                        class="checkbox {% if data.criteria_11 == 'SI' %}checked{% endif %}"></span></td>
+                <td style="text-align: center;"><span
+                        class="checkbox {% if data.criteria_11 == 'NO' %}checked{% endif %}"></span></td>
+                <td style="text-align: center;"><span
+                        class="checkbox {% if data.criteria_11 == 'NA' %}checked{% endif %}"></span></td>
+            </tr>
+            <tr>
+                <td style="text-align: center;">12</td>
+                <td>Se dispone de soporte técnico y repuestos.</td>
+                <td style="text-align: center;"><span
+                        class="checkbox {% if data.criteria_12 == 'SI' %}checked{% endif %}"></span></td>
+                <td style="text-align: center;"><span
+                        class="checkbox {% if data.criteria_12 == 'NO' %}checked{% endif %}"></span></td>
+                <td style="text-align: center;"><span
+                        class="checkbox {% if data.criteria_12 == 'NA' %}checked{% endif %}"></span></td>
+            </tr>
+            <tr>
+                <td style="text-align: center;">13</td>
+                <td>Requiere condiciones especiales de almacenamiento (temperatura, humedad, protección).</td>
+                <td style="text-align: center;"><span
+                        class="checkbox {% if data.criteria_13 == 'SI' %}checked{% endif %}"></span></td>
+                <td style="text-align: center;"><span
+                        class="checkbox {% if data.criteria_13 == 'NO' %}checked{% endif %}"></span></td>
+                <td style="text-align: center;"><span
+                        class="checkbox {% if data.criteria_13 == 'NA' %}checked{% endif %}"></span></td>
+            </tr>
+            <tr>
+                <td style="text-align: center;">14</td>
+                <td>Se definen las condiciones ambientales de operación.</td>
+                <td style="text-align: center;"><span
+                        class="checkbox {% if data.criteria_14 == 'SI' %}checked{% endif %}"></span></td>
+                <td style="text-align: center;"><span
+                        class="checkbox {% if data.criteria_14 == 'NO' %}checked{% endif %}"></span></td>
+                <td style="text-align: center;"><span
+                        class="checkbox {% if data.criteria_14 == 'NA' %}checked{% endif %}"></span></td>
+            </tr>
+        </tbody>
+    </table>
+
+    <div class="page-break"></div>
+
+    <!-- PÁGINA 2 -->
+    <table class="header-table">
+        <tr>
+            <td style="width: 20%; border-right: 1px solid #000;">
+                <img src="{{ assets_dir }}/UTP.png" style="max-height: 55px;"><br>
+                <div style="font-size: 9px; font-weight: bold; margin-top: 4px;">UNIVERSIDAD<br>TECNOLÓGICA DE<br>PANAMÁ
+                </div>
+            </td>
+            <td style="width: 60%; border-right: 1px solid #000;">
+                <div class="title-text">LABORATORIO DE SUELOS Y<br>MATERIALES DE CHIRIQUÍ</div>
+                <div class="bold" style="font-size: 13px; margin-top: 4px;">REGISTROS TÉCNICOS</div>
+                <div class="bold" style="font-size: 12px; margin-top: 4px;">RT-LSMCH-008</div>
+            </td>
+            <td style="width: 20%;">
+                <img src="{{ assets_dir }}/LSMCH.png" style="max-height: 55px;"><br>
+                <div style="font-size: 8px; font-weight: bold; margin-top: 4px;">LABORATORIO DE SUELOS<br>Y MATERIALES
+                </div>
+            </td>
+        </tr>
+        <tr>
+            <td colspan="3" class="bold"
+                style="font-size: 12px; text-align: center; border-top: 1px solid #000; padding: 6px;">
+                VERIFICACIÓN DE LOS EQUIPOS, INSUMOS O HERRAMIENTAS ADQUIRIDAS<br>MEDIANTE COMPRA
+            </td>
+        </tr>
+    </table>
+
+    <table class="sub-header-table" style="width: 100%; border-collapse: collapse; margin-bottom: 20px;">
+        <tr>
+            <td style="width: 15%; border: 1px solid #000; text-align: center; vertical-align: middle;">REVISIÓN<br>01
+            </td>
+            <td style="width: 25%; border: 1px solid #000; text-align: center; vertical-align: middle;">
+                GENERADO POR:<br>
+                LICDO. JUAN QUIEL<br>
+                RESPONSABLE TÉCNICO
+            </td>
+            <td style="width: 30%; border: 1px solid #000; text-align: center; vertical-align: middle;">
+                REVISADO POR:<br>
+                LICDA. CARMEN JURADO<br>
+                REPRESENTANTE DEL SISTEMA<br>DE GESTIÓN
+            </td>
+            <td style="width: 20%; border: 1px solid #000; text-align: center; vertical-align: middle;">
+                APROBADO POR:<br><br>
+                <span
+                    style="text-decoration: underline;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><br>
+                ING. AMIR ATENCIO<br>JEFE DE LABORATORIO<br>FECHA: 2025-11-26
+            </td>
+            <td
+                style="width: 10%; border: 1px solid #000; text-align: center; vertical-align: middle; background-color: #f2f2f2;">
+                PÁGINA <span class="bold">2</span> DE <span class="bold">2</span></td>
+        </tr>
+    </table>
+
+    <table class="footer-table" style="margin-top: 10px;">
+        <tr>
+            <td style="width: 25%;">N.A.: No Aplica</td>
+            <td style="width: 25%; text-align: center;"><span
+                    class="checkbox {% if data.approval_status == 'Aprobado para Uso' %}checked{% endif %}"></span>
+                Aprobado para Uso</td>
+            <td style="width: 30%; text-align: center;"><span
+                    class="checkbox {% if data.approval_status == 'Aprobado con restricciones' %}checked{% endif %}"></span>
+                Aprobado con restricciones</td>
+            <td style="text-align: center;"><span
+                    class="checkbox {% if data.approval_status == 'No Aprobado' %}checked{% endif %}"></span> No
+                Aprobado</td>
+        </tr>
+        <tr>
+            <td colspan="4">Observaciones: {{ data.observations or '' }}<br><br></td>
+        </tr>
+        <tr>
+            <td style="text-align: right;">Verificado por:</td>
+            <td>{{ data.verified_by or '' }}</td>
+            <td style="text-align: right;">Revisado por:</td>
+            <td>{{ data.reviewed_by or '' }}</td>
+        </tr>
+        <tr>
+            <td style="text-align: right;">Fecha:</td>
+            <td>{{ data.verification_date or '' }}</td>
+            <td style="text-align: right;">Fecha:</td>
+            <td>{{ data.review_date or '' }}</td>
+        </tr>
+    </table>
+
+</body>
+
+</html>

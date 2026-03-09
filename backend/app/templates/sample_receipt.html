@@ -1,0 +1,434 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Recibo de Muestras</title>
+    <style>
+        @page {
+            size: letter portrait;
+            margin: 10mm;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            font-size: 11px;
+            color: #000;
+            line-height: 1.2;
+            margin: 0;
+            padding: 0;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th,
+        td {
+            border: 1px solid #000;
+            padding: 4px;
+            text-align: left;
+        }
+
+        .header-table {
+            border: 1px solid #000;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .header-table td {
+            border: 1px solid #000;
+            vertical-align: middle;
+            padding: 5px;
+            text-align: center;
+        }
+
+        .bold {
+            font-weight: bold;
+        }
+
+        .title-text {
+            font-size: 14px;
+            font-weight: bold;
+        }
+
+        .sub-header-table td {
+            font-size: 9px;
+            padding: 5px;
+            vertical-align: top;
+            text-align: center;
+        }
+
+        .checkbox {
+            display: inline-block;
+            width: 12px;
+            height: 12px;
+            border: 1px solid #000;
+            vertical-align: middle;
+            text-align: center;
+            line-height: 12px;
+            font-weight: bold;
+            margin-right: 5px;
+            background-color: #d9d9d9;
+        }
+
+        .checked {
+            background-color: #d9d9d9;
+        }
+
+        .checked::after {
+            content: '\2713';
+            /* checkmark */
+        }
+
+        .gray-header {
+            background-color: #d9d9d9;
+            font-weight: bold;
+            text-align: center;
+            font-size: 12px;
+            padding: 6px;
+        }
+
+        .info-table td {
+            padding: 6px;
+        }
+
+        .sample-types-table {
+            border: 1px solid #d9d9d9;
+            /* The outer border is light gray in the image, or none */
+            margin-bottom: 10px;
+        }
+
+        .sample-types-table td {
+            border: none;
+            padding: 4px 10px;
+            font-size: 11px;
+            vertical-align: top;
+        }
+
+        .condition-table th {
+            font-size: 11px;
+            text-align: center;
+            font-weight: bold;
+            background-color: #d9d9d9;
+            padding: 6px;
+        }
+
+        .condition-table td {
+            text-align: center;
+            height: 20px;
+        }
+
+        .page-break {
+            page-break-before: always;
+        }
+
+        .signature-line {
+            border-bottom: 1px solid #000;
+            display: inline-block;
+            width: 250px;
+            margin-left: 5px;
+            margin-right: 50px;
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- PÁGINA 1 -->
+    <table class="header-table">
+        <tr>
+            <td style="width: 20%; border-right: 1px solid #000;">
+                <img src="{{ assets_dir }}/UTP.png" style="max-height: 55px;"><br>
+                <div style="font-size: 9px; font-weight: bold; margin-top: 4px;">UNIVERSIDAD<br>TECNOLÓGICA DE<br>PANAMÁ
+                </div>
+            </td>
+            <td style="width: 60%; border-right: 1px solid #000;">
+                <div class="title-text">LABORATORIO DE SUELOS Y<br>MATERIALES DE CHIRIQUÍ</div>
+                <div class="bold" style="font-size: 13px; margin-top: 4px;">REGISTROS TÉCNICOS</div>
+                <div class="bold" style="font-size: 12px; margin-top: 4px;">RT-LSMCH-025</div>
+            </td>
+            <td style="width: 20%;">
+                <img src="{{ assets_dir }}/LSMCH.png" style="max-height: 55px;"><br>
+                <div style="font-size: 8px; font-weight: bold; margin-top: 4px;">LABORATORIO DE SUELOS<br>Y MATERIALES
+                </div>
+            </td>
+        </tr>
+        <tr>
+            <td colspan="3" class="bold"
+                style="font-size: 13px; text-align: center; border-top: 1px solid #000; padding: 6px;">
+                RECIBO DE MUESTRAS
+            </td>
+        </tr>
+    </table>
+
+    <table class="sub-header-table" style="width: 100%; border-collapse: collapse; margin-bottom: 20px;">
+        <tr>
+            <td style="width: 15%; border: 1px solid #000; text-align: center; vertical-align: middle;">REVISIÓN<br>03
+            </td>
+            <td style="width: 25%; border: 1px solid #000; text-align: center; vertical-align: middle;">
+                GENERADO POR:<br>
+                LICDO. RICARDO MONTERO<br>
+                RESPONSABLE TÉCNICO
+            </td>
+            <td style="width: 30%; border: 1px solid #000; text-align: center; vertical-align: middle;">
+                REVISADO POR:<br>
+                LICDA. CARMEN JURADO<br>
+                REPRESENTANTE DEL SISTEMA<br>DE GESTIÓN
+            </td>
+            <td style="width: 20%; border: 1px solid #000; text-align: center; vertical-align: middle;">
+                APROBADO POR:<br><br>
+                <span
+                    style="text-decoration: underline;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><br>
+                ING. AMIR ATENCIO<br>JEFE DE LABORATORIO<br>FECHA: 2026-01-16
+            </td>
+            <td style="width: 10%; border: 1px solid #000; text-align: center; vertical-align: middle;">PÁGINA <span
+                    style="text-decoration: underline;">1</span> DE <span style="text-decoration: underline;">2</span>
+            </td>
+        </tr>
+    </table>
+
+    <table class="info-table" style="margin-bottom: 20px;">
+        <tr>
+            <td style="border: none; width: 50%;"></td>
+            <td class="gray-header" style="width: 25%; font-size: 11px; padding: 4px;">RECIBO DE MUESTRA No.</td>
+            <td style="width: 25%;">{{ data.receipt_number or '' }}</td>
+        </tr>
+        <tr>
+            <td class="gray-header" style="width: 50%;">NOMBRE DEL CLIENTE</td>
+            <td class="gray-header" style="width: 50%;" colspan="2">ORDEN DE SERVICIO No.</td>
+        </tr>
+        <tr>
+            <td style="text-align: center;">{{ data.client_name or '' }}</td>
+            <td style="text-align: center;" colspan="2">{{ data.service_order_number or '' }}</td>
+        </tr>
+    </table>
+
+    <div style="border: 1px solid #d9d9d9;">
+        <div class="gray-header">MUESTRAS TRAIDAS POR</div>
+        <table style="width: 100%; border: none;">
+            <tr>
+                <td style="border: none; padding: 10px;">
+                    <span class="checkbox {% if data.brought_by == 'Cliente' %}checked{% endif %}"></span> Cliente
+                </td>
+                <td style="border: none; padding: 10px;">
+                    <span class="checkbox {% if data.brought_by == 'Personal' %}checked{% endif %}"></span> Personal
+                </td>
+            </tr>
+        </table>
+
+        <div class="gray-header" style="border-top: 1px solid #d9d9d9; border-bottom: 1px solid #d9d9d9;">TIPO DE
+            MUESTRA</div>
+        <table class="sample-types-table" style="width: 100%;">
+            <tr>
+                <td style="width: 50%;">
+                    <div style="margin-bottom: 4px;"><span
+                            class="checkbox {% if 'Cilindro de concreto de 150 x 300 mm' in data.sample_types %}checked{% endif %}"></span>
+                        Cilindro de concreto de 150 x 300 mm</div>
+                    <div style="margin-bottom: 4px;"><span
+                            class="checkbox {% if 'Cilindro de concreto de 100 x 200 mm' in data.sample_types %}checked{% endif %}"></span>
+                        Cilindro de concreto de 100 x 200 mm</div>
+                    <div style="margin-bottom: 4px;"><span
+                            class="checkbox {% if 'Vigas de concreto' in data.sample_types %}checked{% endif %}"></span>
+                        Vigas de concreto</div>
+                    <div style="margin-bottom: 4px;"><span class="checkbox {% if 'Bloques de concreto de 4"' in data.sample_types %}checked{% endif %}"></span> Bloques de concreto de 4"</div>
+                    <div style="margin-bottom: 4px;"><span class="checkbox {% if ' Bloques de concreto de 6"' in
+                            data.sample_types %}checked{% endif %}"></span> Bloques de concreto de 6"</div>
+                    <div style="margin-bottom: 4px;"><span class="checkbox {% if 'Bloques de concreto de 8"' in data.sample_types %}checked{% endif %}"></span> Bloques de concreto de 8"</div>
+                    <div style="margin-bottom: 4px;"><span class="checkbox {% if ' Núcleos de concreto' in
+                            data.sample_types %}checked{% endif %}"></span> Núcleos de concreto</div>
+                    <div style="margin-bottom: 4px;"><span
+                            class="checkbox {% if 'Tubo de concreto de 30 cm de Ø' in data.sample_types %}checked{% endif %}"></span>
+                        Tubo de concreto de 30 cm de Ø</div>
+                    <div style="margin-bottom: 4px;"><span
+                            class="checkbox {% if 'Tubo de concreto de 45 cm de Ø' in data.sample_types %}checked{% endif %}"></span>
+                        Tubo de concreto de 45 cm de Ø</div>
+                    <div style="margin-bottom: 4px;"><span
+                            class="checkbox {% if 'Tubo de concreto de 60 cm de Ø' in data.sample_types %}checked{% endif %}"></span>
+                        Tubo de concreto de 60 cm de Ø</div>
+                    <div style="margin-bottom: 4px;"><span
+                            class="checkbox {% if 'Tubo de concreto de 75 cm de Ø' in data.sample_types %}checked{% endif %}"></span>
+                        Tubo de concreto de 75 cm de Ø</div>
+                    <div style="margin-bottom: 4px;"><span
+                            class="checkbox {% if 'Tubo de concreto de 90 cm de Ø' in data.sample_types %}checked{% endif %}"></span>
+                        Tubo de concreto de 90 cm de Ø</div>
+                </td>
+                <td style="width: 50%;">
+                    <div style="margin-bottom: 4px;"><span
+                            class="checkbox {% if 'Tubo de concreto de 105 cm de Ø' in data.sample_types %}checked{% endif %}"></span>
+                        Tubo de concreto de 105 cm de Ø</div>
+                    <div style="margin-bottom: 4px;"><span
+                            class="checkbox {% if 'Tubo de concreto de 120 cm de Ø' in data.sample_types %}checked{% endif %}"></span>
+                        Tubo de concreto de 120 cm de Ø</div>
+                    <div style="margin-bottom: 4px;"><span
+                            class="checkbox {% if 'Tubo de concreto de 135 cm de Ø' in data.sample_types %}checked{% endif %}"></span>
+                        Tubo de concreto de 135 cm de Ø</div>
+                    <div style="margin-bottom: 4px;"><span
+                            class="checkbox {% if 'Tubo de concreto de 150 cm de Ø' in data.sample_types %}checked{% endif %}"></span>
+                        Tubo de concreto de 150 cm de Ø</div>
+                    <div style="margin-bottom: 4px;"><span
+                            class="checkbox {% if 'Tubo de concreto de 180 cm de Ø' in data.sample_types %}checked{% endif %}"></span>
+                        Tubo de concreto de 180 cm de Ø</div>
+                    <div style="margin-bottom: 4px;"><span class="checkbox {% if 'Tubo de concreto de 210 cm de Ø"' in data.sample_types %}checked{% endif %}"></span> Tubo de concreto de 210 cm de Ø"</div>
+                    <div style="margin-bottom: 4px;"><span class="checkbox {% if ' Agregado Fino para concreto' in
+                            data.sample_types %}checked{% endif %}"></span> Agregado Fino para concreto</div>
+                    <div style="margin-bottom: 4px;"><span
+                            class="checkbox {% if 'Agregado Grueso para concreto' in data.sample_types %}checked{% endif %}"></span>
+                        Agregado Grueso para concreto</div>
+                    <div style="margin-bottom: 4px;"><span
+                            class="checkbox {% if 'Material Selecto para carreteras' in data.sample_types %}checked{% endif %}"></span>
+                        Material Selecto para carreteras</div>
+                    <div style="margin-bottom: 4px;"><span
+                            class="checkbox {% if 'Material Capa Base para carreteras' in data.sample_types %}checked{% endif %}"></span>
+                        Material Capa Base para carreteras</div>
+                    <div style="margin-bottom: 4px;"><span
+                            class="checkbox {% if 'Suelos' in data.sample_types %}checked{% endif %}"></span> Suelos
+                    </div>
+                    <div style="margin-bottom: 4px;"><span
+                            class="checkbox {% if 'Adoquines' in data.sample_types %}checked{% endif %}"></span>
+                        Adoquines</div>
+                </td>
+            </tr>
+        </table>
+    </div>
+
+    <div class="bold" style="text-align: center; font-size: 13px; margin-top: 15px; margin-bottom: 5px;">
+        CONDICIÓN DE LA MUESTRA Y/O ESPÉCIMEN
+    </div>
+
+    <table class="condition-table">
+        <thead>
+            <tr>
+                <th style="width: 25%;">ID. DEL CLIENTE</th>
+                <th style="width: 15%;">CANTIDAD</th>
+                <th style="width: 60%;">CONDICIÓN DE LA MUESTRA Y/O ESPÉCIMEN</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for item in data.conditions %}
+            <tr>
+                <td>{{ item.client_id or '' }}</td>
+                <td>{{ item.quantity or '' }}</td>
+                <td>{{ item.condition or '' }}</td>
+            </tr>
+            {% endfor %}
+            {% if not data.conditions or data.conditions|length == 0 %}
+            {% for i in range(1, 5) %}
+            <tr>
+                <td></td>
+                <td></td>
+                <td></td>
+            </tr>
+            {% endfor %}
+            {% endif %}
+        </tbody>
+    </table>
+
+    <div class="page-break"></div>
+
+    <!-- PÁGINA 2 -->
+    <table class="header-table">
+        <tr>
+            <td style="width: 20%; border-right: 1px solid #000;">
+                <img src="{{ assets_dir }}/UTP.png" style="max-height: 55px;"><br>
+                <div style="font-size: 9px; font-weight: bold; margin-top: 4px;">UNIVERSIDAD<br>TECNOLÓGICA DE<br>PANAMÁ
+                </div>
+            </td>
+            <td style="width: 60%; border-right: 1px solid #000;">
+                <div class="title-text">LABORATORIO DE SUELOS Y<br>MATERIALES DE CHIRIQUÍ</div>
+                <div class="bold" style="font-size: 13px; margin-top: 4px;">REGISTROS TÉCNICOS</div>
+                <div class="bold" style="font-size: 12px; margin-top: 4px;">RT-LSMCH-025</div>
+            </td>
+            <td style="width: 20%;">
+                <img src="{{ assets_dir }}/LSMCH.png" style="max-height: 55px;"><br>
+                <div style="font-size: 8px; font-weight: bold; margin-top: 4px;">LABORATORIO DE SUELOS<br>Y MATERIALES
+                </div>
+            </td>
+        </tr>
+        <tr>
+            <td colspan="3" class="bold"
+                style="font-size: 13px; text-align: center; border-top: 1px solid #000; padding: 6px;">
+                RECIBO DE MUESTRAS
+            </td>
+        </tr>
+    </table>
+
+    <table class="sub-header-table" style="width: 100%; border-collapse: collapse; margin-bottom: 20px;">
+        <tr>
+            <td style="width: 15%; border: 1px solid #000; text-align: center; vertical-align: middle;">REVISIÓN<br>03
+            </td>
+            <td style="width: 25%; border: 1px solid #000; text-align: center; vertical-align: middle;">
+                GENERADO POR:<br>
+                LICDO. RICARDO MONTERO<br>
+                RESPONSABLE TÉCNICO
+            </td>
+            <td style="width: 30%; border: 1px solid #000; text-align: center; vertical-align: middle;">
+                REVISADO POR:<br>
+                LICDA. CARMEN JURADO<br>
+                REPRESENTANTE DEL SISTEMA<br>DE GESTIÓN
+            </td>
+            <td style="width: 20%; border: 1px solid #000; text-align: center; vertical-align: middle;">
+                APROBADO POR:<br><br>
+                <span
+                    style="text-decoration: underline;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><br>
+                ING. AMIR ATENCIO<br>JEFE DE LABORATORIO<br>FECHA: 2026-01-16
+            </td>
+            <td style="width: 10%; border: 1px solid #000; text-align: center; vertical-align: middle;">PÁGINA <span
+                    style="text-decoration: underline;">2</span> DE <span style="text-decoration: underline;">2</span>
+            </td>
+        </tr>
+    </table>
+
+    <div class="bold" style="font-size: 13px; margin-bottom: 15px;">
+        ÁREA DE ALMACENAMIENTO DE LA MUESTRA HASTA EL ENSAYO
+    </div>
+
+    <table style="width: 100%; border: 1px solid #d9d9d9; margin-bottom: 20px;">
+        <tr>
+            <td style="border: 1px solid #d9d9d9; padding: 6px; width: 50%;">
+                <span class="checkbox {% if data.storage_area == 'Área de muestras para ensayar' %}checked{% endif %}"
+                    style="width: 16px; height: 16px; line-height: 16px;"></span> Área de muestras para ensayar
+            </td>
+            <td style="border: 1px solid #d9d9d9; padding: 6px; width: 50%;">
+                <span class="checkbox {% if data.storage_area == 'Tina de Curado' %}checked{% endif %}"
+                    style="width: 16px; height: 16px; line-height: 16px;"></span> Tina de Curado
+            </td>
+        </tr>
+    </table>
+
+    <div style="font-size: 12px; margin-bottom: 5px;">Observaciones:</div>
+    <div style="border: 1px solid #000; min-height: 60px; margin-bottom: 25px; padding: 5px;">
+        {{ data.observations or '' }}
+    </div>
+
+    <div style="font-size: 11px; margin-bottom: 30px; text-align: justify; line-height: 1.4;">
+        Tiempo de conservación de la muestra 60 días. Terminado este periodo, las mismas podrán ser retiradas por el
+        cliente, de lo contrario el laboratorio realizara el descarte de acuerdo con el procedimiento establecido.
+    </div>
+
+    <table style="width: 100%; border: 1px solid #d9d9d9; margin-top: 20px;">
+        <tr>
+            <td style="border: none; border-right: 1px solid #d9d9d9; padding: 15px;">
+                <div style="margin-bottom: 25px;">
+                    Entregado por: <span class="signature-line">{{ data.delivered_by or '' }}</span>
+                </div>
+                <div>
+                    Recibido por: <span class="signature-line" style="margin-left: 17px;">{{ data.received_by or ''
+                        }}</span>
+                </div>
+            </td>
+            <td style="border: none; padding: 15px;">
+                <div style="margin-bottom: 25px;">
+                    Fecha: <span class="signature-line">{{ data.delivered_date or '' }}</span>
+                </div>
+                <div>
+                    Fecha: <span class="signature-line">{{ data.received_date or '' }}</span>
+                </div>
+            </td>
+        </tr>
+    </table>
+
+</body>
+
+</html>
