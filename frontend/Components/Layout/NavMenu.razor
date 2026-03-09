@@ -1,13 +1,29 @@
-﻿<MudNavMenu>
-    <MudNavLink href="" Match="NavLinkMatch.All" Icon="@Icons.Material.Filled.Dashboard">Inicio (Dashboard)</MudNavLink>
-    <MudNavLink href="inventario" Icon="@Icons.Material.Filled.Inventory">Inventario Equipos</MudNavLink>
-    <MudNavLink href="peticiones" Icon="@Icons.Material.Filled.Assignment">Pedido del Cliente</MudNavLink>
-    <MudNavLink href="cotizaciones" Icon="@Icons.Material.Filled.RequestQuote">Cotización</MudNavLink>
-    <MudNavLink href="ordenes-servicio" Icon="@Icons.Material.Filled.AssignmentTurnedIn">Orden de Servicio</MudNavLink>
-    <MudNavLink href="informes" Icon="@Icons.Material.Filled.Description">Informes</MudNavLink>
-    <MudNavLink href="mapa" Icon="@Icons.Material.Filled.Map">Mapa GIS</MudNavLink>
+﻿<MudNavMenu Color="Color.Primary" Margin="Margin.Normal" Rounded="true" Class="pa-2">
+    <MudNavLink href="" Match="NavLinkMatch.All" Icon="@Icons.Material.Filled.Dashboard">Panel de Control</MudNavLink>
+    
+    <MudDivider Class="my-2" Style="background: rgba(255,255,255,0.05);" />
+    
+    <MudText Typo="Typo.caption" Class="px-4 py-2" Style="color: rgba(255,255,255,0.4); font-weight: 600; text-transform: uppercase; font-size: 0.65rem;">Gestión de Equipos</MudText>
+    <MudNavLink href="inventario" Icon="@Icons.Material.Filled.PrecisionManufacturing">Inventario General</MudNavLink>
+    <MudNavLink href="mantenimiento" Icon="@Icons.Material.Filled.BuildCircle">Mantenimiento</MudNavLink>
+    
+    <MudDivider Class="my-2" Style="background: rgba(255,255,255,0.05);" />
+    
+    <MudText Typo="Typo.caption" Class="px-4 py-2" Style="color: rgba(255,255,255,0.4); font-weight: 600; text-transform: uppercase; font-size: 0.65rem;">Operaciones</MudText>
+    <MudNavLink href="peticiones" Icon="@Icons.Material.Filled.ContactPage">Pedidos de Clientes</MudNavLink>
+    <MudNavLink href="cotizaciones" Icon="@Icons.Material.Filled.Calculate">Cotizaciones</MudNavLink>
+    <MudNavLink href="ordenes-servicio" Icon="@Icons.Material.Filled.FactCheck">Órdenes de Servicio</MudNavLink>
+    <MudNavLink href="informes" Icon="@Icons.Material.Filled.BarChart">Informes y Reportes</MudNavLink>
+    
+    <MudDivider Class="my-2" Style="background: rgba(255,255,255,0.05);" />
+    
+    <MudText Typo="Typo.caption" Class="px-4 py-2" Style="color: rgba(255,255,255,0.4); font-weight: 600; text-transform: uppercase; font-size: 0.65rem;">Recursos</MudText>
+    <MudNavLink href="mapa" Icon="@Icons.Material.Filled.Explore">Mapa de Proyectos</MudNavLink>
+    
     <AuthorizeView Roles="Admin">
-        <MudNavLink href="usuarios" Icon="@Icons.Material.Filled.People">Usuarios</MudNavLink>
+        <MudDivider Class="my-2" Style="background: rgba(255,255,255,0.05);" />
+        <MudText Typo="Typo.caption" Class="px-4 py-2" Style="color: rgba(255,255,255,0.4); font-weight: 600; text-transform: uppercase; font-size: 0.65rem;">Administración</MudText>
+        <MudNavLink href="usuarios" Icon="@Icons.Material.Filled.AdminPanelSettings">Gestión de Usuarios</MudNavLink>
     </AuthorizeView>
 </MudNavMenu>
 

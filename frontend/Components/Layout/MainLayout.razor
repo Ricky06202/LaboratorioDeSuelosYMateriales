@@ -6,22 +6,43 @@
 <MudSnackbarProvider />
 
 <MudLayout>
-    <MudAppBar Elevation="0" Fixed="true">
+    <MudAppBar Elevation="0" Fixed="true" Class="lsmch-appbar">
         <MudIconButton Icon="@Icons.Material.Filled.Menu" Color="Color.Inherit" Edge="Edge.Start" OnClick="@((e) => DrawerToggle())" />
-        <MudText Typo="Typo.h5" Class="ml-3 font-weight-bold">Laboratorio <span class="mud-primary-text">Suelos</span></MudText>
+        
+        <div class="d-flex align-center ml-4">
+            <img src="images/LSMCH.png" class="logo-img" alt="LSMCH Logo" />
+            <div class="d-none d-sm-flex flex-column">
+                <MudText Typo="Typo.h6" Class="lsmch-title mb-n1">LABORATORIO DE SUELOS</MudText>
+                <MudText Typo="Typo.caption" Class="lsmch-subtitle">Y MATERIALES DE CHIRIQUÍ</MudText>
+            </div>
+        </div>
+
         <MudSpacer />
+        
+        <div class="d-none d-md-flex align-center mr-6">
+            <img src="images/UTP.png" style="height: 35px;" alt="UTP Logo" />
+            <MudText Typo="Typo.caption" Class="ml-2 font-weight-bold" Style="line-height: 1; font-size: 0.65rem;">UNIVERSIDAD<br/>TECNOLÓGICA DE PANAMÁ</MudText>
+        </div>
+
         <MudTooltip Text="Alternar Modo Oscuro">
             <MudIconButton Icon="@(_isDarkMode ? Icons.Material.Filled.LightMode : Icons.Material.Filled.DarkMode)" Color="Color.Inherit" OnClick="@((e) => DarkModeToggle())" />
         </MudTooltip>
+        
         <MudMenu Icon="@Icons.Material.Filled.AccountCircle" Color="Color.Inherit" AnchorOrigin="Origin.BottomRight" TransformOrigin="Origin.TopRight" Class="ml-2">
             <MudMenuItem Icon="@Icons.Material.Filled.Person">Mi Perfil</MudMenuItem>
             <MudMenuItem Icon="@Icons.Material.Filled.Settings">Ajustes</MudMenuItem>
             <MudDivider />
+            <MudMenuItem Icon="@Icons.Material.Filled.Logout">Cerrar Sesión</MudMenuItem>
         </MudMenu>
     </MudAppBar>
-    <MudDrawer @bind-Open="_drawerOpen" ClipMode="DrawerClipMode.Always" Elevation="0" MiniMode="true" Fixed="true">
+
+    <MudDrawer @bind-Open="_drawerOpen" ClipMode="DrawerClipMode.Always" Elevation="0" MiniMode="false" Fixed="true" Width="280px">
+        <div class="pa-4 d-flex justify-center border-b border-solid border-white-5 mb-4" style="background: rgba(255,255,255,0.03);">
+            <MudText Typo="Typo.overline" Style="color: rgba(255,255,255,0.5); letter-spacing: 2px;">MENÚ PRINCIPAL</MudText>
+        </div>
         <NavMenu />
     </MudDrawer>
+
     <MudMainContent Class="pt-16 px-4 pb-4">
         <MudContainer MaxWidth="MaxWidth.ExtraLarge" Class="mt-6">
             @Body
@@ -47,24 +68,36 @@
     {
         PaletteLight = new PaletteLight()
         {
-            Primary = "#3f51b5",
-            Secondary = "#00b09b",
-            AppbarBackground = "rgba(255, 255, 255, 0.7)",
-            Background = "#f8fafd",
-            DrawerBackground = "rgba(255, 255, 255, 0.8)",
+            Primary = "#1e3a8a",
+            Secondary = "#64748b",
+            AppbarBackground = "rgba(255, 255, 255, 0.75)",
+            Background = "#f8fafc",
+            DrawerBackground = "#0f172a",
+            DrawerText = "rgba(255,255,255, 0.85)",
+            DrawerIcon = "rgba(255,255,255, 0.5)",
             Surface = "#ffffff",
-            TextPrimary = "#1a202c",
-            TextSecondary = "#4a5568",
-            ActionDefault = "#5a67d8"
+            TextPrimary = "#1e293b",
+            TextSecondary = "#475569",
+            ActionDefault = "#1e3a8a",
+            Divider = "rgba(0,0,0,0.08)"
         },
         PaletteDark = new PaletteDark()
         {
-            Primary = "#7986cb",
-            Secondary = "#00b09b",
+            Primary = "#60a5fa",
+            Secondary = "#94a3b8",
             Background = "#0f172a",
             Surface = "#1e293b",
-            AppbarBackground = "rgba(15, 23, 42, 0.7)",
-            DrawerBackground = "rgba(15, 23, 42, 0.8)",
+            AppbarBackground = "rgba(15, 23, 42, 0.75)",
+            AppbarText = "#f8fafc",
+            DrawerBackground = "rgba(2, 6, 23, 0.8)",
+            DrawerText = "#f8fafc",
+            TextPrimary = "#f1f5f9",
+            TextSecondary = "#94a3b8",
+            ActionDefault = "#60a5fa",
+            ActionDisabled = "rgba(255,255,255, 0.26)",
+            Divider = "rgba(255,255,255, 0.12)",
+            TableLines = "rgba(255,255,255, 0.12)",
+            LinesDefault = "rgba(255,255,255, 0.12)"
         },
         LayoutProperties = new LayoutProperties()
         {

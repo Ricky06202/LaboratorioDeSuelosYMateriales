@@ -1,54 +1,103 @@
-/* Global Design System Corrections */
+/* Global Design System - Laboratorio de Suelos y Materiales */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+
 :root {
-    --mud-palette-primary: #3f51b5;
-    --mud-palette-appbar-background: rgba(255, 255, 255, 0.7);
+    --lsmch-primary: #1e3a8a;
+    --lsmch-secondary: #64748b;
+    --lsmch-accent: #f59e0b;
 }
 
 body {
-    font-family: 'Outfit', 'Roboto', sans-serif !important;
+    font-family: 'Inter', system-ui, -apple-system, sans-serif !important;
+    background-color: var(--mud-palette-background);
+    color: var(--mud-palette-text-primary);
 }
 
-/* Glassmorphism Appbar */
-.mud-appbar.mud-appbar-fixed-top {
-    backdrop-filter: blur(12px) saturate(180%);
-    -webkit-backdrop-filter: blur(12px) saturate(180%);
-    background-color: rgba(255, 255, 255, 0.65) !important;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.3);
-    color: #1a1a1a !important;
+/* Appbar Modernization */
+.mud-appbar {
+    background-color: var(--mud-palette-appbar-background) !important;
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--mud-palette-divider) !important;
+    color: var(--mud-palette-text-primary) !important;
 }
 
-/* Glassmorphism Drawer */
+.logo-img {
+    height: 40px;
+    margin-right: 12px;
+    transition: transform 0.2s;
+}
+
+.logo-img:hover {
+    transform: scale(1.05);
+}
+
+/* Sidebar / Drawer Navigation */
 .mud-drawer {
-    backdrop-filter: blur(8px);
-    background-color: rgba(255, 255, 255, 0.8) !important;
-    border-right: 1px solid rgba(0, 0, 0, 0.05) !important;
+    background-color: var(--mud-palette-drawer-background) !important;
+    color: var(--mud-palette-drawer-text) !important;
 }
 
-/* Dashboard Cards with Gradients */
-.stats-card {
-    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-    cursor: pointer;
-    border: none !important;
-    border-radius: 16px !important;
-    overflow: hidden;
+.mud-nav-link {
+    border-radius: 8px !important;
+    margin: 4px 12px !important;
+    transition: background-color 0.2s, color 0.2s;
 }
 
-.stats-card:hover {
-    transform: translateY(-8px);
-    box-shadow: 0 12px 24px rgba(0,0,0,0.1) !important;
+.mud-nav-link:hover {
+    background-color: rgba(255, 255, 255, 0.1) !important;
+    color: white !important;
 }
 
-.gradient-blue { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; }
-.gradient-red { background: linear-gradient(135deg, #ff6b6b 0%, #ee0979 100%); color: white; }
-.gradient-orange { background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%); color: white; }
-.gradient-green { background: linear-gradient(135deg, #00b09b 0%, #96c93d 100%); color: white; }
+.mud-nav-link.active {
+    background-color: var(--lsmch-primary) !important;
+    color: white !important;
+    font-weight: 500;
+}
 
-/* Table Enhancements */
-.mud-table-container {
-    border-radius: 12px;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+.mud-nav-link .mud-nav-link-icon-default {
+    color: rgba(255, 255, 255, 0.5) !important;
+}
+
+.mud-nav-link.active .mud-nav-link-icon-default {
+    color: white !important;
+}
+
+/* Professional Cards */
+.mud-card {
+    border-radius: 12px !important;
+    box-shadow: var(--mud-elevation-1) !important;
+    border: 1px solid var(--mud-palette-divider) !important;
+    transition: box-shadow 0.3s ease;
+}
+
+.mud-card:hover {
+    box-shadow: var(--mud-elevation-4) !important;
+}
+
+/* Tables */
+.mud-table-root {
+    background-color: transparent !important;
 }
 
 .mud-table-head {
-    background-color: #f8fafc;
+    background-color: var(--mud-palette-background-grey) !important;
+}
+
+.mud-table-head .mud-table-cell {
+    font-weight: 600 !important;
+    color: var(--mud-palette-text-primary) !important;
+    text-transform: uppercase;
+    font-size: 0.75rem;
+    letter-spacing: 0.05em;
+}
+
+/* Buttons */
+.mud-button-filled.mud-button-filled-primary {
+    background-color: var(--lsmch-primary) !important;
+    box-shadow: 0 4px 14px 0 rgba(30, 58, 138, 0.39) !important;
+}
+
+.mud-button-filled.mud-button-filled-primary:hover {
+    background-color: #1e40af !important;
 }
