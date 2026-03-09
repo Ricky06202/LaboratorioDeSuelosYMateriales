@@ -2,6 +2,7 @@ using frontend.Auth;
 using frontend.Components;
 using frontend.Services;
 using Microsoft.AspNetCore.Components.Authorization;
+using Microsoft.AspNetCore.Hosting.StaticWebAssets;
 using MudBlazor.Services;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -31,6 +32,11 @@ builder.Services.AddHttpClient<CustomerOrderService>(client => {
     client.Timeout = TimeSpan.FromSeconds(10);
 });
 
+if (!builder.Environment.IsDevelopment())
+{
+    StaticWebAssetsLoader.UseStaticWebAssets(builder.Environment, builder.Configuration);
+}
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -41,7 +47,10 @@ if (!app.Environment.IsDevelopment())
     app.UseHsts();
 }
 app.UseStatusCodePagesWithReExecute("/not-found", createScopeForStatusCodePages: true);
-app.UseHttpsRedirection();
+if (!app.Environment.IsDevelopment())
+{
+    app.UseHttpsRedirection();
+}
 
 app.UseAntiforgery();
 

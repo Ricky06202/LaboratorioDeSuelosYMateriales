@@ -5,6 +5,12 @@
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
     <BlazorDisableThrowNavigationException>true</BlazorDisableThrowNavigationException>
+    <!-- Configuración para despliegues en cPanel/Apache -->
+    <OverrideHtmlAssetPlaceholders>false</OverrideHtmlAssetPlaceholders>
+    <WasmFingerprintAssets>false</WasmFingerprintAssets>
+    <StaticWebAssetsFingerprintingEnabled>false</StaticWebAssetsFingerprintingEnabled>
+    <PublishTrimmed>true</PublishTrimmed>
+    <BlazorEnableCompression>true</BlazorEnableCompression>
   </PropertyGroup>
 
   <ItemGroup>
