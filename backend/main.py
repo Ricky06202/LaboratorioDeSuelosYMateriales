@@ -6,9 +6,13 @@ from app.db.session import engine
 from app.db.base import Base
 from fastapi.responses import JSONResponse
 import traceback
+import os
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
+    if os.getenv("TESTING") == "True":
+        yield
+        return
     # Create tables on startup
     Base.metadata.create_all(bind=engine)
     

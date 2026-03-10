@@ -73,6 +73,10 @@ async def create_equipo(
     from datetime import datetime
     def parse_dt(s): return datetime.strptime(s, "%Y-%m-%d").date() if s else None
 
+    foto_url = None
+    if file:
+        foto_url = await file_service.save_file(file, "equipos")
+
     equipo_in = EquipoCreate(
         nombre=nombre, marca=marca, modelo=modelo, numero_serie=numero_serie, 
         estado=estado, ubicacion=ubicacion, foto_url=foto_url,
