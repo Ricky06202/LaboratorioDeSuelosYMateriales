@@ -48,7 +48,7 @@ namespace frontend.Models
         // Shared fields: Internal Inventory Number (Serial), Asset Number (N/A), Brand/Model, Equipment Name
         public string CalibrationRange { get; set; } = "N/A";
         public string CalibratedBy { get; set; } = "";
-        public string CalibrationFrequency { get; set; } = "1 Año";
+        public int CalibrationFrequency { get; set; } = 12;
         public DateTime? LastCalibrationDate { get; set; }
         public DateTime? NextCalibrationDate { get; set; }
 

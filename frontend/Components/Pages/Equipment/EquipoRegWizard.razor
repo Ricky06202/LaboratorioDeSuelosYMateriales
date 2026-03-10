@@ -90,16 +90,20 @@
                 <MudText Typo="Typo.subtitle1" Class="font-weight-bold mb-4">LSMCH 8: Programa de Verificación y Calibración</MudText>
                 <MudGrid>
                     <MudItem xs="12" sm="6">
-                        <MudTextField Label="Frecuencia de Calibración" @bind-Value="_model.CalibrationFrequency" Variant="Variant.Outlined" Margin="Margin.Dense" />
+                        <MudSelect T="int" Label="Frecuencia de Calibración" @bind-Value="_model.CalibrationFrequency" SelectedValuesChanged="OnCalibrationDataChanged" Variant="Variant.Outlined" Margin="Margin.Dense">
+                            <MudSelectItem Value="6">6 Meses</MudSelectItem>
+                            <MudSelectItem Value="12">12 Meses (1 Año)</MudSelectItem>
+                            <MudSelectItem Value="24">24 Meses (2 Años)</MudSelectItem>
+                        </MudSelect>
                     </MudItem>
                     <MudItem xs="12" sm="6">
                         <MudTextField Label="Rango de Calibración" @bind-Value="_model.CalibrationRange" Variant="Variant.Outlined" Margin="Margin.Dense" />
                     </MudItem>
                     <MudItem xs="12" sm="6">
-                        <MudDatePicker Label="Última Calibración" @bind-Date="_model.LastCalibrationDate" Variant="Variant.Outlined" Margin="Margin.Dense" />
+                        <MudDatePicker Label="Última Calibración" Date="_model.LastCalibrationDate" DateChanged="OnLastCalibrationDateChanged" Variant="Variant.Outlined" Margin="Margin.Dense" />
                     </MudItem>
                     <MudItem xs="12" sm="6">
-                        <MudDatePicker Label="Próxima Calibración" @bind-Date="_model.NextCalibrationDate" Variant="Variant.Outlined" Margin="Margin.Dense" />
+                        <MudTextField Label="Próxima Calibración (Calculada)" Value="@(_model.NextCalibrationDate?.ToString("yyyy-MM-dd") ?? "N/A")" ReadOnly="true" Variant="Variant.Outlined" Margin="Margin.Dense" HelperText="Calculado según frecuencia" />
                     </MudItem>
                     <MudItem xs="12">
                         <MudTextField Label="Calibrado por" @bind-Value="_model.CalibratedBy" Variant="Variant.Outlined" Margin="Margin.Dense" />
@@ -187,6 +191,25 @@
     private void PrevStep() => _step--;
     private void Cancel() => MudDialog.Cancel();
 
+    private void OnLastCalibrationDateChanged(DateTime? date)
+    {
+        _model.LastCalibrationDate = date;
+        CalculateNextCalibration();
+    }
+
+    private void OnCalibrationDataChanged()
+    {
+        CalculateNextCalibration();
+    }
+
+    private void CalculateNextCalibration()
+    {
+        if (_model.LastCalibrationDate.HasValue)
+        {
+            _model.NextCalibrationDate = _model.LastCalibrationDate.Value.AddMonths(_model.CalibrationFrequency);
+        }
+    }
+
     private async Task Submit()
     {
         _processing = true;
@@ -229,7 +252,11 @@
         }
         catch (Exception ex)
         {
-            Snackbar.Add($"Error: {ex.Message}", Severity.Error);
+            var errorMessage = ex.Message;
+            if (ex.InnerException != null)
+                errorMessage += $" | Internal: {ex.InnerException.Message}";
+                
+            Snackbar.Add($"Error al crear equipo: {errorMessage}", Severity.Error);
         }
         finally
         {
