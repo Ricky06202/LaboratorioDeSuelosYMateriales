@@ -19,6 +19,7 @@ namespace frontend.Services
 
         public async Task<EquipoResponse> GetEquiposAsync(int skip = 0, int limit = 10, string? search = null, string? estado = null)
         {
+            await SetAuthorizationHeaderAsync();
             var query = new Dictionary<string, string?>
             {
                 ["skip"] = skip.ToString(),
@@ -29,17 +30,26 @@ namespace frontend.Services
 
 
             var url = QueryHelpers.AddQueryString("api/equipos/", query);
-            return await _httpClient.GetFromJsonAsync<EquipoResponse>(url) ?? new EquipoResponse();
+            var response = await _httpClient.GetAsync(url);
+            await EnsureSuccessOrThrowAsync(response);
+            return await response.Content.ReadFromJsonAsync<EquipoResponse>() ?? new EquipoResponse();
         }
 
         public async Task<List<Equipo>> GetAlertsAsync()
         {
-            return await _httpClient.GetFromJsonAsync<List<Equipo>>("api/equipos/alerts/calibrations") ?? new();
+            await SetAuthorizationHeaderAsync();
+            var response = await _httpClient.GetAsync("api/equipos/alerts/calibrations");
+            await EnsureSuccessOrThrowAsync(response);
+            return await response.Content.ReadFromJsonAsync<List<Equipo>>() ?? new();
         }
 
-        public async Task<Equipo> GetEquipoAsync(Guid id)
+        public async Task<Equipo?> GetEquipoAsync(Guid id)
         {
-            return await _httpClient.GetFromJsonAsync<Equipo>($"api/equipos/{id}") ?? throw new Exception("Equipo no encontrado");
+            await SetAuthorizationHeaderAsync();
+            var response = await _httpClient.GetAsync($"api/equipos/{id}");
+            if (response.StatusCode == System.Net.HttpStatusCode.NotFound) return null;
+            await EnsureSuccessOrThrowAsync(response);
+            return await response.Content.ReadFromJsonAsync<Equipo>();
         }
 
         public async Task<Equipo> CreateEquipoAsync(EquipoCreate equipo, Stream? fileStream = null, string? fileName = null)
@@ -145,6 +155,7 @@ namespace frontend.Services
 
         public async Task DeleteEquipoAsync(Guid id)
         {
+            await SetAuthorizationHeaderAsync();
             var response = await _httpClient.DeleteAsync($"api/equipos/{id}");
             await EnsureSuccessOrThrowAsync(response);
         }
@@ -182,6 +193,7 @@ namespace frontend.Services
 
         public async Task<byte[]> GetReportPdfAsync(string endpoint)
         {
+            await SetAuthorizationHeaderAsync();
             var response = await _httpClient.GetAsync(endpoint);
             await EnsureSuccessOrThrowAsync(response);
             return await response.Content.ReadAsByteArrayAsync();
