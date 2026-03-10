@@ -2,16 +2,19 @@ using System.Net.Http.Json;
 using System.IO;
 using frontend.Models;
 using Microsoft.AspNetCore.WebUtilities;
-
+using Microsoft.JSInterop;
+using System.Net.Http.Headers;
 namespace frontend.Services
 {
     public class EquipmentService
     {
         private readonly HttpClient _httpClient;
+        private readonly IJSRuntime _jsRuntime;
 
-        public EquipmentService(HttpClient httpClient)
+        public EquipmentService(HttpClient httpClient, IJSRuntime jsRuntime)
         {
             _httpClient = httpClient;
+            _jsRuntime = jsRuntime;
         }
 
         public async Task<EquipoResponse> GetEquiposAsync(int skip = 0, int limit = 10, string? search = null, string? estado = null)
@@ -192,6 +195,14 @@ namespace frontend.Services
             return await response.Content.ReadAsStreamAsync();
         }
 
+        private async Task SetAuthorizationHeaderAsync()
+        {
+            var token = await _jsRuntime.InvokeAsync<string>("localStorage.getItem", "authToken");
+            if (!string.IsNullOrWhiteSpace(token))
+            {
+                _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+            }
+        }
         private async Task EnsureSuccessOrThrowAsync(HttpResponseMessage response)
         {
             if (!response.IsSuccessStatusCode)
