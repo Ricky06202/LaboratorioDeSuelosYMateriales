@@ -1,19 +1,20 @@
+@page "/equipos"
 @page "/equipos/reportes"
-@page "/equipos/{ReportType}"
+@using frontend.Models
 @using frontend.Services
-@using Microsoft.JSInterop
 @inject EquipmentService EquipmentService
-@inject IJSRuntime JS
 @inject ISnackbar Snackbar
 @inject IDialogService DialogService
+@inject IJSRuntime JS
 
-<PageTitle>Reportes de Equipos - LSMCH</PageTitle>
+<PageTitle>Gestión de Equipos - LSMCH</PageTitle>
 
 <div class="animate__animated animate__fadeIn">
+    @* Header Section *@
     <div class="section-header mb-8 d-flex align-center justify-space-between">
         <div>
-            <MudText Typo="Typo.h4" Class="font-weight-bold lsmch-title">DOCUMENTACIÓN TÉCNICA</MudText>
-            <MudText Typo="Typo.subtitle1" Class="text-secondary">Generación de reportes y registros oficiales del laboratorio</MudText>
+            <MudText Typo="Typo.h4" Class="font-weight-bold lsmch-title">CONTROL DE EQUIPOS</MudText>
+            <MudText Typo="Typo.subtitle1" Class="text-secondary">Inventario oficial, calibraciones y documentación técnica</MudText>
         </div>
         <div class="d-flex align-center gap-4">
             <MudButton Variant="Variant.Filled" 
@@ -21,108 +22,152 @@
                        Size="Size.Large" 
                        StartIcon="@Icons.Material.Filled.Add"
                        OnClick="OpenWizard"
-                       Class="rounded-pill px-6 shadow-lg animate__animated animate__pulse animate__infinite">
-                Registrar Nuevo Equipo (Flujo Oficial)
+                       Class="rounded-pill px-8 shadow-lg animate__animated animate__pulse animate__infinite">
+                Registrar Nuevo Equipo
             </MudButton>
-            <MudIcon Icon="@Icons.Material.Filled.Description" Color="Color.Primary" Size="Size.Large" Class="opacity-25" Style="font-size: 3rem;" />
         </div>
     </div>
 
-    <MudGrid>
-        @foreach (var report in _availableReports)
-        {
-            <MudItem xs="12" sm="6" md="4">
-                <MudCard Elevation="0" Class="report-card pa-4 rounded-xl border border-solid border-light h-100 d-flex flex-column">
-                    <div class="d-flex align-center mb-4">
-                        <div class="report-icon-container pa-3 rounded-lg mr-4" style="background: rgba(30,58,138,0.05);">
-                            <MudIcon Icon="@report.Icon" Color="Color.Primary" />
-                        </div>
+    @* Inventory Table Section *@
+    <MudPaper Elevation="0" Class="pa-6 rounded-xl shadow-sm border border-solid border-light lsmch-glass">
+        <MudTable ServerData="ServerReload" Dense="false" Hover="true" @ref="_table" Elevation="0" Class="rounded-lg overflow-hidden bg-transparent">
+            <ToolBarContent>
+                <MudText Typo="Typo.h6" Class="font-weight-bold">Listado de Inventario</MudText>
+                <MudSpacer />
+                <MudSelect T="string" Value="@_selectedEstado" ValueChanged="OnEstadoChanged" Label="Estado" 
+                           Variant="Variant.Outlined" Margin="Margin.Dense" Class="mr-4" Style="max-width: 150px;">
+                    <MudSelectItem Value="@((string?)null)">Todos</MudSelectItem>
+                    <MudSelectItem Value="@("Activo")">Activos</MudSelectItem>
+                    <MudSelectItem Value="@("Mantenimiento")">Mantenimiento</MudSelectItem>
+                    <MudSelectItem Value="@("Danado")">Dañados</MudSelectItem>
+                    <MudSelectItem Value="@("Baja")">De Baja</MudSelectItem>
+                </MudSelect>
+                <MudTextField T="string" ValueChanged="@(s=>OnSearch(s))" Placeholder="Buscar equipo..." 
+                              Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.Search" 
+                              IconSize="Size.Medium" Class="mt-0" Variant="Variant.Outlined" Margin="Margin.Dense" Style="max-width: 300px;"></MudTextField>
+            </ToolBarContent>
+            <HeaderContent>
+                <MudTh>Equipo</MudTh>
+                <MudTh>Marca/Modelo</MudTh>
+                <MudTh>Nº Serie</MudTh>
+                <MudTh>Estado</MudTh>
+                <MudTh>Documentación</MudTh>
+                <MudTh>Acciones</MudTh>
+            </HeaderContent>
+            <RowTemplate>
+                <MudTd DataLabel="Equipo">
+                    <div class="d-flex align-center">
+                        <MudAvatar Color="Color.Primary" Variant="Variant.Filled" Size="Size.Medium" Class="mr-3 shadow-sm">
+                            @(string.IsNullOrEmpty(context.Nombre) ? "?" : context.Nombre[0])
+                        </MudAvatar>
                         <div>
-                            <MudText Typo="Typo.subtitle2" Class="font-weight-bold">@report.Code</MudText>
-                            <MudText Typo="Typo.body2" Class="text-secondary">@report.Name</MudText>
+                            <MudText Typo="Typo.body1" Class="font-weight-bold">@context.Nombre</MudText>
+                            <MudText Typo="Typo.caption" Class="opacity-50">@context.IdAsignado</MudText>
                         </div>
                     </div>
-                    
-                    <MudSpacer />
-                    
-                    <div class="d-flex align-center justify-space-between mt-6">
-                        <MudText Typo="Typo.caption" Class="opacity-60">PDF Profesional</MudText>
-                        <MudButton Variant="Variant.Filled" 
-                                   Color="Color.Primary" 
-                                   Size="Size.Small" 
-                                   StartIcon="@Icons.Material.Filled.Download"
-                                   OnClick="@(() => DownloadReport(report))"
-                                   Disabled="@_isDownloading"
-                                   Class="rounded-pill px-4 shadow-sm">
-                            @(_isDownloading && _currentReport == report.Code ? "Generando..." : "Generar")
-                        </MudButton>
+                </MudTd>
+                <MudTd DataLabel="Marca/Modelo">
+                    <MudText Typo="Typo.body2">@context.Marca</MudText>
+                    <MudText Typo="Typo.caption" Class="opacity-75">@context.Modelo</MudText>
+                </MudTd>
+                <MudTd DataLabel="Nº Serie">
+                    <code>@context.NumeroSerie</code>
+                </MudTd>
+                <MudTd DataLabel="Estado">
+                    <MudChip T="string" Color="@GetColor(context.Estado)" Size="Size.Small" Variant="Variant.Text" Class="font-weight-bold">@context.Estado</MudChip>
+                </MudTd>
+                <MudTd DataLabel="Documentación">
+                    <MudMenu Label="Reportes PDF" EndIcon="@Icons.Material.Filled.KeyboardArrowDown" Variant="Variant.Outlined" Size="Size.Small" Color="Color.Secondary" AnchorOrigin="Origin.BottomRight" TransformOrigin="Origin.TopRight">
+                        <MudMenuItem OnClick="@(() => OnDownloadReport(context, "purchase_verification"))">Verificación de Compra (LSMCH-8-REV2)</MudMenuItem>
+                        <MudMenuItem OnClick="@(() => OnDownloadReport(context, "acquisition"))">Registro de Adquisición (LSMCH-6-REV1)</MudMenuItem>
+                        <MudMenuItem OnClick="@(() => OnDownloadReport(context, "maintenance_plan"))">Plan de Mantenimiento (LSMCH-17)</MudMenuItem>
+                        
+                        @if (context.TipoBien == "Equipo de Medición")
+                        {
+                            <MudDivider Class="my-2" />
+                            <MudMenuItem OnClick="@(() => OnDownloadReport(context, "measurement"))">Inv. Equipo Medición (LSMCH-9-REV1)</MudMenuItem>
+                        }
+                        @if (context.TipoBien == "Equipo de Campo o Auxiliar")
+                        {
+                            <MudDivider Class="my-2" />
+                            <MudMenuItem OnClick="@(() => OnDownloadReport(context, "field_aux"))">Inv. Equipo Campo/Aux (LSMCH-10)</MudMenuItem>
+                        }
+                        @if (context.TipoBien == "Cristalería")
+                        {
+                            <MudDivider Class="my-2" />
+                            <MudMenuItem OnClick="@(() => OnDownloadReport(context, "glassware"))">Inv. Cristalería (LSMCH-11)</MudMenuItem>
+                        }
+                    </MudMenu>
+                </MudTd>
+                <MudTd>
+                    <div class="d-flex">
+                        <MudTooltip Text="Gestionar Calibraciones">
+                            <MudIconButton Icon="@Icons.Material.Filled.FactCheck" Size="Size.Small" Color="Color.Info" 
+                                           OnClick="@(() => OnManageCalibrations(context))" Class="mr-1 shadow-sm border border-solid border-light" />
+                        </MudTooltip>
+                        <MudTooltip Text="Eliminar">
+                            <MudIconButton Icon="@Icons.Material.Filled.Delete" Size="Size.Small" Color="Color.Error" 
+                                           OnClick="@(() => OnDeleteEquipment(context))" Class="shadow-sm border border-solid border-light" />
+                        </MudTooltip>
                     </div>
-                </MudCard>
-            </MudItem>
-        }
-    </MudGrid>
+                </MudTd>
+            </RowTemplate>
+            <NoRecordsContent>
+                <div class="pa-12 d-flex flex-column align-center">
+                    <MudIcon Icon="@Icons.Material.Filled.SearchOff" Size="Size.Large" Class="mb-3 opacity-25" Style="font-size: 4rem;" />
+                    <MudText Typo="Typo.h6" Class="opacity-50">No se encontraron equipos en el inventario.</MudText>
+                </div>
+            </NoRecordsContent>
+            <LoadingContent>
+                <div class="pa-12 d-flex flex-column align-center">
+                    <MudProgressCircular Color="Color.Primary" Indeterminate="true" Size="Size.Large" Class="mb-3" />
+                    <MudText Typo="Typo.body1" Class="opacity-50 text-uppercase font-weight-bold">Sincronizando Inventario...</MudText>
+                </div>
+            </LoadingContent>
+            <PagerContent>
+                <MudTablePager InfoFormat="Equipos {from}-{to} de {all}" RowsPerPageString="Filas:" />
+            </PagerContent>
+        </MudTable>
+    </MudPaper>
 </div>
 
 <style>
-    .report-card {
-        transition: all 0.3s ease;
-        background: var(--lsmch-glass-bg);
-        backdrop-filter: blur(8px);
-    }
-    .report-card:hover {
-        transform: translateY(-8px);
-        box-shadow: var(--lsmch-card-shadow) !important;
-        border-color: var(--mud-palette-primary-light) !important;
+    .lsmch-glass {
+        background: var(--lsmch-glass-bg) !important;
+        backdrop-filter: blur(12px);
     }
 </style>
 
 @code {
-    [Parameter] public string? ReportType { get; set; }
-    private bool _isDownloading = false;
-    private string? _currentReport;
-
-    private class ReportInfo
+    private MudTable<Equipo> _table = null!;
+    private string _searchString = "";
+    private string? _selectedEstado = null;
+    
+    private async Task<TableData<Equipo>> ServerReload(TableState state, CancellationToken cancellationToken)
     {
-        public string Name { get; set; } = "";
-        public string Code { get; set; } = "";
-        public string Endpoint { get; set; } = "";
-        public string Icon { get; set; } = "";
-    }
-
-    private List<ReportInfo> _availableReports = new()
-    {
-        new() { Name = "Inventario de Cristalería", Code = "DT-LSMCH-011", Endpoint = "api/equipos/reports/glassware", Icon = Icons.Material.Filled.Inventory2 },
-        new() { Name = "Programa de Verificación y Calibración", Code = "DT-LSMCH-008", Endpoint = "api/equipos/reports/calibration", Icon = Icons.Material.Filled.QueryStats },
-        new() { Name = "Inventario de Equipos de Medición", Code = "DT-LSMCH-009", Endpoint = "api/equipos/reports/measurement", Icon = Icons.Material.Filled.Straighten },
-        new() { Name = "Inventario de Equipos de Campo", Code = "DT-LSMCH-010", Endpoint = "api/equipos/reports/field_aux", Icon = Icons.Material.Filled.Landscape },
-        new() { Name = "Plan de Mantenimiento de Equipos", Code = "DT-LSMCH-017", Endpoint = "api/equipos/reports/maintenance_plan", Icon = Icons.Material.Filled.Handyman },
-        new() { Name = "Registro de Reactivos y Consumibles", Code = "RT-LSMCH-067", Endpoint = "api/equipos/reports/reagents", Icon = Icons.Material.Filled.Science },
-        new() { Name = "Verificación de Compras", Code = "RT-LSMCH-008", Endpoint = "api/equipos/reports/purchase_verification", Icon = Icons.Material.Filled.ShoppingCart },
-        new() { Name = "Registro de Adquisición de Equipos", Code = "RT-LSMCH-006", Endpoint = "api/equipos/reports/acquisition_registry", Icon = Icons.Material.Filled.AddShoppingCart },
-        new() { Name = "Control de Trazabilidad de Muestras", Code = "RT-LSMCH-026", Endpoint = "api/ordenes-servicio/reports/sample_control", Icon = Icons.Material.Filled.PlaylistAddCheck }
-    };
-
-    private async Task DownloadReport(ReportInfo report)
-    {
-        _isDownloading = true;
-        _currentReport = report.Code;
         try
         {
-            var pdfBytes = await EquipmentService.GetReportPdfAsync(report.Endpoint);
-            var base64 = Convert.ToBase64String(pdfBytes);
-            var fileName = $"{report.Code}_{DateTime.Now:yyyyMMdd}.pdf";
-            await JS.InvokeVoidAsync("downloadFileFromStream", fileName, "application/pdf", base64);
-            Snackbar.Add($"Reporte {report.Code} generado con éxito", Severity.Success);
+            var response = await EquipmentService.GetEquiposAsync(state.Page * state.PageSize, state.PageSize, _searchString, _selectedEstado);
+            if (response == null) return new TableData<Equipo>() { TotalItems = 0, Items = Enumerable.Empty<Equipo>() };
+            return new TableData<Equipo>() { TotalItems = response.Total, Items = response.Items };
         }
         catch (Exception ex)
         {
-            Snackbar.Add($"Error al generar reporte: {ex.Message}", Severity.Error);
+            Snackbar.Add($"Error al cargar inventario: {ex.Message}", Severity.Error);
+            return new TableData<Equipo>() { TotalItems = 0, Items = Enumerable.Empty<Equipo>() };
         }
-        finally
-        {
-            _isDownloading = false;
-            _currentReport = null;
-        }
+    }
+
+    private void OnSearch(string text)
+    {
+        _searchString = text;
+        if (_table != null) _table.ReloadServerData();
+    }
+    
+    private void OnEstadoChanged(string? estado)
+    {
+        _selectedEstado = estado;
+        if (_table != null) _table.ReloadServerData();
     }
 
     private async Task OpenWizard()
@@ -139,7 +184,86 @@
 
         if (result != null && !result.Canceled)
         {
-            // Optionally refresh something or redirect
+            await _table.ReloadServerData();
         }
     }
+
+    private async Task OnManageCalibrations(Equipo equipo)
+    {
+        var parameters = new DialogParameters<CalibracionDialog> 
+        { 
+            { x => x.EquipoId, equipo.Id },
+            { x => x.EquipoNombre, equipo.Nombre }
+        };
+        var options = new DialogOptions { CloseOnEscapeKey = true, MaxWidth = MaxWidth.Small, FullWidth = true, CloseButton = true };
+        var dialog = await DialogService.ShowAsync<CalibracionDialog>("Gestionar Calibraciones", parameters, options);
+        var result = await dialog.Result;
+
+        if (result != null && !result.Canceled)
+        {
+            await _table.ReloadServerData();
+        }
+    }
+
+    private async Task OnDownloadReport(Equipo equipo, string type)
+    {
+        try
+        {
+            Snackbar.Add("Preparando descarga...", Severity.Info);
+            var pdfStream = await EquipmentService.DownloadEquipmentReportAsync(equipo.Id, type);
+            using var memoryStream = new MemoryStream();
+            await pdfStream.CopyToAsync(memoryStream);
+            var bytes = memoryStream.ToArray();
+            var base64 = Convert.ToBase64String(bytes);
+            
+            var reportCode = type switch
+            {
+                "purchase_verification" => "LSMCH-8-REV2",
+                "acquisition" => "LSMCH-6-REV1",
+                "maintenance_plan" => "LSMCH-17",
+                "measurement" => "LSMCH-9-REV1",
+                "field_aux" => "LSMCH-10",
+                "glassware" => "LSMCH-11",
+                _ => "REPORTE"
+            };
+            
+            var fileName = $"{reportCode}_{equipo.NumeroSerie}_{DateTime.Now:yyyyMMdd}.pdf";
+            await JS.InvokeVoidAsync("downloadFileFromStream", fileName, "application/pdf", base64);
+            Snackbar.Add($"Reporte {reportCode} descargado con éxito", Severity.Success);
+        }
+        catch (Exception ex)
+        {
+            Snackbar.Add($"Error al descargar: {ex.Message}", Severity.Error);
+        }
+    }
+
+    private async Task OnDeleteEquipment(Equipo equipo)
+    {
+        bool? result = await DialogService.ShowMessageBoxAsync(
+            "Eliminar Equipo", 
+            $"¿Está seguro que desea eliminar el equipo {equipo.Nombre}?", 
+            yesText: "Eliminar", cancelText: "Cancelar");
+
+        if (result == true)
+        {
+            try
+            {
+                await EquipmentService.DeleteEquipoAsync(equipo.Id);
+                Snackbar.Add("Equipo eliminado", Severity.Success);
+                await _table.ReloadServerData();
+            }
+            catch (Exception ex)
+            {
+                Snackbar.Add($"Error al eliminar: {ex.Message}", Severity.Error);
+            }
+        }
+    }
+
+    private Color GetColor(string estado) => estado switch
+    {
+        "Activo" => Color.Success,
+        "Danado" => Color.Error,
+        "Mantenimiento" => Color.Warning,
+        _ => Color.Default
+    };
 }
