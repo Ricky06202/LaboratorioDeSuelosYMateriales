@@ -76,6 +76,52 @@ namespace frontend.Services
             if (!string.IsNullOrEmpty(equipo.UbicacionFisica))
                 content.Add(new StringContent(equipo.UbicacionFisica), "ubicacion_fisica");
 
+            if (!string.IsNullOrEmpty(equipo.Proveedor))
+                content.Add(new StringContent(equipo.Proveedor), "proveedor");
+
+            if (!string.IsNullOrEmpty(equipo.EstadoAprobacion))
+                content.Add(new StringContent(equipo.EstadoAprobacion), "estado_aprobacion");
+
+            if (!string.IsNullOrEmpty(equipo.Observations))
+                content.Add(new StringContent(equipo.Observations), "observaciones");
+
+            if (!string.IsNullOrEmpty(equipo.VerificadoPor))
+                content.Add(new StringContent(equipo.VerificadoPor), "verificado_por");
+
+            if (!string.IsNullOrEmpty(equipo.RevisadoPor))
+                content.Add(new StringContent(equipo.RevisadoPor), "revisado_por");
+
+            if (equipo.FechaVerificacion.HasValue)
+                content.Add(new StringContent(equipo.FechaVerificacion.Value.ToString("yyyy-MM-dd")), "fecha_verificacion");
+
+            if (equipo.FechaRevision.HasValue)
+                content.Add(new StringContent(equipo.FechaRevision.Value.ToString("yyyy-MM-dd")), "fecha_revision");
+
+            if (!string.IsNullOrEmpty(equipo.RangoCalibracion))
+                content.Add(new StringContent(equipo.RangoCalibracion), "rango_calibracion");
+
+            if (equipo.FrecuenciaCalibracion.HasValue)
+                content.Add(new StringContent(equipo.FrecuenciaCalibracion.Value.ToString()), "frecuencia_calibracion");
+
+            if (!string.IsNullOrEmpty(equipo.MetodoMantenimiento))
+                content.Add(new StringContent(equipo.MetodoMantenimiento), "metodo_mantenimiento");
+
+            // Add Criteria
+            content.Add(new StringContent(equipo.Criteria1.ToString().ToLower()), "criteria_1");
+            content.Add(new StringContent(equipo.Criteria2.ToString().ToLower()), "criteria_2");
+            content.Add(new StringContent(equipo.Criteria3.ToString().ToLower()), "criteria_3");
+            content.Add(new StringContent(equipo.Criteria4.ToString().ToLower()), "criteria_4");
+            content.Add(new StringContent(equipo.Criteria5.ToString().ToLower()), "criteria_5");
+            content.Add(new StringContent(equipo.Criteria6.ToString().ToLower()), "criteria_6");
+            content.Add(new StringContent(equipo.Criteria7.ToString().ToLower()), "criteria_7");
+            content.Add(new StringContent(equipo.Criteria8.ToString().ToLower()), "criteria_8");
+            content.Add(new StringContent(equipo.Criteria9.ToString().ToLower()), "criteria_9");
+            content.Add(new StringContent(equipo.Criteria10.ToString().ToLower()), "criteria_10");
+            content.Add(new StringContent(equipo.Criteria11.ToString().ToLower()), "criteria_11");
+            content.Add(new StringContent(equipo.Criteria12.ToString().ToLower()), "criteria_12");
+            content.Add(new StringContent(equipo.Criteria13.ToString().ToLower()), "criteria_13");
+            content.Add(new StringContent(equipo.Criteria14.ToString().ToLower()), "criteria_14");
+
             if (fileStream != null && !string.IsNullOrEmpty(fileName))
             {
                 var fileContent = new StreamContent(fileStream);
@@ -136,6 +182,14 @@ namespace frontend.Services
             var response = await _httpClient.GetAsync(endpoint);
             await EnsureSuccessOrThrowAsync(response);
             return await response.Content.ReadAsByteArrayAsync();
+        }
+
+        public async Task<Stream> DownloadEquipmentReportAsync(Guid equipoId, string type)
+        {
+            await SetAuthorizationHeaderAsync();
+            var response = await _httpClient.GetAsync($"api/equipos/{equipoId}/reports/{type}");
+            await EnsureSuccessOrThrowAsync(response);
+            return await response.Content.ReadAsStreamAsync();
         }
 
         private async Task EnsureSuccessOrThrowAsync(HttpResponseMessage response)

@@ -1,5 +1,5 @@
 import enum
-from sqlalchemy import Column, String, Integer, ForeignKey, Date, Enum, Table
+from sqlalchemy import Column, String, Integer, ForeignKey, Date, Enum, Table, Boolean
 from sqlalchemy.dialects.postgresql import UUID
 from sqlalchemy.orm import relationship
 from geoalchemy2 import Geometry
@@ -34,6 +34,32 @@ class Equipo(Base):
     id_asignado = Column(String, nullable=True)
     capacidad = Column(String, nullable=True)
     ubicacion_fisica = Column(String, nullable=True)
+    proveedor = Column(String, nullable=True)
+    estado_aprobacion = Column(String, nullable=True)
+    observaciones = Column(String, nullable=True)
+    verificado_por = Column(String, nullable=True)
+    revisado_por = Column(String, nullable=True)
+    fecha_verificacion = Column(Date, nullable=True)
+    fecha_revision = Column(Date, nullable=True)
+    rango_calibracion = Column(String, nullable=True)
+    frecuencia_calibracion = Column(Integer, nullable=True)
+    metodo_mantenimiento = Column(String, nullable=True)
+    
+    # Verification criteria columns
+    criteria_1 = Column(Boolean, default=True)
+    criteria_2 = Column(Boolean, default=True)
+    criteria_3 = Column(Boolean, default=True)
+    criteria_4 = Column(Boolean, default=True)
+    criteria_5 = Column(Boolean, default=True)
+    criteria_6 = Column(Boolean, default=False)
+    criteria_7 = Column(Boolean, default=True)
+    criteria_8 = Column(Boolean, default=True)
+    criteria_9 = Column(Boolean, default=True)
+    criteria_10 = Column(Boolean, default=True)
+    criteria_11 = Column(Boolean, default=True)
+    criteria_12 = Column(Boolean, default=True)
+    criteria_13 = Column(Boolean, default=False)
+    criteria_14 = Column(Boolean, default=True)
 
     # Passive deletes / no cascade to enforce RESTRICT on physical deletion
     calibraciones = relationship("Calibracion", back_populates="equipo")

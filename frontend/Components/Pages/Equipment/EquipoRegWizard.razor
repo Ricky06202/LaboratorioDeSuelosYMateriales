@@ -126,6 +126,27 @@
                             <MudTextField Label="Método de Mantenimiento" @bind-Value="_model.MaintenanceMethod" Variant="Variant.Outlined" Margin="Margin.Dense" />
                         </MudItem>
                     }
+                    
+                    <MudItem xs="12">
+                        <MudDivider Class="my-4" />
+                        <MudText Typo="Typo.subtitle2" Class="mb-2">Firmas y Aprobación Final</MudText>
+                    </MudItem>
+                    <MudItem xs="12" sm="6">
+                        <MudSelect T="string" Label="Estado de Aprobación" @bind-Value="_model.ApprovalStatus" Variant="Variant.Outlined" Margin="Margin.Dense">
+                            <MudSelectItem Value="@("Aprobado para Uso")">Aprobado para Uso</MudSelectItem>
+                            <MudSelectItem Value="@("Rechazado")">Rechazado</MudSelectItem>
+                            <MudSelectItem Value="@("Uso Condicionado")">Uso Condicionado</MudSelectItem>
+                        </MudSelect>
+                    </MudItem>
+                    <MudItem xs="12" sm="6">
+                        <MudTextField Label="Verificado por" @bind-Value="_model.VerifiedBy" Variant="Variant.Outlined" Margin="Margin.Dense" />
+                    </MudItem>
+                    <MudItem xs="12" sm="6">
+                        <MudTextField Label="Revisado por" @bind-Value="_model.ReviewedBy" Variant="Variant.Outlined" Margin="Margin.Dense" />
+                    </MudItem>
+                    <MudItem xs="12" sm="6">
+                        <MudDatePicker Label="Fecha de Verificación" @bind-Date="_model.VerificationDate" Variant="Variant.Outlined" Margin="Margin.Dense" />
+                    </MudItem>
                 </MudGrid>
                 
                 <div class="mt-8 d-flex flex-column align-center">
@@ -215,22 +236,46 @@
         _processing = true;
         try
         {
-            var createModel = new EquipoCreate
-            {
-                Nombre = _model.EquipmentName,
-                Marca = _model.Brand,
-                Modelo = _model.Model,
-                NumeroSerie = _model.SerialNumber,
-                Estado = "Activo",
-                TipoFondo = _model.FundType,
-                OrdenCompra = _model.PurchaseOrderNo,
-                SolicitudNo = _model.RequestNo,
-                TipoBien = _model.ItemType,
-                FechaRecibido = _model.ReceiveDate,
-                IdAsignado = _model.AssignedId,
-                Capacidad = _model.Capacity,
-                UbicacionFisica = _model.Location
-            };
+                var createModel = new EquipoCreate
+                {
+                    Nombre = _model.EquipmentName,
+                    Marca = _model.Brand,
+                    Modelo = _model.Model,
+                    NumeroSerie = _model.SerialNumber,
+                    Estado = "Activo",
+                    TipoFondo = _model.FundType,
+                    OrdenCompra = _model.PurchaseOrderNo,
+                    SolicitudNo = _model.RequestNo,
+                    TipoBien = _model.ItemType,
+                    FechaRecibido = _model.ReceiveDate,
+                    IdAsignado = _model.AssignedId,
+                    Capacidad = _model.Capacity,
+                    UbicacionFisica = _model.Location,
+                    Proveedor = _model.Provider,
+                    EstadoAprobacion = _model.ApprovalStatus,
+                    Observations = _model.Observations,
+                    VerificadoPor = _model.VerifiedBy,
+                    RevisadoPor = _model.ReviewedBy,
+                    FechaVerificacion = _model.VerificationDate,
+                    FechaRevision = _model.ReviewDate,
+                    RangoCalibracion = _model.CalibrationRange,
+                    FrecuenciaCalibracion = _model.CalibrationFrequency,
+                    MetodoMantenimiento = _model.MaintenanceMethod,
+                    Criteria1 = _model.Criteria1,
+                    Criteria2 = _model.Criteria2,
+                    Criteria3 = _model.Criteria3,
+                    Criteria4 = _model.Criteria4,
+                    Criteria5 = _model.Criteria5,
+                    Criteria6 = _model.Criteria6,
+                    Criteria7 = _model.Criteria7,
+                    Criteria8 = _model.Criteria8,
+                    Criteria9 = _model.Criteria9,
+                    Criteria10 = _model.Criteria10,
+                    Criteria11 = _model.Criteria11,
+                    Criteria12 = _model.Criteria12,
+                    Criteria13 = _model.Criteria13,
+                    Criteria14 = _model.Criteria14
+                };
 
             var result = await EquipmentService.CreateEquipoAsync(createModel);
             

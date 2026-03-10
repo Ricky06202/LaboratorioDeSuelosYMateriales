@@ -44,33 +44,51 @@ async def create_equipo(
     id_asignado: Optional[str] = Form(None),
     capacidad: Optional[str] = Form(None),
     ubicacion_fisica: Optional[str] = Form(None),
+    proveedor: Optional[str] = Form(None),
+    estado_aprobacion: Optional[str] = Form("Aprobado para Uso"),
+    observaciones: Optional[str] = Form(None),
+    verificado_por: Optional[str] = Form(None),
+    revisado_por: Optional[str] = Form(None),
+    fecha_verificacion: Optional[str] = Form(None),
+    fecha_revision: Optional[str] = Form(None),
+    rango_calibracion: Optional[str] = Form(None),
+    frecuencia_calibracion: Optional[int] = Form(None),
+    metodo_mantenimiento: Optional[str] = Form(None),
+    criteria_1: bool = Form(True),
+    criteria_2: bool = Form(True),
+    criteria_3: bool = Form(True),
+    criteria_4: bool = Form(True),
+    criteria_5: bool = Form(True),
+    criteria_6: bool = Form(False),
+    criteria_7: bool = Form(True),
+    criteria_8: bool = Form(True),
+    criteria_9: bool = Form(True),
+    criteria_10: bool = Form(True),
+    criteria_11: bool = Form(True),
+    criteria_12: bool = Form(True),
+    criteria_13: bool = Form(False),
+    criteria_14: bool = Form(True),
     file: Optional[UploadFile] = File(None)
 ):
     from datetime import datetime
-    d_recibido = None
-    if fecha_recibido:
-        d_recibido = datetime.strptime(fecha_recibido, "%Y-%m-%d").date()
+    def parse_dt(s): return datetime.strptime(s, "%Y-%m-%d").date() if s else None
 
-    foto_url = None
-    if file:
-        foto_url = await file_service.save_file(file, "equipos")
-        
     equipo_in = EquipoCreate(
-        nombre=nombre,
-        marca=marca,
-        modelo=modelo,
-        numero_serie=numero_serie,
-        estado=estado,
-        ubicacion=ubicacion,
-        foto_url=foto_url,
-        tipo_fondo=tipo_fondo,
-        orden_compra=orden_compra,
-        solicitud_no=solicitud_no,
-        tipo_bien=tipo_bien,
-        fecha_recibido=d_recibido,
-        id_asignado=id_asignado,
-        capacidad=capacidad,
-        ubicacion_fisica=ubicacion_fisica
+        nombre=nombre, marca=marca, modelo=modelo, numero_serie=numero_serie, 
+        estado=estado, ubicacion=ubicacion, foto_url=foto_url,
+        tipo_fondo=tipo_fondo, orden_compra=orden_compra, solicitud_no=solicitud_no,
+        tipo_bien=tipo_bien, fecha_recibido=parse_dt(fecha_recibido),
+        id_asignado=id_asignado, capacidad=capacidad, ubicacion_fisica=ubicacion_fisica,
+        proveedor=proveedor, estado_aprobacion=estado_aprobacion, observaciones=observaciones,
+        verificado_por=verificado_por, revisado_por=revisado_por,
+        fecha_verificacion=parse_dt(fecha_verificacion), fecha_revision=parse_dt(fecha_revision),
+        rango_calibracion=rango_calibracion, frecuencia_calibracion=frecuencia_calibracion,
+        metodo_mantenimiento=metodo_mantenimiento,
+        criteria_1=criteria_1, criteria_2=criteria_2, criteria_3=criteria_3,
+        criteria_4=criteria_4, criteria_5=criteria_5, criteria_6=criteria_6,
+        criteria_7=criteria_7, criteria_8=criteria_8, criteria_9=criteria_9,
+        criteria_10=criteria_10, criteria_11=criteria_11, criteria_12=criteria_12,
+        criteria_13=criteria_13, criteria_14=criteria_14
     )
     return equipment_service.create_equipo(db=db, equipo=equipo_in)
 
@@ -397,4 +415,139 @@ def generate_acquisition_registry_report(
         })
         
     pdf_bytes = render_pdf("equipment_acquisition_registry.html", {"items": items})
+    return Response(content=pdf_bytes, media_type="application/pdf")
+@router.get("/{equipo_id}/reports/purchase_verification", response_class=Response)
+def get_equipo_purchase_verification_report(equipo_id: UUID, db: Session = Depends(deps.get_db)):
+    equipo = equipment_service.get_equipo(db, equipo_id)
+    if not equipo: raise HTTPException(status_code=404, detail="Equipo no encontrado")
+    
+    def bool_to_si_no(b): return "SI" if b else "NO"
+    
+    data = {
+        "fund_type": equipo.tipo_fondo or "N/A",
+        "purchase_order_no": equipo.orden_compra or "N/A",
+        "request_no": equipo.solicitud_no or "N/A",
+        "item_type": equipo.tipo_bien or "N/A",
+        "item_name": equipo.nombre or "",
+        "brand": equipo.marca or "",
+        "model": equipo.modelo or "",
+        "serial": equipo.numero_serie or "",
+        "provider": equipo.proveedor or "",
+        "receive_date": str(equipo.fecha_recibido) if equipo.fecha_recibido else "",
+        "assigned_id": equipo.id_asignado or "",
+        "approval_status": equipo.estado_aprobacion or "Aprobado para Uso",
+        "observations": equipo.observaciones or "",
+        "verified_by": equipo.verificado_por or "",
+        "reviewed_by": equipo.revisado_por or "",
+        "verification_date": str(equipo.fecha_verificacion) if equipo.fecha_verificacion else "",
+        "review_date": str(equipo.fecha_revision) if equipo.fecha_revision else ""
+    }
+    # Add criteria
+    for i in range(1, 15):
+        val = getattr(equipo, f"criteria_{i}", True)
+        data[f"criteria_{i}"] = bool_to_si_no(val)
+        
+    pdf_bytes = render_pdf("purchase_verification.html", {"data": data})
+    return Response(content=pdf_bytes, media_type="application/pdf", headers={"Content-Disposition": f"attachment; filename=LSMCH_8_REV2_{equipo.numero_serie}.pdf"})
+
+@router.get("/{equipo_id}/reports/acquisition", response_class=Response)
+def get_equipo_acquisition_report(equipo_id: UUID, db: Session = Depends(deps.get_db)):
+    equipo = equipment_service.get_equipo(db, equipo_id)
+    if not equipo: raise HTTPException(status_code=404, detail="Equipo no encontrado")
+    
+    items = [{
+        "receive_date": str(equipo.fecha_recibido) if equipo.fecha_recibido else "N/A",
+        "item_name": equipo.nombre or "",
+        "utp_active_no": "N/A",
+        "funds": "A" if equipo.tipo_fondo == "Autogestión" else "B", # Mapping example
+        "brand": equipo.marca or "",
+        "description": equipo.modelo or "",
+        "catalog": equipo.numero_serie or "",
+        "provider": equipo.proveedor or "N/A",
+        "evaluated_by": equipo.verificado_por or "N/A",
+        "storage_area": equipo.ubicacion_fisica or "N/A",
+        "assigned_id": equipo.id_asignado or "",
+        "received_by": "LSMCH"
+    }]
+    pdf_bytes = render_pdf("equipment_acquisition_registry.html", {"items": items})
+    return Response(content=pdf_bytes, media_type="application/pdf")
+
+@router.get("/{equipo_id}/reports/measurement", response_class=Response)
+def get_equipo_measurement_report(equipo_id: UUID, db: Session = Depends(deps.get_db)):
+    equipo = equipment_service.get_equipo(db, equipo_id)
+    if not equipo: raise HTTPException(status_code=404, detail="Equipo no encontrado")
+    last_calib = equipo.calibraciones[-1] if (hasattr(equipo, "calibraciones") and equipo.calibraciones) else None
+    items = [{
+        "inventory_code": equipo.id_asignado or equipo.numero_serie or "",
+        "equipment_name": equipo.nombre or "",
+        "manufacturer": equipo.marca or "",
+        "serial_number": equipo.numero_serie or "",
+        "capacity": equipo.capacidad or equipo.modelo or "",
+        "location": equipo.ubicacion_fisica or "AREA-1",
+        "maintenance_method": equipo.metodo_mantenimiento or "Manual de Fabricante",
+        "calibration_method": "N/A",
+        "calibration_period": f"{equipo.frecuencia_calibracion} Meses" if equipo.frecuencia_calibracion else "N/A",
+        "last_calibration": str(last_calib.fecha_calibracion) if last_calib else "",
+        "calibrated_by": last_calib.empresa_certificadora if last_calib else "",
+        "reference_material": "N/A",
+        "damage_assessment": "No" if equipo.estado == "Activo" else "Sí"
+    }]
+    pdf_bytes = render_pdf("measurement_equipment_inventory.html", {"items": items})
+    return Response(content=pdf_bytes, media_type="application/pdf")
+
+@router.get("/{equipo_id}/reports/field_aux", response_class=Response)
+def get_equipo_field_aux_report(equipo_id: UUID, db: Session = Depends(deps.get_db)):
+    equipo = equipment_service.get_equipo(db, equipo_id)
+    if not equipo: raise HTTPException(status_code=404, detail="Equipo no encontrado")
+    items = [{
+        "lab_id": equipo.id_asignado or equipo.numero_serie or "",
+        "utp_active_number": "N/A",
+        "equipment_name": equipo.nombre or "",
+        "manufacturer_name": equipo.marca or "",
+        "brand": equipo.marca or "",
+        "model": equipo.modelo or "",
+        "serial_number": equipo.numero_serie or "",
+        "ranges": equipo.rango_calibracion or "N/A",
+        "status": equipo.estado or "Activo",
+        "location": equipo.ubicacion_fisica or "AREA-1"
+    }]
+    pdf_bytes = render_pdf("field_aux_equipment_inventory.html", {"items": items})
+    return Response(content=pdf_bytes, media_type="application/pdf")
+
+@router.get("/{equipo_id}/reports/glassware", response_class=Response)
+def get_equipo_glassware_report(equipo_id: UUID, db: Session = Depends(deps.get_db)):
+    equipo = equipment_service.get_equipo(db, equipo_id)
+    if not equipo: raise HTTPException(status_code=404, detail="Equipo no encontrado")
+    items = [{
+        "inventory_code": equipo.id_asignado or equipo.numero_serie or "",
+        "asset_number": "No Aplica",
+        "equipment_name": equipo.nombre or "",
+        "manufacturer": equipo.marca or "",
+        "serial_number": equipo.numero_serie or "",
+        "capacity": equipo.capacidad or equipo.modelo or "",
+        "location": equipo.ubicacion_fisica or "AREA-1",
+        "maintenance_method": "N/A",
+        "calibration_method": "N/A",
+        "calibration_period": "N/A",
+        "last_calibration": "",
+        "calibrated_by": ""
+    }]
+    pdf_bytes = render_pdf("glassware_inventory.html", {"items": items})
+    return Response(content=pdf_bytes, media_type="application/pdf")
+
+@router.get("/{equipo_id}/reports/maintenance_plan", response_class=Response)
+def get_equipo_maintenance_plan_report(equipo_id: UUID, db: Session = Depends(deps.get_db)):
+    equipo = equipment_service.get_equipo(db, equipo_id)
+    if not equipo: raise HTTPException(status_code=404, detail="Equipo no encontrado")
+    last_calib = equipo.calibraciones[-1] if (hasattr(equipo, "calibraciones") and equipo.calibraciones) else None
+    items = [{
+        "equipment_id": equipo.id_asignado or equipo.numero_serie or "",
+        "equipment_name": equipo.nombre or "",
+        "criteria": equipo.metodo_mantenimiento or "Manual del fabricante",
+        "activity": "Mantenimiento / Calibración",
+        "frequency": f"{equipo.frecuencia_calibracion} Meses" if equipo.frecuencia_calibracion else "Anual",
+        "internal_resp": "LSMCH" if not last_calib else "",
+        "external_resp": last_calib.empresa_certificadora if last_calib else ""
+    }]
+    pdf_bytes = render_pdf("verification_maintenance_plan.html", {"items": items})
     return Response(content=pdf_bytes, media_type="application/pdf")

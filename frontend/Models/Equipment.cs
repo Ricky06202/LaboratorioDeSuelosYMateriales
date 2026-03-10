@@ -57,6 +57,51 @@ namespace frontend.Models
 
         [JsonPropertyName("ubicacion_fisica")]
         public string? UbicacionFisica { get; set; }
+
+        [JsonPropertyName("proveedor")]
+        public string? Proveedor { get; set; }
+
+        [JsonPropertyName("estado_aprobacion")]
+        public string? EstadoAprobacion { get; set; }
+
+        [JsonPropertyName("observaciones")]
+        public string? Observations { get; set; }
+
+        [JsonPropertyName("verificado_por")]
+        public string? VerificadoPor { get; set; }
+
+        [JsonPropertyName("revisado_por")]
+        public string? RevisadoPor { get; set; }
+
+        [JsonPropertyName("fecha_verificacion")]
+        public DateTime? FechaVerificacion { get; set; }
+
+        [JsonPropertyName("fecha_revision")]
+        public DateTime? FechaRevision { get; set; }
+
+        [JsonPropertyName("rango_calibracion")]
+        public string? RangoCalibracion { get; set; }
+
+        [JsonPropertyName("frecuencia_calibracion")]
+        public int? FrecuenciaCalibracion { get; set; }
+
+        [JsonPropertyName("metodo_mantenimiento")]
+        public string? MetodoMantenimiento { get; set; }
+
+        [JsonPropertyName("criteria_1")] public bool Criteria1 { get; set; } = true;
+        [JsonPropertyName("criteria_2")] public bool Criteria2 { get; set; } = true;
+        [JsonPropertyName("criteria_3")] public bool Criteria3 { get; set; } = true;
+        [JsonPropertyName("criteria_4")] public bool Criteria4 { get; set; } = true;
+        [JsonPropertyName("criteria_5")] public bool Criteria5 { get; set; } = true;
+        [JsonPropertyName("criteria_6")] public bool Criteria6 { get; set; } = false;
+        [JsonPropertyName("criteria_7")] public bool Criteria7 { get; set; } = true;
+        [JsonPropertyName("criteria_8")] public bool Criteria8 { get; set; } = true;
+        [JsonPropertyName("criteria_9")] public bool Criteria9 { get; set; } = true;
+        [JsonPropertyName("criteria_10")] public bool Criteria10 { get; set; } = true;
+        [JsonPropertyName("criteria_11")] public bool Criteria11 { get; set; } = true;
+        [JsonPropertyName("criteria_12")] public bool Criteria12 { get; set; } = true;
+        [JsonPropertyName("criteria_13")] public bool Criteria13 { get; set; } = false;
+        [JsonPropertyName("criteria_14")] public bool Criteria14 { get; set; } = true;
         
         [JsonPropertyName("calibraciones")]
         public List<Calibracion> Calibraciones { get; set; } = new();
@@ -135,6 +180,51 @@ namespace frontend.Models
 
         [JsonPropertyName("ubicacion_fisica")]
         public string? UbicacionFisica { get; set; }
+
+        [JsonPropertyName("proveedor")]
+        public string? Proveedor { get; set; }
+
+        [JsonPropertyName("estado_aprobacion")]
+        public string? EstadoAprobacion { get; set; }
+
+        [JsonPropertyName("observaciones")]
+        public string? Observations { get; set; }
+
+        [JsonPropertyName("verificado_por")]
+        public string? VerificadoPor { get; set; }
+
+        [JsonPropertyName("revisado_por")]
+        public string? RevisadoPor { get; set; }
+
+        [JsonPropertyName("fecha_verificacion")]
+        public DateTime? FechaVerificacion { get; set; }
+
+        [JsonPropertyName("fecha_revision")]
+        public DateTime? FechaRevision { get; set; }
+
+        [JsonPropertyName("rango_calibracion")]
+        public string? RangoCalibracion { get; set; }
+
+        [JsonPropertyName("frecuencia_calibracion")]
+        public int? FrecuenciaCalibracion { get; set; }
+
+        [JsonPropertyName("metodo_mantenimiento")]
+        public string? MetodoMantenimiento { get; set; }
+
+        [JsonPropertyName("criteria_1")] public bool Criteria1 { get; set; } = true;
+        [JsonPropertyName("criteria_2")] public bool Criteria2 { get; set; } = true;
+        [JsonPropertyName("criteria_3")] public bool Criteria3 { get; set; } = true;
+        [JsonPropertyName("criteria_4")] public bool Criteria4 { get; set; } = true;
+        [JsonPropertyName("criteria_5")] public bool Criteria5 { get; set; } = true;
+        [JsonPropertyName("criteria_6")] public bool Criteria6 { get; set; } = false;
+        [JsonPropertyName("criteria_7")] public bool Criteria7 { get; set; } = true;
+        [JsonPropertyName("criteria_8")] public bool Criteria8 { get; set; } = true;
+        [JsonPropertyName("criteria_9")] public bool Criteria9 { get; set; } = true;
+        [JsonPropertyName("criteria_10")] public bool Criteria10 { get; set; } = true;
+        [JsonPropertyName("criteria_11")] public bool Criteria11 { get; set; } = true;
+        [JsonPropertyName("criteria_12")] public bool Criteria12 { get; set; } = true;
+        [JsonPropertyName("criteria_13")] public bool Criteria13 { get; set; } = false;
+        [JsonPropertyName("criteria_14")] public bool Criteria14 { get; set; } = true;
     }
 
     public class EquipoUpdate

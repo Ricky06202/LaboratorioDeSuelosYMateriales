@@ -22,8 +22,22 @@ async def lifespan(app: FastAPI):
         ("fecha_recibido", "DATE"),
         ("id_asignado", "VARCHAR"),
         ("capacidad", "VARCHAR"),
-        ("ubicacion_fisica", "VARCHAR")
+        ("ubicacion_fisica", "VARCHAR"),
+        ("proveedor", "VARCHAR"),
+        ("estado_aprobacion", "VARCHAR"),
+        ("observaciones", "TEXT"),
+        ("verificado_por", "VARCHAR"),
+        ("revisado_por", "VARCHAR"),
+        ("fecha_verificacion", "DATE"),
+        ("fecha_revision", "DATE"),
+        ("rango_calibracion", "VARCHAR"),
+        ("frecuencia_calibracion", "INTEGER"),
+        ("metodo_mantenimiento", "VARCHAR")
     ]
+    # Add criteria columns 1-14
+    for i in range(1, 15):
+        columns_to_add.append((f"criteria_{i}", "BOOLEAN DEFAULT TRUE"))
+
     with engine.connect() as conn:
         # Check equipos table
         for col_name, col_type in columns_to_add:
