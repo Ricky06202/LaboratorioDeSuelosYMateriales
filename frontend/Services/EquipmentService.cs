@@ -145,15 +145,23 @@ namespace frontend.Services
                 var content = await response.Content.ReadAsStringAsync();
                 try
                 {
-                    var error = System.Text.Json.JsonSerializer.Deserialize<ApiError>(content, new System.Text.Json.JsonSerializerOptions { PropertyNameCaseInsensitive = true });
-                    if (error != null && !string.IsNullOrEmpty(error.Detail))
+                    // Try to parse as the "Error Hunter" format first
+                    using var doc = System.Text.Json.JsonDocument.Parse(content);
+                    if (doc.RootElement.TryGetProperty("error", out var errorProp))
                     {
-                        throw new Exception(error.Detail);
+                        throw new Exception(errorProp.GetString());
+                    }
+                    if (doc.RootElement.TryGetProperty("detail", out var detailProp))
+                    {
+                        if (detailProp.ValueKind == System.Text.Json.JsonValueKind.String)
+                            throw new Exception(detailProp.GetString());
+                        else
+                            throw new Exception("Error de validación en el servidor.");
                     }
                 }
-                catch { } // Fallback if parsing fails
+                catch (Exception ex) when (ex is not Exception) { } // Ignore JSON parsing errors only
                 
-                throw new Exception($"Error {response.StatusCode}: No se pudo completar la operación.");
+                throw new Exception($"Error {response.StatusCode}: {content}");
             }
         }
 

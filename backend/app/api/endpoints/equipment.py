@@ -10,6 +10,9 @@ from app.schemas.equipment import Equipo, EquipoCreate, EquipoUpdate, Calibracio
 from app.services.equipment_service import equipment_service
 from app.services.file_service import file_service
 
+from fastapi.responses import JSONResponse
+import traceback
+
 router = APIRouter()
 
 @router.get("/", response_model=EquipoResponse)
