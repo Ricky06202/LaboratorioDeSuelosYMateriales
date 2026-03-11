@@ -27,6 +27,12 @@
                           InputType="InputType.Password" Variant="Variant.Outlined" Required="true" 
                           RequiredError="La contraseña es obligatoria" Adornment="Adornment.Start" 
                           AdornmentIcon="@Icons.Material.Filled.Lock" Class="mt-4" />
+
+            <MudTextField @bind-Value="_confirmPassword" Label="Confirmar Contraseña" 
+                          InputType="InputType.Password" Variant="Variant.Outlined" Required="true" 
+                          RequiredError="Debes confirmar la contraseña" Adornment="Adornment.Start" 
+                          AdornmentIcon="@Icons.Material.Filled.LockReset" Class="mt-4" 
+                          Validation="@(new Func<string, string?>(PasswordMatchValidator))" />
         </MudForm>
 
         <MudButton Variant="Variant.Filled" FullWidth="true" 
@@ -52,8 +58,16 @@
 
 @code {
     private UserCreate _model = new();
+    private string _confirmPassword = "";
     private bool _processing = false;
     private MudForm _form = null!;
+
+    private string? PasswordMatchValidator(string value)
+    {
+        if (_model.Password != value)
+            return "Las contraseñas no coinciden";
+        return null;
+    }
 
     private async Task HandleRegister()
     {
