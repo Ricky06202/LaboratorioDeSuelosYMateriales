@@ -25,20 +25,20 @@ namespace frontend.Services
                 ["limit"] = limit.ToString()
             };
             var url = QueryHelpers.AddQueryString("api/cotizaciones/", query);
-            return await _httpClient.GetFromJsonAsync<List<Quotation>>(url) ?? new List<Quotation>();
+            return await _httpClient.GetFromJsonAsync<List<Quotation>>(url, AppJsonSerializerContext.Default.ListQuotation) ?? new List<Quotation>();
         }
 
         public async Task<Quotation> GetQuotationAsync(Guid id)
         {
-            return await _httpClient.GetFromJsonAsync<Quotation>($"api/cotizaciones/{id}") 
+            return await _httpClient.GetFromJsonAsync<Quotation>($"api/cotizaciones/{id}", AppJsonSerializerContext.Default.Quotation) 
                    ?? throw new Exception("Cotización no encontrada");
         }
 
         public async Task<Quotation> CreateQuotationAsync(QuotationCreate quotation)
         {
-            var response = await _httpClient.PostAsJsonAsync("api/cotizaciones/", quotation);
+            var response = await _httpClient.PostAsJsonAsync("api/cotizaciones/", quotation, AppJsonSerializerContext.Default.QuotationCreate);
             await EnsureSuccessOrThrowAsync(response);
-            return await response.Content.ReadFromJsonAsync<Quotation>() 
+            return await response.Content.ReadFromJsonAsync<Quotation>(AppJsonSerializerContext.Default.Quotation) 
                    ?? throw new Exception("Error al crear la cotización");
         }
 
@@ -62,7 +62,7 @@ namespace frontend.Services
                 var content = await response.Content.ReadAsStringAsync();
                 try
                 {
-                    var error = System.Text.Json.JsonSerializer.Deserialize<ApiError>(content, new System.Text.Json.JsonSerializerOptions { PropertyNameCaseInsensitive = true });
+                    var error = System.Text.Json.JsonSerializer.Deserialize<ApiError>(content, AppJsonSerializerContext.Default.ApiError);
                     if (error != null && !string.IsNullOrEmpty(error.Detail))
                     {
                         throw new Exception(error.Detail);
@@ -73,7 +73,5 @@ namespace frontend.Services
                 throw new Exception($"Error {response.StatusCode}: No se pudo completar la operación.");
             }
         }
-
-        private class ApiError { public string Detail { get; set; } = ""; }
     }
 }

@@ -33,29 +33,29 @@ namespace frontend.Services
             await SetAuthorizationHeaderAsync();
             var url = "/api/servicios/";
             if (!string.IsNullOrWhiteSpace(search)) url += $"?search={search}";
-            return await _httpClient.GetFromJsonAsync<List<LabService>>(url) ?? new();
+            return await _httpClient.GetFromJsonAsync<List<LabService>>(url, AppJsonSerializerContext.Default.ListLabService) ?? new();
         }
 
         public async Task<LabService?> GetServiceAsync(int id)
         {
             await SetAuthorizationHeaderAsync();
-            return await _httpClient.GetFromJsonAsync<LabService>($"/api/servicios/{id}");
+            return await _httpClient.GetFromJsonAsync<LabService>($"/api/servicios/{id}", AppJsonSerializerContext.Default.LabService);
         }
 
         public async Task<LabService> CreateServiceAsync(LabServiceCreate service)
         {
             await SetAuthorizationHeaderAsync();
-            var response = await _httpClient.PostAsJsonAsync("/api/servicios/", service);
+            var response = await _httpClient.PostAsJsonAsync("/api/servicios/", service, AppJsonSerializerContext.Default.LabServiceCreate);
             response.EnsureSuccessStatusCode();
-            return (await response.Content.ReadFromJsonAsync<LabService>())!;
+            return (await response.Content.ReadFromJsonAsync<LabService>(AppJsonSerializerContext.Default.LabService))!;
         }
 
         public async Task<LabService> UpdateServiceAsync(int id, LabServiceUpdate service)
         {
             await SetAuthorizationHeaderAsync();
-            var response = await _httpClient.PutAsJsonAsync($"/api/servicios/{id}", service);
+            var response = await _httpClient.PutAsJsonAsync($"/api/servicios/{id}", service, AppJsonSerializerContext.Default.LabServiceUpdate);
             response.EnsureSuccessStatusCode();
-            return (await response.Content.ReadFromJsonAsync<LabService>())!;
+            return (await response.Content.ReadFromJsonAsync<LabService>(AppJsonSerializerContext.Default.LabService))!;
         }
 
         public async Task DeleteServiceAsync(int id)

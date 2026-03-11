@@ -149,7 +149,7 @@
         public string FullName { get; set; } = string.Empty;
         public string Email { get; set; } = string.Empty;
         public string Password { get; set; } = string.Empty;
-        public IEnumerable<int> SelectedRoleIds { get; set; } = new HashSet<int>();
+        public IReadOnlyCollection<int> SelectedRoleIds { get; set; } = new HashSet<int>();
         public bool IsActive { get; set; } = true;
     }
 }

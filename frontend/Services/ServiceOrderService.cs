@@ -25,20 +25,20 @@ namespace frontend.Services
                 ["limit"] = limit.ToString()
             };
             var url = QueryHelpers.AddQueryString("api/ordenes-servicio/", query);
-            return await _httpClient.GetFromJsonAsync<List<ServiceOrder>>(url) ?? new List<ServiceOrder>();
+            return await _httpClient.GetFromJsonAsync<List<ServiceOrder>>(url, AppJsonSerializerContext.Default.ListServiceOrder) ?? new List<ServiceOrder>();
         }
 
         public async Task<ServiceOrder> GetServiceOrderAsync(Guid id)
         {
-            return await _httpClient.GetFromJsonAsync<ServiceOrder>($"api/ordenes-servicio/{id}") 
+            return await _httpClient.GetFromJsonAsync<ServiceOrder>($"api/ordenes-servicio/{id}", AppJsonSerializerContext.Default.ServiceOrder) 
                    ?? throw new Exception("Orden de servicio no encontrada");
         }
 
         public async Task<ServiceOrder> CreateServiceOrderAsync(ServiceOrderCreate serviceOrder)
         {
-            var response = await _httpClient.PostAsJsonAsync("api/ordenes-servicio/", serviceOrder);
+            var response = await _httpClient.PostAsJsonAsync("api/ordenes-servicio/", serviceOrder, AppJsonSerializerContext.Default.ServiceOrderCreate);
             await EnsureSuccessOrThrowAsync(response);
-            return await response.Content.ReadFromJsonAsync<ServiceOrder>() 
+            return await response.Content.ReadFromJsonAsync<ServiceOrder>(AppJsonSerializerContext.Default.ServiceOrder) 
                    ?? throw new Exception("Error al crear la orden de servicio");
         }
 
@@ -62,7 +62,7 @@ namespace frontend.Services
                 var content = await response.Content.ReadAsStringAsync();
                 try
                 {
-                    var error = System.Text.Json.JsonSerializer.Deserialize<ApiError>(content, new System.Text.Json.JsonSerializerOptions { PropertyNameCaseInsensitive = true });
+                    var error = System.Text.Json.JsonSerializer.Deserialize<ApiError>(content, AppJsonSerializerContext.Default.ApiError);
                     if (error != null && !string.IsNullOrEmpty(error.Detail))
                     {
                         throw new Exception(error.Detail);
@@ -73,7 +73,5 @@ namespace frontend.Services
                 throw new Exception($"Error {response.StatusCode}: No se pudo completar la operación.");
             }
         }
-
-        private class ApiError { public string Detail { get; set; } = ""; }
     }
 }

@@ -53,7 +53,7 @@
     private MudForm _form = null!;
     private string _roleName = string.Empty;
     private List<Permission> _permissions = new();
-    private IEnumerable<int> _selectedPermissionIds = new HashSet<int>();
+    private IReadOnlyCollection<int> _selectedPermissionIds = new HashSet<int>();
 
     protected override async Task OnInitializedAsync()
     {

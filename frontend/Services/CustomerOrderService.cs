@@ -25,20 +25,20 @@ namespace frontend.Services
                 ["limit"] = limit.ToString()
             };
             var url = QueryHelpers.AddQueryString("api/pedidos/", query);
-            return await _httpClient.GetFromJsonAsync<List<CustomerOrder>>(url) ?? new List<CustomerOrder>();
+            return await _httpClient.GetFromJsonAsync<List<CustomerOrder>>(url, AppJsonSerializerContext.Default.ListCustomerOrder) ?? new List<CustomerOrder>();
         }
 
         public async Task<CustomerOrder> GetCustomerOrderAsync(Guid id)
         {
-            return await _httpClient.GetFromJsonAsync<CustomerOrder>($"api/pedidos/{id}") 
+            return await _httpClient.GetFromJsonAsync<CustomerOrder>($"api/pedidos/{id}", AppJsonSerializerContext.Default.CustomerOrder) 
                    ?? throw new Exception("Pedido no encontrado");
         }
 
         public async Task<CustomerOrder> CreateCustomerOrderAsync(CustomerOrderCreate order)
         {
-            var response = await _httpClient.PostAsJsonAsync("api/pedidos/", order);
+            var response = await _httpClient.PostAsJsonAsync("api/pedidos/", order, AppJsonSerializerContext.Default.CustomerOrderCreate);
             await EnsureSuccessOrThrowAsync(response);
-            return await response.Content.ReadFromJsonAsync<CustomerOrder>() 
+            return await response.Content.ReadFromJsonAsync<CustomerOrder>(AppJsonSerializerContext.Default.CustomerOrder) 
                    ?? throw new Exception("Error al crear el pedido");
         }
 
@@ -62,7 +62,7 @@ namespace frontend.Services
                 var content = await response.Content.ReadAsStringAsync();
                 try
                 {
-                    var error = System.Text.Json.JsonSerializer.Deserialize<ApiError>(content, new System.Text.Json.JsonSerializerOptions { PropertyNameCaseInsensitive = true });
+                    var error = System.Text.Json.JsonSerializer.Deserialize<ApiError>(content, AppJsonSerializerContext.Default.ApiError);
                     if (error != null && !string.IsNullOrEmpty(error.Detail))
                     {
                         throw new Exception(error.Detail);
@@ -73,7 +73,5 @@ namespace frontend.Services
                 throw new Exception($"Error {response.StatusCode}: No se pudo completar la operación.");
             }
         }
-
-        private class ApiError { public string Detail { get; set; } = ""; }
     }
 }

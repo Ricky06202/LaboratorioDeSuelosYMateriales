@@ -77,7 +77,7 @@
         _processing = true;
         try
         {
-            var response = await Http.PostAsJsonAsync("api/auth/register", _model);
+            var response = await Http.PostAsJsonAsync("api/auth/register", _model, AppJsonSerializerContext.Default.UserCreate);
             
             if (response.IsSuccessStatusCode)
             {

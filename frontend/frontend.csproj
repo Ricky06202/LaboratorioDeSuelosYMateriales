@@ -9,9 +9,6 @@
     <OverrideHtmlAssetPlaceholders>false</OverrideHtmlAssetPlaceholders>
     <WasmFingerprintAssets>false</WasmFingerprintAssets>
     <StaticWebAssetsFingerprintingEnabled>false</StaticWebAssetsFingerprintingEnabled>
-    <!-- Ultra-Ligero: Activa el recorte de código y la pre-compresión Brotli/Gzip -->
-    <PublishTrimmed>true</PublishTrimmed>
-    <BlazorEnableCompression>true</BlazorEnableCompression>
   </PropertyGroup>
 
   <ItemGroup>

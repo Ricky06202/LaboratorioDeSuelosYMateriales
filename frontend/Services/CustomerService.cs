@@ -33,29 +33,29 @@ namespace frontend.Services
             await SetAuthorizationHeaderAsync();
             var url = "/api/clientes/";
             if (!string.IsNullOrWhiteSpace(search)) url += $"?search={search}";
-            return await _httpClient.GetFromJsonAsync<List<Customer>>(url) ?? new();
+            return await _httpClient.GetFromJsonAsync<List<Customer>>(url, AppJsonSerializerContext.Default.ListCustomer) ?? new();
         }
 
         public async Task<Customer?> GetCustomerAsync(Guid id)
         {
             await SetAuthorizationHeaderAsync();
-            return await _httpClient.GetFromJsonAsync<Customer>($"/api/clientes/{id}");
+            return await _httpClient.GetFromJsonAsync<Customer>($"/api/clientes/{id}", AppJsonSerializerContext.Default.Customer);
         }
 
         public async Task<Customer> CreateCustomerAsync(CustomerCreate customer)
         {
             await SetAuthorizationHeaderAsync();
-            var response = await _httpClient.PostAsJsonAsync("/api/clientes/", customer);
+            var response = await _httpClient.PostAsJsonAsync("/api/clientes/", customer, AppJsonSerializerContext.Default.CustomerCreate);
             response.EnsureSuccessStatusCode();
-            return (await response.Content.ReadFromJsonAsync<Customer>())!;
+            return (await response.Content.ReadFromJsonAsync<Customer>(AppJsonSerializerContext.Default.Customer))!;
         }
 
         public async Task<Customer> UpdateCustomerAsync(Guid id, CustomerUpdate customer)
         {
             await SetAuthorizationHeaderAsync();
-            var response = await _httpClient.PutAsJsonAsync($"/api/clientes/{id}", customer);
+            var response = await _httpClient.PutAsJsonAsync($"/api/clientes/{id}", customer, AppJsonSerializerContext.Default.CustomerUpdate);
             response.EnsureSuccessStatusCode();
-            return (await response.Content.ReadFromJsonAsync<Customer>())!;
+            return (await response.Content.ReadFromJsonAsync<Customer>(AppJsonSerializerContext.Default.Customer))!;
         }
 
         public async Task DeleteCustomerAsync(Guid id)

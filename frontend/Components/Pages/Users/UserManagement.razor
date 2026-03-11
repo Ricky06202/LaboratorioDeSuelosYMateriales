@@ -17,7 +17,7 @@
         </div>
     </div>
 
-    <MudTabs Elevation="0" Outlined="true" PanelClass="pa-6" Class="rounded-xl shadow-sm border border-solid border-light lsmch-glass mt-4">
+    <MudTabs Elevation="0" Outlined="true" Class="rounded-xl shadow-sm border border-solid border-light lsmch-glass mt-4">
         <MudTabPanel Text="Usuarios" Icon="@Icons.Material.Filled.People">
             <div class="d-flex justify-end mb-4">
                 <MudButton Variant="Variant.Filled" Color="Color.Primary" StartIcon="@Icons.Material.Filled.PersonAdd" 
@@ -39,7 +39,7 @@
                     <MudTd DataLabel="Nombre">@context.FullName</MudTd>
                     <MudTd DataLabel="Email">@context.Email</MudTd>
                     <MudTd DataLabel="Rol">
-                        <MudChip T="string" Color="Color.Info" Variant="Variant.Text" Size="Size.Small">@context.RoleName</MudChip>
+                        <MudChip T="string" Color="Color.Info" Variant="Variant.Text" Size="Size.Small">@context.RoleNames</MudChip>
                     </MudTd>
                     <MudTd DataLabel="Estado">
                         <MudChip T="bool" Color="@(context.IsActive ? Color.Success : Color.Error)" Size="Size.Small">

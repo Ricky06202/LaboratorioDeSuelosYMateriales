@@ -38,23 +38,23 @@ namespace frontend.Services
             
             if (queryParams.Count > 0) url += "?" + string.Join("&", queryParams);
             
-            return await _httpClient.GetFromJsonAsync<List<CalendarActivity>>(url) ?? new();
+            return await _httpClient.GetFromJsonAsync<List<CalendarActivity>>(url, AppJsonSerializerContext.Default.ListCalendarActivity) ?? new();
         }
 
         public async Task<CalendarActivity> CreateActivityAsync(CalendarActivityCreate activity)
         {
             await SetAuthorizationHeaderAsync();
-            var response = await _httpClient.PostAsJsonAsync("/api/agenda/", activity);
+            var response = await _httpClient.PostAsJsonAsync("/api/agenda/", activity, AppJsonSerializerContext.Default.CalendarActivityCreate);
             response.EnsureSuccessStatusCode();
-            return (await response.Content.ReadFromJsonAsync<CalendarActivity>())!;
+            return (await response.Content.ReadFromJsonAsync<CalendarActivity>(AppJsonSerializerContext.Default.CalendarActivity))!;
         }
 
         public async Task<CalendarActivity> UpdateActivityAsync(Guid id, CalendarActivityCreate activity) // Reusing Create for Update properties
         {
             await SetAuthorizationHeaderAsync();
-            var response = await _httpClient.PutAsJsonAsync($"/api/agenda/{id}", activity);
+            var response = await _httpClient.PutAsJsonAsync($"/api/agenda/{id}", activity, AppJsonSerializerContext.Default.CalendarActivityCreate);
             response.EnsureSuccessStatusCode();
-            return (await response.Content.ReadFromJsonAsync<CalendarActivity>())!;
+            return (await response.Content.ReadFromJsonAsync<CalendarActivity>(AppJsonSerializerContext.Default.CalendarActivity))!;
         }
 
         public async Task DeleteActivityAsync(Guid id)

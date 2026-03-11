@@ -83,4 +83,13 @@ namespace frontend.Models
         [JsonPropertyName("is_active")]
         public bool? IsActive { get; set; }
     }
+
+    public class RoleCreate
+    {
+        [JsonPropertyName("name")]
+        public string Name { get; set; } = string.Empty;
+
+        [JsonPropertyName("permission_ids")]
+        public List<int> PermissionIds { get; set; } = new();
+    }
 }

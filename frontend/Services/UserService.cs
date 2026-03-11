@@ -19,25 +19,23 @@ namespace frontend.Services
         public async Task<List<User>> GetUsersAsync()
         {
             await SetAuthorizationHeaderAsync();
-            var response = await _httpClient.GetAsync("api/usuarios/");
-            await EnsureSuccessOrThrowAsync(response);
-            return await response.Content.ReadFromJsonAsync<List<User>>() ?? new();
+            return await _httpClient.GetFromJsonAsync<List<User>>("api/usuarios/", AppJsonSerializerContext.Default.ListUser) ?? new();
         }
 
         public async Task<User> CreateUserAsync(UserCreate user)
         {
             await SetAuthorizationHeaderAsync();
-            var response = await _httpClient.PostAsJsonAsync("api/usuarios/", user);
+            var response = await _httpClient.PostAsJsonAsync("api/usuarios/", user, AppJsonSerializerContext.Default.UserCreate);
             await EnsureSuccessOrThrowAsync(response);
-            return await response.Content.ReadFromJsonAsync<User>() ?? new();
+            return await response.Content.ReadFromJsonAsync<User>(AppJsonSerializerContext.Default.User) ?? new();
         }
 
         public async Task<User> UpdateUserAsync(int userId, UserUpdate user)
         {
             await SetAuthorizationHeaderAsync();
-            var response = await _httpClient.PutAsJsonAsync($"api/usuarios/{userId}", user);
+            var response = await _httpClient.PutAsJsonAsync($"api/usuarios/{userId}", user, AppJsonSerializerContext.Default.UserUpdate);
             await EnsureSuccessOrThrowAsync(response);
-            return await response.Content.ReadFromJsonAsync<User>() ?? new();
+            return await response.Content.ReadFromJsonAsync<User>(AppJsonSerializerContext.Default.User) ?? new();
         }
 
         public async Task DeleteUserAsync(int userId)
@@ -50,33 +48,29 @@ namespace frontend.Services
         public async Task<List<Role>> GetRolesAsync()
         {
             await SetAuthorizationHeaderAsync();
-            var response = await _httpClient.GetAsync("api/usuarios/roles");
-            await EnsureSuccessOrThrowAsync(response);
-            return await response.Content.ReadFromJsonAsync<List<Role>>() ?? new();
+            return await _httpClient.GetFromJsonAsync<List<Role>>("api/usuarios/roles", AppJsonSerializerContext.Default.ListRole) ?? new();
         }
 
         public async Task<List<Permission>> GetPermissionsAsync()
         {
             await SetAuthorizationHeaderAsync();
-            var response = await _httpClient.GetAsync("api/usuarios/permissions");
-            await EnsureSuccessOrThrowAsync(response);
-            return await response.Content.ReadFromJsonAsync<List<Permission>>() ?? new();
+            return await _httpClient.GetFromJsonAsync<List<Permission>>("api/usuarios/permissions", AppJsonSerializerContext.Default.ListPermission) ?? new();
         }
 
         public async Task<Role> CreateRoleAsync(string name, List<int> permissionIds)
         {
             await SetAuthorizationHeaderAsync();
-            var response = await _httpClient.PostAsJsonAsync("api/usuarios/roles", new { name, permission_ids = permissionIds });
+            var response = await _httpClient.PostAsJsonAsync("api/usuarios/roles", new RoleCreate { Name = name, PermissionIds = permissionIds }, AppJsonSerializerContext.Default.RoleCreate);
             await EnsureSuccessOrThrowAsync(response);
-            return await response.Content.ReadFromJsonAsync<Role>() ?? new();
+            return await response.Content.ReadFromJsonAsync<Role>(AppJsonSerializerContext.Default.Role) ?? new();
         }
 
         public async Task<Role> UpdateRoleAsync(int roleId, string name, List<int> permissionIds)
         {
             await SetAuthorizationHeaderAsync();
-            var response = await _httpClient.PutAsJsonAsync($"api/usuarios/roles/{roleId}", new { name, permission_ids = permissionIds });
+            var response = await _httpClient.PutAsJsonAsync($"api/usuarios/roles/{roleId}", new RoleCreate { Name = name, PermissionIds = permissionIds }, AppJsonSerializerContext.Default.RoleCreate);
             await EnsureSuccessOrThrowAsync(response);
-            return await response.Content.ReadFromJsonAsync<Role>() ?? new();
+            return await response.Content.ReadFromJsonAsync<Role>(AppJsonSerializerContext.Default.Role) ?? new();
         }
 
         public async Task DeleteRoleAsync(int roleId)

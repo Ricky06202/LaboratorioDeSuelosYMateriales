@@ -2,6 +2,7 @@ using System.Security.Claims;
 using System.Text.Json;
 using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.JSInterop;
+using frontend.Models;
 
 namespace frontend.Auth
 {
@@ -55,7 +56,7 @@ namespace frontend.Auth
             var claims = new List<Claim>();
             var payload = jwt.Split('.')[1];
             var jsonBytes = ParseBase64WithoutPadding(payload);
-            var keyValuePairs = JsonSerializer.Deserialize<Dictionary<string, object>>(jsonBytes);
+            var keyValuePairs = JsonSerializer.Deserialize<Dictionary<string, object>>(jsonBytes, AppJsonSerializerContext.Default.DictionaryStringObject);
 
             if (keyValuePairs != null)
             {
@@ -66,7 +67,7 @@ namespace frontend.Auth
                     var rolesString = roles.ToString();
                     if (rolesString != null && rolesString.Trim().StartsWith("["))
                     {
-                        var parsedRoles = JsonSerializer.Deserialize<string[]>(rolesString);
+                        var parsedRoles = JsonSerializer.Deserialize<string[]>(rolesString, AppJsonSerializerContext.Default.StringArray);
                         if (parsedRoles != null)
                         {
                             foreach (var parsedRole in parsedRoles)
@@ -89,7 +90,7 @@ namespace frontend.Auth
                     var permissionsString = permissions.ToString();
                     if (permissionsString != null && permissionsString.Trim().StartsWith("["))
                     {
-                        var parsedPermissions = JsonSerializer.Deserialize<string[]>(permissionsString);
+                        var parsedPermissions = JsonSerializer.Deserialize<string[]>(permissionsString, AppJsonSerializerContext.Default.StringArray);
                         if (parsedPermissions != null)
                         {
                             foreach (var perm in parsedPermissions)

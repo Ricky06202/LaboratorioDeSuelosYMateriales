@@ -338,9 +338,4 @@ namespace frontend.Models
         public string? CertificadoUrl { get; set; }
     }
 
-    public class UploadResult
-    {
-        [JsonPropertyName("filename")]
-        public string Filename { get; set; } = string.Empty;
-    }
 }

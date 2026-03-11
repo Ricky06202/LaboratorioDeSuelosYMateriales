@@ -27,29 +27,21 @@ namespace frontend.Services
             };
             if (!string.IsNullOrEmpty(search)) query["search"] = search;
             if (!string.IsNullOrEmpty(estado)) query["estado"] = estado;
-
-
             var url = QueryHelpers.AddQueryString("api/equipos/", query);
-            var response = await _httpClient.GetAsync(url);
-            await EnsureSuccessOrThrowAsync(response);
-            return await response.Content.ReadFromJsonAsync<EquipoResponse>() ?? new EquipoResponse();
+
+            return await _httpClient.GetFromJsonAsync<EquipoResponse>(url, AppJsonSerializerContext.Default.EquipoResponse) ?? new EquipoResponse();
         }
 
         public async Task<List<Equipo>> GetAlertsAsync()
         {
             await SetAuthorizationHeaderAsync();
-            var response = await _httpClient.GetAsync("api/equipos/alerts/calibrations");
-            await EnsureSuccessOrThrowAsync(response);
-            return await response.Content.ReadFromJsonAsync<List<Equipo>>() ?? new();
+            return await _httpClient.GetFromJsonAsync<List<Equipo>>("api/equipos/alerts/calibrations", AppJsonSerializerContext.Default.ListEquipo) ?? new();
         }
 
         public async Task<Equipo?> GetEquipoAsync(Guid id)
         {
             await SetAuthorizationHeaderAsync();
-            var response = await _httpClient.GetAsync($"api/equipos/{id}");
-            if (response.StatusCode == System.Net.HttpStatusCode.NotFound) return null;
-            await EnsureSuccessOrThrowAsync(response);
-            return await response.Content.ReadFromJsonAsync<Equipo>();
+            return await _httpClient.GetFromJsonAsync<Equipo?>($"api/equipos/{id}", AppJsonSerializerContext.Default.Equipo);
         }
 
         public async Task<Equipo> CreateEquipoAsync(EquipoCreate equipo, Stream? fileStream = null, string? fileName = null)
@@ -143,14 +135,14 @@ namespace frontend.Services
 
             var response = await _httpClient.PostAsync("api/equipos/", content);
             await EnsureSuccessOrThrowAsync(response);
-            return await response.Content.ReadFromJsonAsync<Equipo>() ?? throw new Exception("Error al crear equipo");
+            return await response.Content.ReadFromJsonAsync<Equipo>(AppJsonSerializerContext.Default.Equipo) ?? throw new Exception("Error al crear equipo");
         }
 
         public async Task<Equipo> UpdateEquipoAsync(Guid id, EquipoUpdate equipo)
         {
-            var response = await _httpClient.PutAsJsonAsync($"api/equipos/{id}", equipo);
+            var response = await _httpClient.PutAsJsonAsync($"api/equipos/{id}", equipo, AppJsonSerializerContext.Default.EquipoUpdate);
             await EnsureSuccessOrThrowAsync(response);
-            return await response.Content.ReadFromJsonAsync<Equipo>() ?? throw new Exception("Error al actualizar equipo");
+            return await response.Content.ReadFromJsonAsync<Equipo>(AppJsonSerializerContext.Default.Equipo) ?? throw new Exception("Error al actualizar equipo");
         }
 
         public async Task DeleteEquipoAsync(Guid id)
@@ -168,7 +160,7 @@ namespace frontend.Services
 
             var response = await _httpClient.PostAsync($"api/equipos/{id}/foto", content);
             await EnsureSuccessOrThrowAsync(response);
-            var result = await response.Content.ReadFromJsonAsync<UploadResult>();
+            var result = await response.Content.ReadFromJsonAsync<UploadResult>(AppJsonSerializerContext.Default.UploadResult);
             return result?.Filename ?? throw new Exception("Error al subir foto");
         }
 
@@ -188,7 +180,7 @@ namespace frontend.Services
 
             var response = await _httpClient.PostAsync("api/equipos/calibrations", content);
             await EnsureSuccessOrThrowAsync(response);
-            return await response.Content.ReadFromJsonAsync<Calibracion>() ?? throw new Exception("Error al crear calibración");
+            return await response.Content.ReadFromJsonAsync<Calibracion>(AppJsonSerializerContext.Default.Calibracion) ?? throw new Exception("Error al crear calibración");
         }
 
         public async Task<byte[]> GetReportPdfAsync(string endpoint)
@@ -241,8 +233,5 @@ namespace frontend.Services
                 throw new Exception($"Error {response.StatusCode}: {content}");
             }
         }
-
-        private class ApiError { public string Detail { get; set; } = ""; }
-        private class UploadResult { public string Filename { get; set; } = ""; }
     }
 }
