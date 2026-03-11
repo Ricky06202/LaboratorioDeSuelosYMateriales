@@ -86,7 +86,7 @@ def delete_user(
         raise HTTPException(status_code=404, detail="User not found")
     return user
 
-@router.get("/roles")
+@router.get("/roles", response_model=List[app.schemas.user.Role])
 def read_roles(
     db: Session = Depends(deps.get_db),
     current_user: UserModel = Depends(get_current_admin_user),

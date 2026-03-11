@@ -74,19 +74,22 @@
 
     protected override async Task OnInitializedAsync()
     {
+        // 1. Initialize model from existing user if editing
+        if (IsEdit && ExistingUser != null)
+        {
+            _model = new UserFormModel
+            {
+                FullName = ExistingUser.FullName,
+                Email = ExistingUser.Email,
+                RoleId = ExistingUser.RoleId,
+                IsActive = ExistingUser.IsActive
+            };
+        }
+
+        // 2. Load roles independently
         try
         {
             _roles = await UserService.GetRolesAsync();
-            if (IsEdit && ExistingUser != null)
-            {
-                _model = new UserFormModel
-                {
-                    FullName = ExistingUser.FullName,
-                    Email = ExistingUser.Email,
-                    RoleId = ExistingUser.RoleId,
-                    IsActive = ExistingUser.IsActive
-                };
-            }
         }
         catch (Exception ex)
         {

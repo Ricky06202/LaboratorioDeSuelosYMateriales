@@ -1,5 +1,12 @@
-from typing import Optional
+from typing import Optional, List
 from pydantic import BaseModel, EmailStr
+
+class Role(BaseModel):
+    id: int
+    name: str
+
+    class Config:
+        from_attributes = True
 
 class UserBase(BaseModel):
     email: Optional[EmailStr] = None
@@ -20,6 +27,9 @@ class User(UserBase):
 
     class Config:
         from_attributes = True
+
+class UserRole(User):
+    pass
 
 class Token(BaseModel):
     access_token: str
