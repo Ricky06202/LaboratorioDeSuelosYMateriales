@@ -237,3 +237,42 @@ body {
         font-size: 1rem !important;
     }
 }
+
+/* Premium Auth Buttons */
+.lsmch-btn-login {
+    color: var(--lsmch-primary) !important;
+    font-weight: 700 !important;
+    letter-spacing: 0.5px;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+    background: transparent !important;
+    margin-right: 4px !important;
+}
+
+.lsmch-btn-login:hover {
+    background: rgba(30, 58, 138, 0.05) !important;
+    transform: translateY(-2px);
+}
+
+.lsmch-btn-register {
+    background: linear-gradient(135deg, #2563eb 0%, #1e3a8a 100%) !important;
+    color: white !important;
+    font-weight: 700 !important;
+    letter-spacing: 0.5px;
+    box-shadow: 0 4px 12px rgba(37, 99, 235, 0.25) !important;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+    border: none !important;
+}
+
+.lsmch-btn-register:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(37, 99, 235, 0.4) !important;
+    filter: brightness(1.1);
+}
+
+.hover-elevate {
+    transition: all 0.3s ease !important;
+}
+
+.hover-elevate:hover {
+    transform: translateY(-3px);
+}

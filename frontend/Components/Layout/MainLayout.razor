@@ -53,9 +53,15 @@
                 </MudMenu>
             </Authorized>
             <NotAuthorized>
-                <div class="ml-4 d-flex gap-2">
-                    <MudButton href="/login" Variant="Variant.Outlined" Color="Color.Primary" Class="rounded-pill d-none d-sm-flex">Entrar</MudButton>
-                    <MudButton href="/registro" Variant="Variant.Filled" Color="Color.Primary" Class="rounded-pill px-6 shadow-sm">Registrarse</MudButton>
+                <div class="ml-4 d-flex gap-2 align-center">
+                    <MudButton href="/login" Variant="Variant.Text" 
+                               Class="rounded-pill px-6 lsmch-btn-login d-none d-sm-flex">
+                        Iniciar Sesión
+                    </MudButton>
+                    <MudButton href="/registro" Variant="Variant.Filled" 
+                               Class="rounded-pill px-8 py-2 lsmch-btn-register">
+                        Regístrate
+                    </MudButton>
                 </div>
             </NotAuthorized>
         </AuthorizeView>
