@@ -19,7 +19,6 @@ class UserService:
 
     @staticmethod
     def create(db: Session, obj_in: UserCreate) -> User:
-        print(f"DEBUG: UserService.create - password type: {type(obj_in.password)}, length: {len(obj_in.password)}")
         db_obj = User(
             email=obj_in.email,
             hashed_password=get_password_hash(obj_in.password),
@@ -59,7 +58,6 @@ class UserService:
 
     @staticmethod
     def authenticate(db: Session, email: str, password: str) -> Optional[User]:
-        print(f"DEBUG: UserService.authenticate - password type: {type(password)}, length: {len(password)}")
         user = UserService.get_by_email(db, email=email)
         if not user:
             return None

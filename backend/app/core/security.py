@@ -1,9 +1,20 @@
+import bcrypt
 from datetime import datetime, timedelta
 from typing import Any, Union
 from jose import jwt
 from passlib.context import CryptContext
 
 from app.core.config import settings
+
+# --- Passlib + Bcrypt 4.0+ Compatibility Fix ---
+# Passlib 1.7.4 is incompatible with bcrypt 4.0+. 
+# This monkeypatch avoids the 'AttributeError: module bcrypt has no attribute __about__'
+# and the subsequent 'ValueError: password cannot be longer than 72 bytes' during internal bug detection.
+try:
+    if not hasattr(bcrypt, "__about__"):
+        bcrypt.__about__ = type("About", (object,), {"__version__": bcrypt.__version__})
+except Exception:
+    pass
 
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
