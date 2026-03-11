@@ -5,8 +5,9 @@ from fastapi.security import OAuth2PasswordRequestForm
 from sqlalchemy.orm import Session
 from app.api import deps
 from app.core import security
-from app.schemas.user import Token
+from app.schemas.user import Token, User, UserCreate
 from app.services.user_service import UserService
+from app.models.user import Role
 
 router = APIRouter()
 
@@ -34,3 +35,32 @@ def login_access_token(
         ),
         "token_type": "bearer",
     }
+
+@router.post("/register", response_model=User)
+def register_user(
+    *,
+    db: Session = Depends(deps.get_db),
+    user_in: UserCreate
+) -> Any:
+    """
+    Public registration endpoint. Asigns 'Visor' role by default.
+    """
+    user = UserService.get_by_email(db, email=user_in.email)
+    if user:
+        raise HTTPException(
+            status_code=400,
+            detail="The user with this email already exists in the system.",
+        )
+    
+    # Get default role 'Visor'
+    visor_role = db.query(Role).filter(Role.name == "Visor").first()
+    if not visor_role:
+        # Fallback if roles haven't been initialized (though they should be in main.py)
+        visor_role = Role(name="Visor")
+        db.add(visor_role)
+        db.commit()
+        db.refresh(visor_role)
+    
+    user_in.role_id = visor_role.id
+    return UserService.create(db, obj_in=user_in)
+鉴 y

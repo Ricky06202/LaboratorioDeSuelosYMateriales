@@ -1,0 +1,89 @@
+@page "/registro"
+@using frontend.Models
+@using frontend.Services
+@inject HttpClient Http
+@inject NavigationManager Navigation
+@inject ISnackbar Snackbar
+
+<MudContainer MaxWidth="MaxWidth.Small" Class="mt-16 animate__animated animate__zoomIn">
+    <MudPaper Class="pa-8 lsmch-glass border border-solid border-light rounded-xl shadow-lg">
+        <div class="d-flex flex-column align-center mb-6">
+            <img src="/images/LSMCH.png" style="height: 60px;" alt="Logo" class="mb-4" />
+            <MudText Typo="Typo.h4" Class="font-weight-black lsmch-title">Crear Cuenta</MudText>
+            <MudText Typo="Typo.body2" Class="text-secondary">Únete al Laboratorio de Suelos</MudText>
+        </div>
+
+        <MudForm @ref="_form">
+            <MudTextField @bind-Value="_model.FullName" Label="Nombre Completo" 
+                          Variant="Variant.Outlined" Required="true" RequiredError="El nombre es obligatorio"
+                          Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.Person" Class="mt-4" />
+
+            <MudTextField @bind-Value="_model.Email" Label="Correo Electrónico" 
+                          InputType="InputType.Email" Variant="Variant.Outlined" Required="true" 
+                          RequiredError="El correo es obligatorio" Adornment="Adornment.Start" 
+                          AdornmentIcon="@Icons.Material.Filled.Email" Class="mt-4" />
+
+            <MudTextField @bind-Value="_model.Password" Label="Contraseña" 
+                          InputType="InputType.Password" Variant="Variant.Outlined" Required="true" 
+                          RequiredError="La contraseña es obligatoria" Adornment="Adornment.Start" 
+                          AdornmentIcon="@Icons.Material.Filled.Lock" Class="mt-4" />
+        </MudForm>
+
+        <MudButton Variant="Variant.Filled" Color="Color.Primary" FullWidth="true" 
+                   Size="Size.Large" Class="mt-8 rounded-pill py-3 shadow-lg" 
+                   OnClick="HandleRegister" Disabled="@_processing">
+            @if (_processing)
+            {
+                <MudProgressCircular Size="Size.Small" Indeterminate="true" Class="mr-2" />
+                <span>Registrando...</span>
+            }
+            else
+            {
+                <span>Registrarse</span>
+            }
+        </MudButton>
+
+        <div class="d-flex justify-center mt-6">
+            <MudText Typo="Typo.body2" Class="mr-1">¿Ya tienes cuenta?</MudText>
+            <MudLink href="/login" Typo="Typo.body2" Underline="Underline.Hover">Inicia Sesión</MudLink>
+        </div>
+    </MudPaper>
+</MudContainer>
+
+@code {
+    private UserCreate _model = new();
+    private bool _processing = false;
+    private MudForm _form = null!;
+
+    private async Task HandleRegister()
+    {
+        await _form.Validate();
+        if (!_form.IsValid) return;
+
+        _processing = true;
+        try
+        {
+            var response = await Http.PostAsJsonAsync("api/auth/register", _model);
+            
+            if (response.IsSuccessStatusCode)
+            {
+                Snackbar.Add("¡Registro exitoso! Ahora puedes iniciar sesión.", Severity.Success);
+                Navigation.NavigateTo("/login");
+            }
+            else
+            {
+                var error = await response.Content.ReadAsStringAsync();
+                Snackbar.Add($"Error: {error}", Severity.Error);
+            }
+        }
+        catch (Exception ex)
+        {
+            Snackbar.Add($"Error de conexión: {ex.Message}", Severity.Error);
+        }
+        finally
+        {
+            _processing = false;
+        }
+    }
+}
+鉴 y

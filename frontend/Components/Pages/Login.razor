@@ -1,41 +1,105 @@
 @page "/login"
+@using frontend.Models
+@using frontend.Services
 @using frontend.Auth
 @using Microsoft.AspNetCore.Components.Authorization
 @inject NavigationManager Navigation
 @inject AuthenticationStateProvider AuthStateProvider
 @inject HttpClient Http
+@inject ISnackbar Snackbar
 
-<MudContainer MaxWidth="MaxWidth.Small" Class="mt-16">
-    <MudPaper Class="pa-8">
-        <MudText Typo="Typo.h4" Align="Align.Center" GutterBottom="true">Iniciar Sesión</MudText>
-        <MudTextField @bind-Value="_model.Username" Label="Email" Variant="Variant.Outlined" Class="mt-4" />
-        <MudTextField @bind-Value="_model.Password" Label="Contraseña" Variant="Variant.Outlined" InputType="InputType.Password" Class="mt-4" />
-        
-        @if (!string.IsNullOrEmpty(_error))
-        {
-            <MudAlert Severity="Severity.Error" Class="mt-4">@_error</MudAlert>
-        }
+<MudContainer MaxWidth="MaxWidth.Small" Class="mt-16 animate__animated animate__fadeInDown">
+    <MudPaper Class="pa-8 lsmch-glass border border-solid border-light rounded-xl shadow-lg">
+        <div class="d-flex flex-column align-center mb-6">
+            <img src="/images/LSMCH.png" style="height: 60px;" alt="Logo" class="mb-4" />
+            <MudText Typo="Typo.h4" Class="font-weight-black lsmch-title">Bienvenido</MudText>
+            <MudText Typo="Typo.body2" Class="text-secondary">Ingresa tus credenciales para continuar</MudText>
+        </div>
 
-        <MudButton Variant="Variant.Filled" Color="Color.Primary" FullWidth="true" Class="mt-6" OnClick="HandleLogin">Entrar</MudButton>
+        <MudForm @ref="_form">
+            <MudTextField @bind-Value="_username" Label="Correo Electrónico" 
+                          InputType="InputType.Email" Variant="Variant.Outlined" Required="true" 
+                          RequiredError="Debes ingresar tu correo" Adornment="Adornment.Start" 
+                          AdornmentIcon="@Icons.Material.Filled.Email" Class="mt-4" />
+
+            <MudTextField @bind-Value="_password" Label="Contraseña" 
+                          InputType="InputType.Password" Variant="Variant.Outlined" Required="true" 
+                          RequiredError="Debes ingresar tu contraseña" Adornment="Adornment.Start" 
+                          AdornmentIcon="@Icons.Material.Filled.Lock" Class="mt-4" />
+        </MudForm>
+
+        <MudButton Variant="Variant.Filled" Color="Color.Primary" FullWidth="true" 
+                   Size="Size.Large" Class="mt-8 rounded-pill py-3 shadow-lg" 
+                   OnClick="HandleLogin" Disabled="@_processing">
+            @if (_processing)
+            {
+                <MudProgressCircular Size="Size.Small" Indeterminate="true" Class="mr-2" />
+                <span>Autenticando...</span>
+            }
+            else
+            {
+                <span>Iniciar Sesión</span>
+            }
+        </MudButton>
+
+        <div class="d-flex justify-center mt-6">
+            <MudText Typo="Typo.body2" Class="mr-1">¿No tienes cuenta?</MudText>
+            <MudLink href="/registro" Typo="Typo.body2" Underline="Underline.Hover">Regístrate gratis</MudLink>
+        </div>
     </MudPaper>
 </MudContainer>
 
 @code {
-    private LoginModel _model = new();
-    private string? _error;
+    private string _username = "";
+    private string _password = "";
+    private bool _processing = false;
+    private MudForm _form = null!;
 
     private async Task HandleLogin()
     {
-        // Placeholder for real API call
-        // var response = await Http.PostAsJsonAsync("api/auth/login", _model);
-        // if (response.IsSuccessStatusCode) ...
-        
-        _error = "Servicio de autenticación en desarrollo. Backend requerido.";
+        await _form.Validate();
+        if (!_form.IsValid) return;
+
+        _processing = true;
+        try
+        {
+            var content = new FormUrlEncodedContent(new[]
+            {
+                new KeyValuePair<string, string>("username", _username),
+                new KeyValuePair<string, string>("password", _password)
+            });
+
+            var response = await Http.PostAsync("api/auth/login/access-token", content);
+            
+            if (response.IsSuccessStatusCode)
+            {
+                var result = await response.Content.ReadFromJsonAsync<TokenResponse>();
+                if (result != null)
+                {
+                    await ((JwtAuthenticationStateProvider)AuthStateProvider).MarkUserAsAuthenticated(result.AccessToken);
+                    Snackbar.Add("¡Sesión iniciada con éxito!", Severity.Success);
+                    Navigation.NavigateTo("/");
+                }
+            }
+            else
+            {
+                Snackbar.Add("Credenciales inválidas o cuenta inactiva.", Severity.Error);
+            }
+        }
+        catch (Exception ex)
+        {
+            Snackbar.Add($"Error de conexión: {ex.Message}", Severity.Error);
+        }
+        finally
+        {
+            _processing = false;
+        }
     }
 
-    public class LoginModel
+    private class TokenResponse
     {
-        public string? Username { get; set; }
-        public string? Password { get; set; }
+        [System.Text.Json.Serialization.JsonPropertyName("access_token")]
+        public string AccessToken { get; set; } = "";
     }
 }
+鉴 y
