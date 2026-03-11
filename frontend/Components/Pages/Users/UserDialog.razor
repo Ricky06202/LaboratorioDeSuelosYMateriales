@@ -28,11 +28,11 @@
                                   HelperText="@(IsEdit ? "Dejar en blanco para mantener la actual" : "")" />
                 </MudItem>
                 <MudItem xs="12">
-                    <MudSelect T="int?" Label="Rol" @bind-Value="_model.RoleId" 
-                               Required="true" RequiredError="Debe asignar un rol" Variant="Variant.Outlined">
+                    <MudSelect T="int" Label="Roles" MultiSelection="true" @bind-SelectedValues="_model.SelectedRoleIds" 
+                               Required="true" RequiredError="Debe asignar al menos un rol" Variant="Variant.Outlined">
                         @foreach (var role in _roles)
                         {
-                            <MudSelectItem Value="@((int?)role.Id)">@role.Name</MudSelectItem>
+                            <MudSelectItem Value="@role.Id">@role.Name</MudSelectItem>
                         }
                     </MudSelect>
                 </MudItem>
@@ -74,18 +74,6 @@
 
     protected override async Task OnInitializedAsync()
     {
-        // 1. Initialize model from existing user if editing
-        if (IsEdit && ExistingUser != null)
-        {
-            _model = new UserFormModel
-            {
-                FullName = ExistingUser.FullName,
-                Email = ExistingUser.Email,
-                RoleId = ExistingUser.RoleId,
-                IsActive = ExistingUser.IsActive
-            };
-        }
-
         // 2. Load roles independently
         try
         {
@@ -94,6 +82,18 @@
         catch (Exception ex)
         {
             Snackbar.Add($"Error al cargar roles: {ex.Message}", Severity.Error);
+        }
+
+        // 1. Initialize model from existing user if editing
+        if (IsEdit && ExistingUser != null)
+        {
+            _model = new UserFormModel
+            {
+                FullName = ExistingUser.FullName,
+                Email = ExistingUser.Email,
+                SelectedRoleIds = ExistingUser.Roles?.Select(r => r.Id).ToList() ?? new List<int>(),
+                IsActive = ExistingUser.IsActive
+            };
         }
     }
 
@@ -113,7 +113,7 @@
                 {
                     FullName = _model.FullName,
                     Email = _model.Email,
-                    RoleId = _model.RoleId,
+                    RoleIds = _model.SelectedRoleIds.ToList(),
                     IsActive = _model.IsActive,
                     Password = string.IsNullOrWhiteSpace(_model.Password) ? null : _model.Password
                 };
@@ -127,7 +127,7 @@
                     FullName = _model.FullName,
                     Email = _model.Email,
                     Password = _model.Password,
-                    RoleId = _model.RoleId
+                    RoleIds = _model.SelectedRoleIds.ToList()
                 };
                 await UserService.CreateUserAsync(create);
                 Snackbar.Add("Usuario creado correctamente", Severity.Success);
@@ -149,7 +149,7 @@
         public string FullName { get; set; } = string.Empty;
         public string Email { get; set; } = string.Empty;
         public string Password { get; set; } = string.Empty;
-        public int? RoleId { get; set; }
+        public IEnumerable<int> SelectedRoleIds { get; set; } = new HashSet<int>();
         public bool IsActive { get; set; } = true;
     }
 }

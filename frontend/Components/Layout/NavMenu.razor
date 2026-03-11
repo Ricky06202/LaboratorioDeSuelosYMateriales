@@ -1,26 +1,50 @@
+@using System.Security.Claims
+@inject AuthenticationStateProvider AuthStateProvider
+
 <MudNavMenu Color="Color.Primary" Margin="Margin.Normal" Rounded="true" Class="pa-2">
     <MudNavLink href="" Match="NavLinkMatch.All" Icon="@Icons.Material.Filled.Dashboard">Panel de Control</MudNavLink>
     
     <MudDivider Class="my-2" Style="background: rgba(255,255,255,0.05);" />
     
-    <MudNavGroup Title="Documentación Técnica" Icon="@Icons.Material.Filled.MenuBook" Expanded="false">
-        <MudNavLink href="equipos" Icon="@Icons.Material.Filled.PrecisionManufacturing">Equipo</MudNavLink>
-        <MudNavLink href="mantenimiento" Icon="@Icons.Material.Filled.BuildCircle">Mantenimiento</MudNavLink>
-    </MudNavGroup>
+    @if (HasPermission("equipment"))
+    {
+        <MudNavGroup Title="Documentación Técnica" Icon="@Icons.Material.Filled.MenuBook" Expanded="false">
+            <MudNavLink href="equipos" Icon="@Icons.Material.Filled.PrecisionManufacturing">Equipo</MudNavLink>
+            <MudNavLink href="mantenimiento" Icon="@Icons.Material.Filled.BuildCircle">Mantenimiento</MudNavLink>
+        </MudNavGroup>
+    }
     
     <MudDivider Class="my-2" Style="background: rgba(255,255,255,0.05);" />
     
     <MudText Typo="Typo.caption" Class="px-4 py-2" Style="color: rgba(255,255,255,0.4); font-weight: 600; text-transform: uppercase; font-size: 0.65rem;">Catálogos y Agenda</MudText>
-    <MudNavLink href="clientes" Icon="@Icons.Material.Filled.People">Directorio de Clientes</MudNavLink>
-    <MudNavLink href="servicios" Icon="@Icons.Material.Filled.ListAlt">Catálogo de Servicios</MudNavLink>
-    <MudNavLink href="agenda" Icon="@Icons.Material.Filled.CalendarMonth">Agenda de Actividades</MudNavLink>
+    @if (HasPermission("customers"))
+    {
+        <MudNavLink href="clientes" Icon="@Icons.Material.Filled.People">Directorio de Clientes</MudNavLink>
+    }
+    @if (HasPermission("lab_services"))
+    {
+        <MudNavLink href="servicios" Icon="@Icons.Material.Filled.ListAlt">Catálogo de Servicios</MudNavLink>
+    }
+    @if (HasPermission("calendar"))
+    {
+        <MudNavLink href="agenda" Icon="@Icons.Material.Filled.CalendarMonth">Agenda de Actividades</MudNavLink>
+    }
 
     <MudDivider Class="my-2" Style="background: rgba(255,255,255,0.05);" />
     
     <MudText Typo="Typo.caption" Class="px-4 py-2" Style="color: rgba(255,255,255,0.4); font-weight: 600; text-transform: uppercase; font-size: 0.65rem;">Operaciones</MudText>
-    <MudNavLink href="peticiones" Icon="@Icons.Material.Filled.ContactPage">Pedidos de Clientes</MudNavLink>
-    <MudNavLink href="cotizaciones" Icon="@Icons.Material.Filled.Calculate">Cotizaciones</MudNavLink>
-    <MudNavLink href="ordenes-servicio" Icon="@Icons.Material.Filled.FactCheck">Órdenes de Servicio</MudNavLink>
+    @if (HasPermission("customer_orders"))
+    {
+        <MudNavLink href="peticiones" Icon="@Icons.Material.Filled.ContactPage">Pedidos de Clientes</MudNavLink>
+    }
+    @if (HasPermission("quotations"))
+    {
+        <MudNavLink href="cotizaciones" Icon="@Icons.Material.Filled.Calculate">Cotizaciones</MudNavLink>
+    }
+    @if (HasPermission("service_orders"))
+    {
+        <MudNavLink href="ordenes-servicio" Icon="@Icons.Material.Filled.FactCheck">Órdenes de Servicio</MudNavLink>
+    }
     <MudNavLink href="informes" Icon="@Icons.Material.Filled.BarChart">Informes y Reportes</MudNavLink>
     
     <MudDivider Class="my-2" Style="background: rgba(255,255,255,0.05);" />
@@ -34,3 +58,20 @@
         <MudNavLink href="usuarios" Icon="@Icons.Material.Filled.AdminPanelSettings">Gestión de Usuarios</MudNavLink>
     </AuthorizeView>
 </MudNavMenu>
+
+@code {
+    private ClaimsPrincipal? _user;
+
+    protected override async Task OnInitializedAsync()
+    {
+        var authState = await AuthStateProvider.GetAuthenticationStateAsync();
+        _user = authState.User;
+    }
+
+    private bool HasPermission(string code)
+    {
+        if (_user == null) return false;
+        if (_user.IsInRole("Admin")) return true; // Admins always see everything
+        return _user.HasClaim(c => c.Type == "permission" && c.Value == code);
+    }
+}

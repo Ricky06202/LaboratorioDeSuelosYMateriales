@@ -27,11 +27,18 @@ def login_access_token(
         raise HTTPException(status_code=400, detail="Inactive user")
     
     access_token_expires = timedelta(minutes=60 * 24) # 24 hours
-    role_name = user.role.name if user.role else "Visor"
+    role_names = user.role_names if user.roles else ["Visor"]
+    
+    # Aggregate permission codes
+    permissions = []
+    for role in user.roles:
+        for perm in role.permissions:
+            if perm.code not in permissions:
+                permissions.append(perm.code)
     
     return {
         "access_token": security.create_access_token(
-            user.id, role=role_name, expires_delta=access_token_expires
+            user.id, roles=role_names, permissions=permissions, expires_delta=access_token_expires
         ),
         "token_type": "bearer",
     }
@@ -43,7 +50,7 @@ def register_user(
     user_in: UserCreate
 ) -> Any:
     """
-    Public registration endpoint. Asigns 'Visor' role by default.
+    Public registration endpoint. Assigns 'Visor' role by default.
     """
     user = UserService.get_by_email(db, email=user_in.email)
     if user:
@@ -55,11 +62,10 @@ def register_user(
     # Get default role 'Visor'
     visor_role = db.query(Role).filter(Role.name == "Visor").first()
     if not visor_role:
-        # Fallback if roles haven't been initialized (though they should be in main.py)
         visor_role = Role(name="Visor")
         db.add(visor_role)
         db.commit()
         db.refresh(visor_role)
     
-    user_in.role_id = visor_role.id
+    user_in.role_ids = [visor_role.id]
     return UserService.create(db, obj_in=user_in)

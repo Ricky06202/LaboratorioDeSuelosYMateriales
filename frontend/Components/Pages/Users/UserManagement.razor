@@ -144,7 +144,7 @@
 
     private async Task OpenCreateRoleDialog()
     {
-        var options = new DialogOptions { MaxWidth = MaxWidth.ExtraSmall, FullWidth = true, CloseButton = true };
+        var options = new DialogOptions { MaxWidth = MaxWidth.Small, FullWidth = true, CloseButton = true };
         var dialog = await DialogService.ShowAsync<RoleDialog>("Crear Nuevo Rol", options);
         var result = await dialog.Result;
         if (result != null && !result.Canceled) await LoadRolesAsync();
@@ -153,7 +153,7 @@
     private async Task OpenEditRoleDialog(Role role)
     {
         var parameters = new DialogParameters<RoleDialog> { { x => x.ExistingRole, role } };
-        var options = new DialogOptions { MaxWidth = MaxWidth.ExtraSmall, FullWidth = true, CloseButton = true };
+        var options = new DialogOptions { MaxWidth = MaxWidth.Small, FullWidth = true, CloseButton = true };
         var dialog = await DialogService.ShowAsync<RoleDialog>("Editar Rol", parameters, options);
         var result = await dialog.Result;
         if (result != null && !result.Canceled) await LoadRolesAsync();

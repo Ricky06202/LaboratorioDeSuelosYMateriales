@@ -1,21 +1,21 @@
 from typing import Optional, List
 from sqlalchemy.orm import Session, joinedload
-from app.models.user import User, Role
-from app.schemas.user import UserCreate, UserUpdate, RoleCreate, RoleUpdate
+from app.models.user import User, Role, Permission
+from app.schemas.user import UserCreate, UserUpdate, RoleCreate, RoleUpdate, Permission as PermissionSchema
 from app.core.security import get_password_hash, verify_password
 
 class UserService:
     @staticmethod
     def get(db: Session, user_id: int) -> Optional[User]:
-        return db.query(User).options(joinedload(User.role)).filter(User.id == user_id).first()
+        return db.query(User).options(joinedload(User.roles).joinedload(Role.permissions)).filter(User.id == user_id).first()
 
     @staticmethod
     def get_by_email(db: Session, email: str) -> Optional[User]:
-        return db.query(User).options(joinedload(User.role)).filter(User.email == email).first()
+        return db.query(User).options(joinedload(User.roles).joinedload(Role.permissions)).filter(User.email == email).first()
 
     @staticmethod
     def get_multi(db: Session, skip: int = 0, limit: int = 100) -> List[User]:
-        return db.query(User).options(joinedload(User.role)).offset(skip).limit(limit).all()
+        return db.query(User).options(joinedload(User.roles).joinedload(Role.permissions)).offset(skip).limit(limit).all()
 
     @staticmethod
     def create(db: Session, obj_in: UserCreate) -> User:
@@ -23,8 +23,11 @@ class UserService:
             email=obj_in.email,
             hashed_password=get_password_hash(obj_in.password),
             full_name=obj_in.full_name,
-            role_id=obj_in.role_id,
         )
+        if obj_in.role_ids:
+            roles = db.query(Role).filter(Role.id.in_(obj_in.role_ids)).all()
+            db_obj.roles = roles
+            
         db.add(db_obj)
         db.commit()
         db.refresh(db_obj)
@@ -38,10 +41,11 @@ class UserService:
             db_obj.full_name = obj_in.full_name
         if obj_in.password:
             db_obj.hashed_password = get_password_hash(obj_in.password)
-        if obj_in.role_id is not None:
-            db_obj.role_id = obj_in.role_id
         if obj_in.is_active is not None:
             db_obj.is_active = obj_in.is_active
+        if obj_in.role_ids is not None:
+            roles = db.query(Role).filter(Role.id.in_(obj_in.role_ids)).all()
+            db_obj.roles = roles
         
         db.add(db_obj)
         db.commit()
@@ -67,11 +71,14 @@ class UserService:
 
     @staticmethod
     def get_roles(db: Session) -> List[Role]:
-        return db.query(Role).all()
+        return db.query(Role).options(joinedload(Role.permissions)).all()
 
     @staticmethod
     def create_role(db: Session, obj_in: RoleCreate) -> Role:
         db_obj = Role(name=obj_in.name)
+        if obj_in.permission_ids:
+            perms = db.query(Permission).filter(Permission.id.in_(obj_in.permission_ids)).all()
+            db_obj.permissions = perms
         db.add(db_obj)
         db.commit()
         db.refresh(db_obj)
@@ -81,7 +88,11 @@ class UserService:
     def update_role(db: Session, role_id: int, obj_in: RoleUpdate) -> Optional[Role]:
         db_obj = db.query(Role).filter(Role.id == role_id).first()
         if db_obj:
-            db_obj.name = obj_in.name
+            if obj_in.name:
+                db_obj.name = obj_in.name
+            if obj_in.permission_ids is not None:
+                perms = db.query(Permission).filter(Permission.id.in_(obj_in.permission_ids)).all()
+                db_obj.permissions = perms
             db.add(db_obj)
             db.commit()
             db.refresh(db_obj)
@@ -94,3 +105,7 @@ class UserService:
             db.delete(db_obj)
             db.commit()
         return db_obj
+
+    @staticmethod
+    def get_permissions(db: Session) -> List[Permission]:
+        return db.query(Permission).all()

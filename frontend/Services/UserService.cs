@@ -55,18 +55,26 @@ namespace frontend.Services
             return await response.Content.ReadFromJsonAsync<List<Role>>() ?? new();
         }
 
-        public async Task<Role> CreateRoleAsync(string name)
+        public async Task<List<Permission>> GetPermissionsAsync()
         {
             await SetAuthorizationHeaderAsync();
-            var response = await _httpClient.PostAsJsonAsync("api/usuarios/roles", new { name });
+            var response = await _httpClient.GetAsync("api/usuarios/permissions");
+            await EnsureSuccessOrThrowAsync(response);
+            return await response.Content.ReadFromJsonAsync<List<Permission>>() ?? new();
+        }
+
+        public async Task<Role> CreateRoleAsync(string name, List<int> permissionIds)
+        {
+            await SetAuthorizationHeaderAsync();
+            var response = await _httpClient.PostAsJsonAsync("api/usuarios/roles", new { name, permission_ids = permissionIds });
             await EnsureSuccessOrThrowAsync(response);
             return await response.Content.ReadFromJsonAsync<Role>() ?? new();
         }
 
-        public async Task<Role> UpdateRoleAsync(int roleId, string name)
+        public async Task<Role> UpdateRoleAsync(int roleId, string name, List<int> permissionIds)
         {
             await SetAuthorizationHeaderAsync();
-            var response = await _httpClient.PutAsJsonAsync($"api/usuarios/roles/{roleId}", new { name });
+            var response = await _httpClient.PutAsJsonAsync($"api/usuarios/roles/{roleId}", new { name, permission_ids = permissionIds });
             await EnsureSuccessOrThrowAsync(response);
             return await response.Content.ReadFromJsonAsync<Role>() ?? new();
         }

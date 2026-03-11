@@ -2,6 +2,18 @@ using System.Text.Json.Serialization;
 
 namespace frontend.Models
 {
+    public class Permission
+    {
+        [JsonPropertyName("id")]
+        public int Id { get; set; }
+
+        [JsonPropertyName("name")]
+        public string Name { get; set; } = string.Empty;
+
+        [JsonPropertyName("code")]
+        public string Code { get; set; } = string.Empty;
+    }
+
     public class Role
     {
         [JsonPropertyName("id")]
@@ -9,6 +21,9 @@ namespace frontend.Models
 
         [JsonPropertyName("name")]
         public string Name { get; set; } = string.Empty;
+
+        [JsonPropertyName("permissions")]
+        public List<Permission> Permissions { get; set; } = new();
     }
 
     public class User
@@ -25,11 +40,15 @@ namespace frontend.Models
         [JsonPropertyName("is_active")]
         public bool IsActive { get; set; } = true;
 
-        [JsonPropertyName("role_id")]
-        public int? RoleId { get; set; }
+        [JsonPropertyName("roles")]
+        public List<Role> Roles { get; set; } = new();
 
-        [JsonPropertyName("role_name")]
-        public string? RoleName { get; set; }
+        public string RoleNames => Roles != null && Roles.Any() 
+            ? string.Join(", ", Roles.Select(r => r.Name)) 
+            : "Sin Rol";
+            
+        public bool HasPermission(string code) => 
+            Roles?.Any(r => r.Permissions?.Any(p => p.Code == code) == true) == true;
     }
 
     public class UserCreate
@@ -43,8 +62,8 @@ namespace frontend.Models
         [JsonPropertyName("full_name")]
         public string FullName { get; set; } = string.Empty;
 
-        [JsonPropertyName("role_id")]
-        public int? RoleId { get; set; }
+        [JsonPropertyName("role_ids")]
+        public List<int> RoleIds { get; set; } = new();
     }
 
     public class UserUpdate
@@ -58,8 +77,8 @@ namespace frontend.Models
         [JsonPropertyName("full_name")]
         public string? FullName { get; set; }
 
-        [JsonPropertyName("role_id")]
-        public int? RoleId { get; set; }
+        [JsonPropertyName("role_ids")]
+        public List<int>? RoleIds { get; set; }
 
         [JsonPropertyName("is_active")]
         public bool? IsActive { get; set; }

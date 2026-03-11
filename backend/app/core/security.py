@@ -7,7 +7,7 @@ from app.core.config import settings
 ALGORITHM = "HS256"
 
 def create_access_token(
-    subject: Union[str, Any], role: str, expires_delta: timedelta = None, secret_key: str = settings.SECRET_KEY
+    subject: Union[str, Any], roles: list[str], permissions: list[str], expires_delta: timedelta = None, secret_key: str = settings.SECRET_KEY
 ) -> str:
     if expires_delta:
         expire = datetime.utcnow() + expires_delta
@@ -15,10 +15,12 @@ def create_access_token(
         expire = datetime.utcnow() + timedelta(minutes=60)
     
     # Using the standard .NET role claim URI for Blazor compatibility
+    # Multiple roles and permissions are added as lists
     to_encode = {
         "exp": expire, 
         "sub": str(subject),
-        "http://schemas.microsoft.com/ws/2008/06/identity/claims/role": role
+        "http://schemas.microsoft.com/ws/2008/06/identity/claims/role": roles,
+        "permissions": permissions
     }
     encoded_jwt = jwt.encode(to_encode, secret_key, algorithm=ALGORITHM)
     return encoded_jwt

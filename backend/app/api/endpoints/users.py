@@ -2,7 +2,7 @@ from typing import Any, List
 from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.orm import Session
 from app.api import deps
-from app.schemas.user import User, UserCreate, UserUpdate, Role, RoleCreate, RoleUpdate
+from app.schemas.user import User, UserCreate, UserUpdate, Role, RoleCreate, RoleUpdate, Permission
 from app.services.user_service import UserService
 from app.models.user import User as UserModel
 
@@ -13,7 +13,7 @@ def get_current_admin_user(
     db: Session = Depends(deps.get_db),
     current_user: UserModel = Depends(deps.get_current_user),
 ) -> UserModel:
-    if not current_user.role or current_user.role.name != "Admin":
+    if "Admin" not in current_user.role_names:
         raise HTTPException(
             status_code=status.HTTP_403_FORBIDDEN,
             detail="The user doesn't have enough privileges",
@@ -85,6 +85,16 @@ def delete_user(
     if not user:
         raise HTTPException(status_code=404, detail="User not found")
     return user
+
+@router.get("/permissions", response_model=List[Permission])
+def read_permissions(
+    db: Session = Depends(deps.get_db),
+    current_user: UserModel = Depends(get_current_admin_user),
+) -> Any:
+    """
+    Retrieve permissions.
+    """
+    return UserService.get_permissions(db)
 
 @router.get("/roles", response_model=List[Role])
 def read_roles(

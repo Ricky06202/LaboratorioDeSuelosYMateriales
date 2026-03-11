@@ -11,8 +11,21 @@
     </TitleContent>
     <DialogContent>
         <MudForm @ref="_form">
-            <MudTextField T="string" Label="Nombre del Rol" @bind-Value="_roleName" 
-                          Required="true" RequiredError="El nombre es obligatorio" Variant="Variant.Outlined" />
+            <MudGrid>
+                <MudItem xs="12">
+                    <MudTextField T="string" Label="Nombre del Rol" @bind-Value="_roleName" 
+                                  Required="true" RequiredError="El nombre es obligatorio" Variant="Variant.Outlined" />
+                </MudItem>
+                <MudItem xs="12">
+                    <MudSelect T="int" Label="Accesos / Páginas" MultiSelection="true" @bind-SelectedValues="_selectedPermissionIds" 
+                               Variant="Variant.Outlined" HelperText="Seleccione las páginas que este rol puede ver">
+                        @foreach (var perm in _permissions)
+                        {
+                            <MudSelectItem Value="@perm.Id">@perm.Name</MudSelectItem>
+                        }
+                    </MudSelect>
+                </MudItem>
+            </MudGrid>
         </MudForm>
     </DialogContent>
     <DialogActions>
@@ -39,12 +52,24 @@
     private bool _processing = false;
     private MudForm _form = null!;
     private string _roleName = string.Empty;
+    private List<Permission> _permissions = new();
+    private IEnumerable<int> _selectedPermissionIds = new HashSet<int>();
 
-    protected override void OnInitialized()
+    protected override async Task OnInitializedAsync()
     {
+        try
+        {
+            _permissions = await UserService.GetPermissionsAsync();
+        }
+        catch (Exception ex)
+        {
+            Snackbar.Add($"Error al cargar permisos: {ex.Message}", Severity.Error);
+        }
+
         if (IsEdit && ExistingRole != null)
         {
             _roleName = ExistingRole.Name;
+            _selectedPermissionIds = ExistingRole.Permissions?.Select(p => p.Id).ToList() ?? new List<int>();
         }
     }
 
@@ -58,14 +83,15 @@
         _processing = true;
         try
         {
+            var permissionIds = _selectedPermissionIds.ToList();
             if (IsEdit && ExistingRole != null)
             {
-                await UserService.UpdateRoleAsync(ExistingRole.Id, _roleName);
+                await UserService.UpdateRoleAsync(ExistingRole.Id, _roleName, permissionIds);
                 Snackbar.Add("Rol actualizado correctamente", Severity.Success);
             }
             else
             {
-                await UserService.CreateRoleAsync(_roleName);
+                await UserService.CreateRoleAsync(_roleName, permissionIds);
                 Snackbar.Add("Rol creado correctamente", Severity.Success);
             }
             MudDialog.Close(DialogResult.Ok(true));
