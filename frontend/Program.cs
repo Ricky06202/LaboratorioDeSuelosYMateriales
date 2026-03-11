@@ -19,6 +19,12 @@ builder.Services.AddMudServices();
 // Base URL for development
 var apiBaseUrl = "http://localhost:8000/";
 
+// Register a default HttpClient for components that use @inject HttpClient
+builder.Services.AddScoped(sp => new HttpClient { 
+    BaseAddress = new Uri(apiBaseUrl),
+    Timeout = TimeSpan.FromSeconds(10)
+});
+
 builder.Services.AddHttpClient<EquipmentService>(client => {
     client.BaseAddress = new Uri(apiBaseUrl);
     client.Timeout = TimeSpan.FromSeconds(10);
