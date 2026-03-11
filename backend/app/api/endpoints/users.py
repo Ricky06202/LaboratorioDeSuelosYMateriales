@@ -2,7 +2,7 @@ from typing import Any, List
 from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.orm import Session
 from app.api import deps
-from app.schemas.user import User, UserCreate, UserUpdate
+from app.schemas.user import User, UserCreate, UserUpdate, Role
 from app.services.user_service import UserService
 from app.models.user import User as UserModel
 
@@ -86,7 +86,7 @@ def delete_user(
         raise HTTPException(status_code=404, detail="User not found")
     return user
 
-@router.get("/roles", response_model=List[app.schemas.user.Role])
+@router.get("/roles", response_model=List[Role])
 def read_roles(
     db: Session = Depends(deps.get_db),
     current_user: UserModel = Depends(get_current_admin_user),
