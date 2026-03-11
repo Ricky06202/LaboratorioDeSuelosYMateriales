@@ -1,43 +1,131 @@
 @page "/usuarios"
+@using frontend.Models
+@using frontend.Services
+@using Microsoft.AspNetCore.Authorization
+@attribute [Authorize(Roles = "Admin")]
+@inject UserService UserService
+@inject IDialogService DialogService
+@inject ISnackbar Snackbar
 
-<MudText Typo="Typo.h4" GutterBottom="true">Administración de Usuarios</MudText>
+<PageTitle>Administración de Usuarios - LSMCH</PageTitle>
 
-<MudPaper Class="pa-4">
-    <MudTable Items="@_users" Hover="true" Breakpoint="Breakpoint.Sm">
+<div class="animate__animated animate__fadeIn">
+    <div class="section-header d-flex align-center justify-space-between mb-8">
+        <div>
+            <MudText Typo="Typo.h4" Class="font-weight-black lsmch-title">ADMINISTRACIÓN DE USUARIOS</MudText>
+            <MudText Typo="Typo.subtitle1" Class="text-secondary">Gestión de Accesos y Roles del Sistema</MudText>
+        </div>
+        <MudButton Variant="Variant.Filled" Color="Color.Primary" StartIcon="@Icons.Material.Filled.PersonAdd" 
+                   OnClick="OpenCreateDialog" Class="rounded-pill px-8 shadow-lg">Nuevo Usuario</MudButton>
+    </div>
+
+    <MudTable Items="@_users" Hover="true" Loading="@_loading" Elevation="0" 
+              Class="rounded-xl shadow-sm border border-solid border-light lsmch-glass">
+        <ToolBarContent>
+            <MudSpacer />
+            <MudTextField @bind-Value="_searchString" Placeholder="Buscar por nombre o correo..." Adornment="Adornment.Start" 
+                          AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium" Class="mt-0" Immediate="true" />
+        </ToolBarContent>
         <HeaderContent>
-            <MudTh>Email</MudTh>
             <MudTh>Nombre</MudTh>
+            <MudTh>Correo Electrónico</MudTh>
             <MudTh>Rol</MudTh>
             <MudTh>Estado</MudTh>
             <MudTh>Acciones</MudTh>
         </HeaderContent>
         <RowTemplate>
-            <MudTd DataLabel="Email">@context.Email</MudTd>
             <MudTd DataLabel="Nombre">@context.FullName</MudTd>
-            <MudTd DataLabel="Rol">@context.Role</MudTd>
-            <MudTd DataLabel="Estado">
-                <MudChip T="string" Color="@(context.IsActive ? Color.Success : Color.Error)">@(context.IsActive ? "Activo" : "Inactivo")</MudChip>
+            <MudTd DataLabel="Email">@context.Email</MudTd>
+            <MudTd DataLabel="Rol">
+                <MudChip T="string" Color="Color.Info" Variant="Variant.Text" Size="Size.Small">@context.RoleName</MudChip>
             </MudTd>
-            <MudTd>
-                <MudIconButton Icon="@Icons.Material.Filled.Edit" Color="Color.Primary" />
-                <MudIconButton Icon="@Icons.Material.Filled.Delete" Color="Color.Error" />
+            <MudTd DataLabel="Estado">
+                <MudChip T="bool" Color="@(context.IsActive ? Color.Success : Color.Error)" Size="Size.Small">
+                    @(context.IsActive ? "Activo" : "Inactivo")
+                </MudChip>
+            </MudTd>
+            <MudTd DataLabel="Acciones">
+                <MudIconButton Icon="@Icons.Material.Filled.Edit" Color="Color.Info" Size="Size.Small" OnClick="@(() => OpenEditDialog(context))" />
+                <MudIconButton Icon="@Icons.Material.Filled.Delete" Color="Color.Error" Size="Size.Small" OnClick="@(() => DeleteUser(context))" />
             </MudTd>
         </RowTemplate>
+        <PagerContent>
+            <MudTablePager InfoFormat="Registros por página:" RowsPerPageString="Filas:" />
+        </PagerContent>
     </MudTable>
-</MudPaper>
+</div>
 
 @code {
-    private List<UserViewModel> _users = new()
-    {
-        new UserViewModel { Email = "admin@lab.com", FullName = "Administrador", Role = "Admin", IsActive = true },
-        new UserViewModel { Email = "tecnico@lab.com", FullName = "Juan Perez", Role = "Tecnico", IsActive = true }
-    };
+    private List<User> _users = new();
+    private bool _loading = true;
+    private string _searchString = "";
 
-    public class UserViewModel
+    protected override async Task OnInitializedAsync()
     {
-        public string Email { get; set; } = string.Empty;
-        public string FullName { get; set; } = string.Empty;
-        public string Role { get; set; } = string.Empty;
-        public bool IsActive { get; set; }
+        await LoadDataAsync();
+    }
+
+    private async Task LoadDataAsync()
+    {
+        _loading = true;
+        try
+        {
+            _users = await UserService.GetUsersAsync();
+        }
+        catch (Exception ex)
+        {
+            Snackbar.Add($"Error al cargar usuarios: {ex.Message}", Severity.Error);
+        }
+        finally
+        {
+            _loading = false;
+        }
+    }
+
+    private async Task OpenCreateDialog()
+    {
+        var options = new DialogOptions { MaxWidth = MaxWidth.Small, FullWidth = true, CloseButton = true };
+        var dialog = await DialogService.ShowAsync<UserDialog>("Registrar Nuevo Usuario", options);
+        var result = await dialog.Result;
+
+        if (result != null && !result.Canceled)
+        {
+            await LoadDataAsync();
+        }
+    }
+
+    private async Task OpenEditDialog(User user)
+    {
+        var parameters = new DialogParameters<UserDialog> { { x => x.ExistingUser, user } };
+        var options = new DialogOptions { MaxWidth = MaxWidth.Small, FullWidth = true, CloseButton = true };
+        var dialog = await DialogService.ShowAsync<UserDialog>("Editar Usuario", parameters, options);
+        var result = await dialog.Result;
+
+        if (result != null && !result.Canceled)
+        {
+            await LoadDataAsync();
+        }
+    }
+
+    private async Task DeleteUser(User user)
+    {
+        bool? result = await DialogService.ShowMessageBoxAsync(
+            "Eliminar Usuario",
+            $"¿Está seguro de eliminar a {user.FullName}?",
+            yesText: "Eliminar", cancelText: "Cancelar");
+
+        if (result == true)
+        {
+            try
+            {
+                await UserService.DeleteUserAsync(user.Id);
+                Snackbar.Add("Usuario eliminado", Severity.Success);
+                await LoadDataAsync();
+            }
+            catch (Exception ex)
+            {
+                Snackbar.Add($"Error: {ex.Message}", Severity.Error);
+            }
+        }
     }
 }

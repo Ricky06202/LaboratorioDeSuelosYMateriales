@@ -35,8 +35,6 @@ builder.Services.AddHttpClient<CustomerOrderService>(client => {
     client.BaseAddress = new Uri(apiBaseUrl);
     client.Timeout = TimeSpan.FromSeconds(10);
 });
-
-// New Services
 builder.Services.AddHttpClient<CustomerService>(client => {
     client.BaseAddress = new Uri(apiBaseUrl);
     client.Timeout = TimeSpan.FromSeconds(10);
@@ -46,6 +44,10 @@ builder.Services.AddHttpClient<LabServiceService>(client => {
     client.Timeout = TimeSpan.FromSeconds(10);
 });
 builder.Services.AddHttpClient<CalendarService>(client => {
+    client.BaseAddress = new Uri(apiBaseUrl);
+    client.Timeout = TimeSpan.FromSeconds(10);
+});
+builder.Services.AddHttpClient<UserService>(client => {
     client.BaseAddress = new Uri(apiBaseUrl);
     client.Timeout = TimeSpan.FromSeconds(10);
 });

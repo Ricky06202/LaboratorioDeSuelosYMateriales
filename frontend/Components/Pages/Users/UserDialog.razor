@@ -1,0 +1,152 @@
+@using frontend.Models
+@using frontend.Services
+@inject UserService UserService
+@inject ISnackbar Snackbar
+
+<MudDialog>
+    <TitleContent>
+        <MudText Typo="Typo.h6">
+            @(IsEdit ? "Editar Usuario" : "Nuevo Usuario")
+        </MudText>
+    </TitleContent>
+    <DialogContent>
+        <MudForm @ref="_form">
+            <MudGrid>
+                <MudItem xs="12">
+                    <MudTextField T="string" Label="Nombre Completo" @bind-Value="_model.FullName" 
+                                  Required="true" RequiredError="El nombre es obligatorio" Variant="Variant.Outlined" />
+                </MudItem>
+                <MudItem xs="12">
+                    <MudTextField T="string" Label="Correo Electrónico" @bind-Value="_model.Email" 
+                                  Required="true" RequiredError="El correo es obligatorio" 
+                                  InputType="InputType.Email" Variant="Variant.Outlined" />
+                </MudItem>
+                <MudItem xs="12">
+                    <MudTextField T="string" Label="Contraseña" @bind-Value="_model.Password" 
+                                  Required="@(!IsEdit)" RequiredError="La contraseña es obligatoria" 
+                                  InputType="InputType.Password" Variant="Variant.Outlined" 
+                                  HelperText="@(IsEdit ? "Dejar en blanco para mantener la actual" : "")" />
+                </MudItem>
+                <MudItem xs="12">
+                    <MudSelect T="int?" Label="Rol" @bind-Value="_model.RoleId" 
+                               Required="true" RequiredError="Debe asignar un rol" Variant="Variant.Outlined">
+                        @foreach (var role in _roles)
+                        {
+                            <MudSelectItem Value="@((int?)role.Id)">@role.Name</MudSelectItem>
+                        }
+                    </MudSelect>
+                </MudItem>
+                @if (IsEdit)
+                {
+                    <MudItem xs="12">
+                        <MudCheckBox T="bool" @bind-Value="_model.IsActive" Label="Usuario Activo" Color="Color.Primary" />
+                    </MudItem>
+                }
+            </MudGrid>
+        </MudForm>
+    </DialogContent>
+    <DialogActions>
+        <MudButton OnClick="Cancel">Cancelar</MudButton>
+        <MudButton Color="Color.Primary" OnClick="Submit" Disabled="@_processing">
+            @if (_processing)
+            {
+                <MudProgressCircular Size="Size.Small" Indeterminate="true" Class="mr-2" />
+                <span>Procesando...</span>
+            }
+            else
+            {
+                <span>Guardar</span>
+            }
+        </MudButton>
+    </DialogActions>
+</MudDialog>
+
+@code {
+    [CascadingParameter] IMudDialogInstance MudDialog { get; set; } = null!;
+    [Parameter] public User? ExistingUser { get; set; }
+
+    private bool IsEdit => ExistingUser != null;
+    private bool _processing = false;
+    private MudForm _form = null!;
+    private List<Role> _roles = new();
+
+    private UserFormModel _model = new();
+
+    protected override async Task OnInitializedAsync()
+    {
+        try
+        {
+            _roles = await UserService.GetRolesAsync();
+            if (IsEdit && ExistingUser != null)
+            {
+                _model = new UserFormModel
+                {
+                    FullName = ExistingUser.FullName,
+                    Email = ExistingUser.Email,
+                    RoleId = ExistingUser.RoleId,
+                    IsActive = ExistingUser.IsActive
+                };
+            }
+        }
+        catch (Exception ex)
+        {
+            Snackbar.Add($"Error al cargar roles: {ex.Message}", Severity.Error);
+        }
+    }
+
+    private void Cancel() => MudDialog.Cancel();
+
+    private async Task Submit()
+    {
+        await _form.Validate();
+        if (!_form.IsValid) return;
+
+        _processing = true;
+        try
+        {
+            if (IsEdit && ExistingUser != null)
+            {
+                var update = new UserUpdate
+                {
+                    FullName = _model.FullName,
+                    Email = _model.Email,
+                    RoleId = _model.RoleId,
+                    IsActive = _model.IsActive,
+                    Password = string.IsNullOrWhiteSpace(_model.Password) ? null : _model.Password
+                };
+                await UserService.UpdateUserAsync(ExistingUser.Id, update);
+                Snackbar.Add("Usuario actualizado correctamente", Severity.Success);
+            }
+            else
+            {
+                var create = new UserCreate
+                {
+                    FullName = _model.FullName,
+                    Email = _model.Email,
+                    Password = _model.Password,
+                    RoleId = _model.RoleId
+                };
+                await UserService.CreateUserAsync(create);
+                Snackbar.Add("Usuario creado correctamente", Severity.Success);
+            }
+            MudDialog.Close(DialogResult.Ok(true));
+        }
+        catch (Exception ex)
+        {
+            Snackbar.Add($"Error: {ex.Message}", Severity.Error);
+        }
+        finally
+        {
+            _processing = false;
+        }
+    }
+
+    private class UserFormModel
+    {
+        public string FullName { get; set; } = string.Empty;
+        public string Email { get; set; } = string.Empty;
+        public string Password { get; set; } = string.Empty;
+        public int? RoleId { get; set; }
+        public bool IsActive { get; set; } = true;
+    }
+}

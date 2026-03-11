@@ -1,16 +1,16 @@
 from contextlib import asynccontextmanager
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from app.api.endpoints import auth, equipment, quotation, service_order, customer_order, customer, lab_service, calendar
-from app.db.session import engine
+from app.api.endpoints import auth, equipment, quotation, service_order, customer_order, customer, lab_service, calendar, users
+from app.db.session import engine, SessionLocal
 from app.db.base import Base
+from app.models.user import Role
 from fastapi.responses import JSONResponse
 import traceback
 import os
 from sqlalchemy import text
 
 # --- cPanel/WSGI Initialization ---
-# Rule: Call initialization functions directly at top level for reliability in Passenger WSGI
 def init_db():
     if os.getenv("TESTING") == "True":
         return
@@ -18,7 +18,19 @@ def init_db():
     # Create tables
     Base.metadata.create_all(bind=engine)
     
-    # Column migrations (Ensuring schema is up to date)
+    # Initialize Roles
+    db = SessionLocal()
+    try:
+        roles = ["Admin", "Tecnico", "Visor"]
+        for role_name in roles:
+            role = db.query(Role).filter(Role.name == role_name).first()
+            if not role:
+                db.add(Role(name=role_name))
+        db.commit()
+    finally:
+        db.close()
+
+    # Column migrations
     columns_to_add = [
         ("tipo_fondo", "VARCHAR"),
         ("orden_compra", "VARCHAR"),
@@ -66,11 +78,9 @@ async def lifespan(app: FastAPI):
 
 app = FastAPI(title="Laboratorio de Suelos API", lifespan=lifespan)
 
-# --- Error Hunter (cPanel Rule) ---
+# --- Error Hunter ---
 @app.exception_handler(Exception)
 async def debug_exception_handler(request, exc):
-    # Rule: Force CORS headers in error responses for visibility on cPanel
-    # Note: Using origins from environment or default if not set
     origin = os.getenv("CORS_ORIGINS", "http://localhost:5032") 
     return JSONResponse(
         status_code=500,
@@ -81,11 +91,10 @@ async def debug_exception_handler(request, exc):
         }
     )
 
-# --- CORS Configuration (cPanel Rule) ---
-# Rule: NEVER use allow_origins=["*"] if allow_credentials=True
+# --- CORS Configuration ---
 origins = [
     "http://localhost:5032",
-    "https://laboratoriolsmch.com", # Placeholder: User should confirm real domain
+    "https://laboratoriolsmch.com",
 ]
 
 app.add_middleware(
@@ -97,6 +106,7 @@ app.add_middleware(
 )
 
 app.include_router(auth.router, prefix="/api/auth", tags=["auth"])
+app.include_router(users.router, prefix="/api/usuarios", tags=["usuarios"])
 app.include_router(equipment.router, prefix="/api/equipos", tags=["equipos"])
 app.include_router(quotation.router, prefix="/api/cotizaciones", tags=["cotizaciones"])
 app.include_router(service_order.router, prefix="/api/ordenes-servicio", tags=["ordenes_servicio"])

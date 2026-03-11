@@ -16,6 +16,7 @@ class UserUpdate(UserBase):
 
 class User(UserBase):
     id: Optional[int] = None
+    role_name: Optional[str] = None
 
     class Config:
         from_attributes = True
@@ -26,3 +27,7 @@ class Token(BaseModel):
 
 class TokenPayload(BaseModel):
     sub: Optional[int] = None
+    
+    model_config = {
+        "extra": "allow"
+    }
