@@ -2,7 +2,7 @@ from typing import Any, List
 from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.orm import Session
 from app.api import deps
-from app.schemas.user import User, UserCreate, UserUpdate, Role
+from app.schemas.user import User, UserCreate, UserUpdate, Role, RoleCreate, RoleUpdate
 from app.services.user_service import UserService
 from app.models.user import User as UserModel
 
