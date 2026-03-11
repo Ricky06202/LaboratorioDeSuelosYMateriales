@@ -2,21 +2,7 @@ import bcrypt
 from datetime import datetime, timedelta
 from typing import Any, Union
 from jose import jwt
-from passlib.context import CryptContext
-
 from app.core.config import settings
-
-# --- Passlib + Bcrypt 4.0+ Compatibility Fix ---
-# Passlib 1.7.4 is incompatible with bcrypt 4.0+. 
-# This monkeypatch avoids the 'AttributeError: module bcrypt has no attribute __about__'
-# and the subsequent 'ValueError: password cannot be longer than 72 bytes' during internal bug detection.
-try:
-    if not hasattr(bcrypt, "__about__"):
-        bcrypt.__about__ = type("About", (object,), {"__version__": bcrypt.__version__})
-except Exception:
-    pass
-
-pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
 ALGORITHM = "HS256"
 
@@ -38,7 +24,23 @@ def create_access_token(
     return encoded_jwt
 
 def verify_password(plain_password: str, hashed_password: str) -> bool:
-    return pwd_context.verify(plain_password, hashed_password)
+    """
+    Verify a plain password against a hashed one using direct bcrypt.
+    Compatible with passlib's bcrypt format.
+    """
+    try:
+        password_bytes = plain_password.encode('utf-8')
+        hashed_bytes = hashed_password.encode('utf-8')
+        return bcrypt.checkpw(password_bytes, hashed_bytes)
+    except Exception:
+        return False
 
 def get_password_hash(password: str) -> str:
-    return pwd_context.hash(password)
+    """
+    Hash a password using direct bcrypt.
+    """
+    pwd_bytes = password.encode('utf-8')
+    # Generate salt and hash
+    salt = bcrypt.gensalt()
+    hashed = bcrypt.hashpw(pwd_bytes, salt)
+    return hashed.decode('utf-8')
