@@ -1,6 +1,9 @@
 import sys
 import os
-from sqlalchemy.orm import Session
+from dotenv import load_dotenv
+
+# Load environment variables from .env
+load_dotenv()
 
 # Add the current directory to path to import app
 sys.path.append(os.getcwd())
