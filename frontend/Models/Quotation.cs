@@ -45,6 +45,9 @@ namespace frontend.Models
         [JsonPropertyName("date")]
         public DateTime Date { get; set; }
 
+        [JsonPropertyName("customer_id")]
+        public Guid? CustomerId { get; set; }
+
         [JsonPropertyName("client_name")]
         public string ClientName { get; set; } = string.Empty;
 
@@ -114,6 +117,9 @@ namespace frontend.Models
 
     public class QuotationCreate
     {
+        [JsonPropertyName("customer_id")]
+        public Guid? CustomerId { get; set; }
+
         [JsonPropertyName("client_name")]
         public string ClientName { get; set; } = string.Empty;
 

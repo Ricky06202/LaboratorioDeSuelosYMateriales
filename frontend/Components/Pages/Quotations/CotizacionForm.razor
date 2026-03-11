@@ -8,20 +8,20 @@
     <DialogContent>
         <MudForm @ref="_form" @bind-IsValid="@_success">
             <MudGrid>
-                <MudItem xs="12" sm="6">
-                    <MudTextField @bind-Value="_quotation.ClientName" Label="Nombre del Cliente" Required="true" RequiredError="Cliente es requerido" />
+                <MudItem xs="12" sm="8">
+                    <CustomerSelector Label="Nombre del Cliente (Buscador)" Value="_selectedCustomer" ValueChanged="OnCustomerChanged" Required="true" />
+                </MudItem>
+                <MudItem xs="12" sm="4">
+                    <MudTextField @bind-Value="_quotation.ClientRuc" Label="RUC Cliente" Margin="Margin.Dense" Variant="Variant.Outlined" />
                 </MudItem>
                 <MudItem xs="12" sm="6">
-                    <MudTextField @bind-Value="_quotation.ClientRuc" Label="RUC Cliente" />
+                    <MudTextField @bind-Value="_quotation.ClientDirection" Label="Dirección Cliente" Margin="Margin.Dense" Variant="Variant.Outlined" />
                 </MudItem>
                 <MudItem xs="12" sm="6">
-                    <MudTextField @bind-Value="_quotation.ClientDirection" Label="Dirección Cliente" />
+                    <MudTextField @bind-Value="_quotation.ClientPhone" Label="Teléfono Cliente" Margin="Margin.Dense" Variant="Variant.Outlined" />
                 </MudItem>
-                <MudItem xs="12" sm="6">
-                    <MudTextField @bind-Value="_quotation.ClientPhone" Label="Teléfono Cliente" />
-                </MudItem>
-                <MudItem xs="12" sm="6">
-                    <MudTextField @bind-Value="_quotation.ClientEmail" Label="Correo Electrónico" />
+                <MudItem xs="12">
+                    <MudTextField @bind-Value="_quotation.ClientEmail" Label="Correo Electrónico" Margin="Margin.Dense" Variant="Variant.Outlined" />
                 </MudItem>
                 
                 <MudItem xs="12">
@@ -30,13 +30,13 @@
                 </MudItem>
 
                 <MudItem xs="12" sm="6">
-                    <MudTextField @bind-Value="_quotation.ProjectName" Label="Nombre del Proyecto" />
+                    <MudTextField @bind-Value="_quotation.ProjectName" Label="Nombre del Proyecto" Margin="Margin.Dense" Variant="Variant.Outlined" />
                 </MudItem>
                 <MudItem xs="12" sm="6">
-                    <MudTextField @bind-Value="_quotation.ProjectLocation" Label="Ubicación" />
+                    <MudTextField @bind-Value="_quotation.ProjectLocation" Label="Ubicación" Margin="Margin.Dense" Variant="Variant.Outlined" />
                 </MudItem>
                 <MudItem xs="12" sm="6">
-                    <MudTextField @bind-Value="_quotation.ProjectResponsable" Label="Responsable (Encargado)" />
+                    <MudTextField @bind-Value="_quotation.ProjectResponsable" Label="Responsable (Encargado)" Margin="Margin.Dense" Variant="Variant.Outlined" />
                 </MudItem>
 
                 <MudItem xs="12">
@@ -48,35 +48,40 @@
                     
                     @if (_quotation.Items.Count == 0)
                     {
-                        <MudAlert Severity="Severity.Info">No hay ítems agregados.</MudAlert>
+                        <MudAlert Severity="Severity.Info" Class="rounded-lg">No hay ítems agregados.</MudAlert>
                     }
                     else
                     {
-                        @foreach (var item in _quotation.Items.Select((v, i) => new { Value = v, Index = i }))
+                        @for (int i = 0; i < _quotation.Items.Count; i++)
                         {
-                            <MudPaper Outlined="true" Class="p-3 mb-2" Elevation="0">
+                            var index = i;
+                            var item = _quotation.Items[index];
+                            <MudPaper Outlined="true" Class="pa-4 mb-3 rounded-xl border-solid border lsmch-glass shadow-sm" Elevation="0">
                                 <MudGrid>
-                                    <MudItem xs="12" sm="3">
-                                        <MudTextField @bind-Value="item.Value.ItemNorma" Label="Norma / Método" Margin="Margin.Dense" />
+                                    <MudItem xs="12">
+                                        <ServiceSelector Label="Seleccionar Servicio del Catálogo" ValueChanged="@(s => OnServiceSelected(item, s))" />
                                     </MudItem>
                                     <MudItem xs="12" sm="3">
-                                        <MudTextField @bind-Value="item.Value.ItemSample" Label="Muestra / Ítem" Margin="Margin.Dense" />
+                                        <MudTextField @bind-Value="item.ItemNorma" Label="Norma / Método" Margin="Margin.Dense" Variant="Variant.Outlined" />
+                                    </MudItem>
+                                    <MudItem xs="12" sm="3">
+                                        <MudTextField @bind-Value="item.ItemSample" Label="Muestra / Ítem" Margin="Margin.Dense" Variant="Variant.Outlined" />
                                     </MudItem>
                                     <MudItem xs="12" sm="6">
-                                        <MudTextField @bind-Value="item.Value.Description" Label="Descripción del Ensayo" Margin="Margin.Dense" />
+                                        <MudTextField @bind-Value="item.Description" Label="Descripción del Ensayo" Margin="Margin.Dense" Variant="Variant.Outlined" />
                                     </MudItem>
                                     
                                     <MudItem xs="12" sm="3">
-                                        <MudNumericField @bind-Value="item.Value.Amount" Label="Cantidad" Margin="Margin.Dense" Min="1" />
+                                        <MudNumericField @bind-Value="item.Amount" Label="Cantidad" Margin="Margin.Dense" Min="1" Variant="Variant.Outlined" />
                                     </MudItem>
                                     <MudItem xs="12" sm="4">
-                                        <MudNumericField @bind-Value="item.Value.UnitPrice" Label="Precio Unitario (B/.)" Margin="Margin.Dense" Format="F2" Step="0.1M" Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.AttachMoney" />
+                                        <MudNumericField @bind-Value="item.UnitPrice" Label="Precio Unitario (B/.)" Margin="Margin.Dense" Format="F2" Step="0.1M" Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.AttachMoney" Variant="Variant.Outlined" />
                                     </MudItem>
                                     <MudItem xs="12" sm="4" Class="d-flex align-center">
-                                        <MudText Typo="Typo.body2">Total: B/. @((item.Value.Amount * item.Value.UnitPrice).ToString("F2"))</MudText>
+                                        <MudText Typo="Typo.subtitle2" Class="font-weight-bold color-primary">Total: B/. @((item.Amount * item.UnitPrice).ToString("N2"))</MudText>
                                     </MudItem>
-                                    <MudItem xs="12" sm="1" Class="d-flex justify-end pr-0">
-                                        <MudIconButton Icon="@Icons.Material.Filled.Delete" Color="Color.Error" Size="Size.Small" OnClick="@(() => RemoveItem(item.Value))" />
+                                    <MudItem xs="12" sm="1" Class="d-flex justify-end pt-2">
+                                        <MudIconButton Icon="@Icons.Material.Filled.Delete" Color="Color.Error" Size="Size.Small" OnClick="@(() => RemoveItem(item))" />
                                     </MudItem>
                                 </MudGrid>
                             </MudPaper>
@@ -90,29 +95,29 @@
                 </MudItem>
 
                 <MudItem xs="12" sm="6">
-                    <MudNumericField @bind-Value="_quotation.MobilizationCost" Label="Costo Movilización (B/.)" Format="F2" Step="0.1M" Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.Commute" />
+                    <MudNumericField @bind-Value="_quotation.MobilizationCost" Label="Costo Movilización (B/.)" Format="F2" Step="0.1M" Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.Commute" Variant="Variant.Outlined" Margin="Margin.Dense" />
                 </MudItem>
                 <MudItem xs="12" sm="6">
-                    <MudNumericField @bind-Value="_quotation.ViaticsCost" Label="Viáticos del Personal (B/.)" Format="F2" Step="0.1M" Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.LocalDining" />
+                    <MudNumericField @bind-Value="_quotation.ViaticsCost" Label="Viáticos del Personal (B/.)" Format="F2" Step="0.1M" Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.LocalDining" Variant="Variant.Outlined" Margin="Margin.Dense" />
                 </MudItem>
                 <MudItem xs="12">
-                    <MudTextField @bind-Value="_quotation.Note" Label="Notas / Observaciones" Lines="2" />
+                    <MudTextField @bind-Value="_quotation.Note" Label="Notas / Observaciones" Lines="2" Variant="Variant.Outlined" Margin="Margin.Dense" />
                 </MudItem>
 
                 <MudItem xs="12">
-                    <MudPaper Class="pa-4 mt-2" Elevation="1" Style="background-color: var(--mud-palette-background-grey);">
-                        <div class="d-flex justify-space-between align-center mb-1">
+                    <MudPaper Class="pa-6 mt-4 rounded-xl lsmch-glass shadow-lg border border-solid border-light" Elevation="0">
+                        <div class="d-flex justify-space-between align-center mb-2">
                             <MudText>Subtotal Ítems:</MudText>
-                            <MudText>B/. @SubtotalItems.ToString("F2")</MudText>
+                            <MudText Class="font-weight-bold">B/. @SubtotalItems.ToString("N2")</MudText>
                         </div>
-                        <div class="d-flex justify-space-between align-center mb-1">
+                        <div class="d-flex justify-space-between align-center mb-2">
                             <MudText>Movilización + Viáticos:</MudText>
-                            <MudText>B/. @((_quotation.MobilizationCost + _quotation.ViaticsCost).ToString("F2"))</MudText>
+                            <MudText Class="font-weight-bold">B/. @((_quotation.MobilizationCost + _quotation.ViaticsCost).ToString("N2"))</MudText>
                         </div>
-                        <MudDivider Class="my-2" />
+                        <MudDivider Class="my-3" />
                         <div class="d-flex justify-space-between align-center">
-                            <MudText Typo="Typo.h6">Total General:</MudText>
-                            <MudText Typo="Typo.h6" Color="Color.Primary">B/. @GrandTotal.ToString("F2")</MudText>
+                            <MudText Typo="Typo.h5" Class="font-weight-black">Total General:</MudText>
+                            <MudText Typo="Typo.h5" Color="Color.Primary" Class="font-weight-black">B/. @GrandTotal.ToString("N2")</MudText>
                         </div>
                     </MudPaper>
                 </MudItem>
@@ -122,20 +127,49 @@
     </DialogContent>
     <DialogActions>
         <MudButton OnClick="Cancel">Cancelar</MudButton>
-        <MudButton Color="Color.Primary" Variant="Variant.Filled" OnClick="Submit" Disabled="@_processing">Guardar Cotización</MudButton>
+        <MudButton Color="Color.Primary" Variant="Variant.Filled" OnClick="Submit" Disabled="@_processing" Class="rounded-pill px-6">Guardar Cotización</MudButton>
     </DialogActions>
 </MudDialog>
+
+<style>
+    .color-primary { color: var(--mud-palette-primary); }
+</style>
 
 @code {
     [CascadingParameter] IMudDialogInstance MudDialog { get; set; } = null!;
 
     private QuotationCreate _quotation = new() { Items = new() };
+    private Customer? _selectedCustomer;
     private MudForm _form = null!;
     private bool _success;
     private bool _processing;
 
     private decimal SubtotalItems => _quotation.Items.Sum(x => x.Amount * x.UnitPrice);
     private decimal GrandTotal => SubtotalItems + _quotation.MobilizationCost + _quotation.ViaticsCost;
+
+    private void OnCustomerChanged(Customer? customer)
+    {
+        _selectedCustomer = customer;
+        if (customer != null)
+        {
+            _quotation.CustomerId = customer.Id;
+            _quotation.ClientName = customer.Name;
+            _quotation.ClientRuc = customer.Ruc;
+            _quotation.ClientDirection = customer.Address;
+            _quotation.ClientPhone = customer.Phone;
+            _quotation.ClientEmail = customer.Email;
+        }
+    }
+
+    private void OnServiceSelected(QuotationItemCreate item, LabService? service)
+    {
+        if (service != null && item != null)
+        {
+            item.Description = service.Name;
+            item.UnitPrice = service.UnitPrice;
+            item.ItemNorma = service.Code;
+        }
+    }
 
     private void AddItem()
     {

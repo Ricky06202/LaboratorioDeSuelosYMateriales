@@ -1,0 +1,32 @@
+@using frontend.Models
+@using frontend.Services
+@inject CustomerService CustomerService
+
+<MudAutocomplete T="Customer" Label="@Label" Value="Value" ValueChanged="OnValueChanged"
+                 SearchFunc="@SearchCustomers" ToStringFunc="@(c => c?.Name ?? "")"
+                 ResetValueOnEmptyText="true" CoerceText="true" CoerceValue="true"
+                 AdornmentIcon="@Icons.Material.Filled.Search" AdornmentColor="Color.Primary"
+                 Variant="@Variant" Margin="@Margin" Required="@Required" RequiredError="@RequiredError"
+                 Placeholder="Buscar cliente..." Dense="true" />
+
+@code {
+    [Parameter] public Customer? Value { get; set; }
+    [Parameter] public EventCallback<Customer?> ValueChanged { get; set; }
+    [Parameter] public string Label { get; set; } = "Cliente / Razón Social";
+    [Parameter] public Variant Variant { get; set; } = Variant.Outlined;
+    [Parameter] public Margin Margin { get; set; } = Margin.Dense;
+    [Parameter] public bool Required { get; set; } = false;
+    [Parameter] public string RequiredError { get; set; } = "Debe seleccionar un cliente";
+
+    private async Task<IEnumerable<Customer>> SearchCustomers(string value, CancellationToken token)
+    {
+        // if text is null or empty, show all or none? Let's show all available
+        return await CustomerService.GetCustomersAsync(value);
+    }
+
+    private async Task OnValueChanged(Customer? customer)
+    {
+        Value = customer;
+        await ValueChanged.InvokeAsync(customer);
+    }
+}

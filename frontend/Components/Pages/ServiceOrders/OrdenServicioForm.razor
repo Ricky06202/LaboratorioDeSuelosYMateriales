@@ -2,6 +2,7 @@
 @using frontend.Services
 @using MudBlazor
 @inject ServiceOrderService ServiceOrderService
+@inject CalendarService CalendarService
 @inject ISnackbar Snackbar
 
 <MudDialog>
@@ -10,41 +11,41 @@
             <MudTabs Elevation="1" Rounded="true" ApplyEffectsToContainer="true">
                 <MudTabPanel Text="Datos Generales">
                     <MudGrid>
-                        <MudItem xs="12" sm="6">
-                            <MudTextField @bind-Value="_order.ClientName" Label="Nombre del Cliente" Required="true" RequiredError="Requerido" />
+                        <MudItem xs="12" sm="8">
+                            <CustomerSelector Label="Nombre del Cliente (Buscador)" Value="_selectedCustomer" ValueChanged="OnCustomerChanged" Required="true" />
                         </MudItem>
                         <MudItem xs="12" sm="4">
-                            <MudTextField @bind-Value="_order.ClientRuc" Label="RUC" />
+                            <MudTextField @bind-Value="_order.ClientRuc" Label="RUC" Margin="Margin.Dense" Variant="Variant.Outlined" />
                         </MudItem>
                         <MudItem xs="12" sm="2">
-                            <MudTextField @bind-Value="_order.ClientDv" Label="D.V." />
+                            <MudTextField @bind-Value="_order.ClientDv" Label="D.V." Margin="Margin.Dense" Variant="Variant.Outlined" />
                         </MudItem>
                         <MudItem xs="12" sm="6">
-                            <MudTextField @bind-Value="_order.QuotationRef" Label="Cotización aprobada LSMCH No." />
+                            <MudTextField @bind-Value="_order.QuotationRef" Label="Cotización aprobada LSMCH No." Margin="Margin.Dense" Variant="Variant.Outlined" />
                         </MudItem>
-                        <MudItem xs="12" sm="6">
-                            <MudTextField @bind-Value="_order.ClientPhone" Label="Teléfono" />
+                        <MudItem xs="12" sm="4">
+                            <MudTextField @bind-Value="_order.ClientPhone" Label="Teléfono" Margin="Margin.Dense" Variant="Variant.Outlined" />
                         </MudItem>
-                        <MudItem xs="12" sm="6">
-                            <MudTextField @bind-Value="_order.ClientEmail" Label="Correo Electrónico" />
+                        <MudItem xs="12" sm="12">
+                            <MudTextField @bind-Value="_order.ClientEmail" Label="Correo Electrónico" Margin="Margin.Dense" Variant="Variant.Outlined" />
                         </MudItem>
                         <MudItem xs="12">
-                            <MudTextField @bind-Value="_order.ClientDirection" Label="Dirección" Lines="2" />
+                            <MudTextField @bind-Value="_order.ClientDirection" Label="Dirección" Lines="2" Margin="Margin.Dense" Variant="Variant.Outlined" />
                         </MudItem>
 
                         <MudItem xs="12"><MudDivider /></MudItem>
                         
                         <MudItem xs="12" sm="6">
-                            <MudTextField @bind-Value="_order.ProjectName" Label="Nombre del Proyecto" />
+                            <MudTextField @bind-Value="_order.ProjectName" Label="Nombre del Proyecto" Margin="Margin.Dense" Variant="Variant.Outlined" />
                         </MudItem>
                         <MudItem xs="12" sm="6">
-                            <MudTextField @bind-Value="_order.ProjectLocation" Label="Ubicación del Proyecto" />
+                            <MudTextField @bind-Value="_order.ProjectLocation" Label="Ubicación del Proyecto" Margin="Margin.Dense" Variant="Variant.Outlined" />
                         </MudItem>
                         <MudItem xs="12" sm="6">
-                            <MudTextField @bind-Value="_order.ProjectResponsable" Label="Responsable (Encargado)" />
+                            <MudTextField @bind-Value="_order.ProjectResponsable" Label="Responsable (Encargado)" Margin="Margin.Dense" Variant="Variant.Outlined" />
                         </MudItem>
                         <MudItem xs="12" sm="6">
-                            <MudTextField @bind-Value="_order.ProjectPhone" Label="Celular Responsable" />
+                            <MudTextField @bind-Value="_order.ProjectPhone" Label="Celular Responsable" Margin="Margin.Dense" Variant="Variant.Outlined" />
                         </MudItem>
                     </MudGrid>
                 </MudTabPanel>
@@ -64,24 +65,24 @@
                         </MudItem>
 
                         <MudItem xs="12">
-                            <MudTextField @bind-Value="_order.ItemDescription" Label="Descripción de los ítems de ensayo o inspección, y/o condición del ítem" Lines="3" />
+                            <MudTextField @bind-Value="_order.ItemDescription" Label="Descripción de los ítems de ensayo o inspección, y/o condición del ítem" Lines="3" Variant="Variant.Outlined" Margin="Margin.Dense" />
                         </MudItem>
                         <MudItem xs="12">
-                            <MudTextField @bind-Value="_order.Methodology" Label="Metodología: Métodos / Normas / Otros" Lines="2" />
+                            <MudTextField @bind-Value="_order.Methodology" Label="Metodología: Métodos / Normas / Otros" Lines="2" Variant="Variant.Outlined" Margin="Margin.Dense" />
                         </MudItem>
 
                         <MudItem xs="12" sm="4">
                             <MudCheckBox @bind-Value="_order.Subcontraction" Label="Subcontratación" Color="Color.Primary" />
                         </MudItem>
                         <MudItem xs="12" sm="8">
-                            <MudTextField @bind-Value="_order.SubcontractionDetails" Label="Detalle de Subcontratación" Disabled="@(!_order.Subcontraction)" />
+                            <MudTextField @bind-Value="_order.SubcontractionDetails" Label="Detalle de Subcontratación" Disabled="@(!_order.Subcontraction)" Variant="Variant.Outlined" Margin="Margin.Dense" />
                         </MudItem>
 
                         <MudItem xs="12" sm="4">
                             <MudCheckBox @bind-Value="_order.RequestDeclarationConformity" Label="Solicita Declaración de Conformidad" Color="Color.Primary" />
                         </MudItem>
                         <MudItem xs="12" sm="8">
-                            <MudTextField @bind-Value="_order.DeclarationSpecification" Label="Especificación o Norma" Disabled="@(!_order.RequestDeclarationConformity)" />
+                            <MudTextField @bind-Value="_order.DeclarationSpecification" Label="Especificación o Norma" Disabled="@(!_order.RequestDeclarationConformity)" Variant="Variant.Outlined" Margin="Margin.Dense" />
                         </MudItem>
                     </MudGrid>
                 </MudTabPanel>
@@ -97,47 +98,47 @@
                         <MudItem xs="12">
                             <MudText Typo="Typo.subtitle2">Desviación Solicitada</MudText>
                             <MudCheckBox @bind-Value="_order.ClientDeviation" Label="Sí" Color="Color.Error" />
-                            <MudTextField @bind-Value="_order.DeviationDetails" Label="Detalle si la respuesta es SÍ" Disabled="@(!_order.ClientDeviation)" />
+                            <MudTextField @bind-Value="_order.DeviationDetails" Label="Detalle si la respuesta es SÍ" Disabled="@(!_order.ClientDeviation)" Variant="Variant.Outlined" Margin="Margin.Dense" />
                         </MudItem>
 
                         <MudItem xs="12">
-                            <MudTextField @bind-Value="_order.Observations" Label="Observaciones" Lines="3" />
+                            <MudTextField @bind-Value="_order.Observations" Label="Observaciones" Lines="3" Variant="Variant.Outlined" Margin="Margin.Dense" />
                         </MudItem>
                         <MudItem xs="12" sm="6">
-                            <MudNumericField @bind-Value="_order.SampleConservationTime" Label="Tiempo de conservación de las muestras (días)" Min="0" />
+                            <MudNumericField @bind-Value="_order.SampleConservationTime" Label="Tiempo de conservación de las muestras (días)" Min="0" Variant="Variant.Outlined" Margin="Margin.Dense" />
                         </MudItem>
                         
                         <MudItem xs="12"><MudDivider /></MudItem>
 
                         <MudItem xs="12" sm="6">
-                            <MudNumericField @bind-Value="_order.TotalCost" Label="Costo Total (B/.)" Format="F2" Step="0.1M" Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.AttachMoney" />
+                            <MudNumericField @bind-Value="_order.TotalCost" Label="Costo Total (B/.)" Format="F2" Step="0.1M" Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.AttachMoney" Variant="Variant.Outlined" Margin="Margin.Dense" />
                         </MudItem>
                         <MudItem xs="12" sm="6">
                             <MudCheckBox @bind-Value="_order.Paid100Percent" Label="Cancela (100%)" Color="Color.Primary" />
                         </MudItem>
                         <MudItem xs="12" sm="6">
-                            <MudTextField @bind-Value="_order.ServiceSaleReceiptNumber" Label="Comprobante de venta de Servicios No." />
+                            <MudTextField @bind-Value="_order.ServiceSaleReceiptNumber" Label="Comprobante de venta de Servicios No." Variant="Variant.Outlined" Margin="Margin.Dense" />
                         </MudItem>
                         <MudItem xs="12" sm="6">
-                            <MudTextField @bind-Value="_order.RelatesToInform" Label="Informe LSMCH No" />
+                            <MudTextField @bind-Value="_order.RelatesToInform" Label="Informe LSMCH No" Variant="Variant.Outlined" Margin="Margin.Dense" />
                         </MudItem>
                         <MudItem xs="12" sm="6">
-                            <MudNumericField @bind-Value="_order.NumberOfInforms" Label="Cantidad de Informes" Min="1" />
+                            <MudNumericField @bind-Value="_order.NumberOfInforms" Label="Cantidad de Informes" Min="1" Variant="Variant.Outlined" Margin="Margin.Dense" />
                         </MudItem>
                         
                         <MudItem xs="12" sm="6">
                             <MudCheckBox @bind-Value="_order.SupportInstitutional" Label="Apoyo Institucional" Color="Color.Primary" />
-                            <MudTextField @bind-Value="_order.RelatedDocument" Label="Documento Relacionado" Disabled="@(!_order.SupportInstitutional)" />
+                            <MudTextField @bind-Value="_order.RelatedDocument" Label="Documento Relacionado" Disabled="@(!_order.SupportInstitutional)" Variant="Variant.Outlined" Margin="Margin.Dense" />
                         </MudItem>
                         
                         <MudItem xs="12" sm="6">
-                            <MudTextField @bind-Value="_order.AttendedBy" Label="Atendido por" />
+                            <MudTextField @bind-Value="_order.AttendedBy" Label="Atendido por" Variant="Variant.Outlined" Margin="Margin.Dense" />
                         </MudItem>
                         <MudItem xs="12" sm="6">
-                            <MudTextField @bind-Value="_order.ApplicantName" Label="Solicitante o Emisario" />
+                            <MudTextField @bind-Value="_order.ApplicantName" Label="Solicitante o Emisario" Variant="Variant.Outlined" Margin="Margin.Dense" />
                         </MudItem>
                         <MudItem xs="12" sm="6">
-                            <MudTextField @bind-Value="_order.ApplicantIdNumber" Label="No. de Cédula (Solicitante)" />
+                            <MudTextField @bind-Value="_order.ApplicantIdNumber" Label="No. de Cédula (Solicitante)" Variant="Variant.Outlined" Margin="Margin.Dense" />
                         </MudItem>
                     </MudGrid>
                 </MudTabPanel>
@@ -146,7 +147,7 @@
     </DialogContent>
     <DialogActions>
         <MudButton OnClick="Cancel">Cancelar</MudButton>
-        <MudButton Color="Color.Primary" Variant="Variant.Filled" OnClick="Submit" Disabled="@_processing">Guardar Orden</MudButton>
+        <MudButton Color="Color.Primary" Variant="Variant.Filled" OnClick="Submit" Disabled="@_processing" Class="rounded-pill px-6">Guardar Orden</MudButton>
     </DialogActions>
 </MudDialog>
 
@@ -155,6 +156,7 @@
     [Parameter] public ServiceOrderCreate? InitialData { get; set; }
 
     private ServiceOrderCreate _order = new();
+    private Customer? _selectedCustomer;
     private MudForm _form = null!;
     private bool _success;
     private bool _processing;
@@ -164,6 +166,22 @@
         if (InitialData != null)
         {
             _order = InitialData;
+            // Attempt to pre-select customer if mapping exists (optional improvement)
+        }
+    }
+
+    private void OnCustomerChanged(Customer? customer)
+    {
+        _selectedCustomer = customer;
+        if (customer != null)
+        {
+            _order.CustomerId = customer.Id;
+            _order.ClientName = customer.Name;
+            _order.ClientRuc = customer.Ruc;
+            _order.ClientDv = customer.Dv;
+            _order.ClientPhone = customer.Phone;
+            _order.ClientEmail = customer.Email;
+            _order.ClientDirection = customer.Address;
         }
     }
 
@@ -180,8 +198,27 @@
             _processing = true;
             try
             {
-                await ServiceOrderService.CreateServiceOrderAsync(_order);
-                Snackbar.Add("Orden creada exitosamente", Severity.Success);
+                var createdOrder = await ServiceOrderService.CreateServiceOrderAsync(_order);
+                
+                // Automatic Calendar Activity
+                try
+                {
+                    await CalendarService.CreateActivityAsync(new CalendarActivityCreate
+                    {
+                        Title = $"Muestreo/Ensayo: {_order.ClientName}",
+                        Description = $"Orden: {createdOrder.OrderNumber} - Proyecto: {_order.ProjectName}",
+                        StartDate = DateTime.Now.AddDays(1).Date.AddHours(8), // Suggest 8 AM next day
+                        Type = "Muestreo",
+                        RelatedId = createdOrder.Id,
+                        Color = "#594AE2"
+                    });
+                }
+                catch (Exception calEx)
+                {
+                    Console.WriteLine($"Error al sincronizar calendario: {calEx.Message}");
+                }
+
+                Snackbar.Add("Orden creada exitosamente y agendada", Severity.Success);
                 MudDialog.Close(DialogResult.Ok(true));
             }
             catch (Exception ex)

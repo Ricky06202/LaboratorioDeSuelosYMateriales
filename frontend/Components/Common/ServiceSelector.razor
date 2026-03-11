@@ -1,0 +1,31 @@
+@using frontend.Models
+@using frontend.Services
+@inject LabServiceService ServiceCatalog
+
+<MudAutocomplete T="LabService" Label="@Label" Value="Value" ValueChanged="OnValueChanged"
+                 SearchFunc="@SearchServices" ToStringFunc="@(s => s != null ? $"{s.Code} - {s.Name}" : "")"
+                 ResetValueOnEmptyText="true" CoerceText="true" CoerceValue="true"
+                 AdornmentIcon="@Icons.Material.Filled.Search" AdornmentColor="Color.Primary"
+                 Variant="@Variant" Margin="@Margin" Required="@Required" RequiredError="@RequiredError"
+                 Placeholder="Buscar ensayo..." Dense="true" />
+
+@code {
+    [Parameter] public LabService? Value { get; set; }
+    [Parameter] public EventCallback<LabService?> ValueChanged { get; set; }
+    [Parameter] public string Label { get; set; } = "Servicio de Lab";
+    [Parameter] public Variant Variant { get; set; } = Variant.Outlined;
+    [Parameter] public Margin Margin { get; set; } = Margin.Dense;
+    [Parameter] public bool Required { get; set; } = false;
+    [Parameter] public string RequiredError { get; set; } = "Debe seleccionar un servicio";
+
+    private async Task<IEnumerable<LabService>> SearchServices(string value, CancellationToken token)
+    {
+        return await ServiceCatalog.GetServicesAsync(value);
+    }
+
+    private async Task OnValueChanged(LabService? service)
+    {
+        Value = service;
+        await ValueChanged.InvokeAsync(service);
+    }
+}

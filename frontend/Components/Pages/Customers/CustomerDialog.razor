@@ -1,0 +1,94 @@
+@using frontend.Models
+@using frontend.Services
+@inject CustomerService CustomerService
+@inject ISnackbar Snackbar
+
+<MudDialog>
+    <DialogContent>
+        <MudForm @ref="_form" @bind-IsValid="@_success">
+            <MudGrid>
+                <MudItem xs="12">
+                    <MudTextField @bind-Value="_model.Name" Label="Nombre / Razón Social" Required="true" RequiredError="Nombre es requerido" Variant="Variant.Outlined" Margin="Margin.Dense" />
+                </MudItem>
+                <MudItem xs="8">
+                    <MudTextField @bind-Value="_model.Ruc" Label="RUC / Cédula" Variant="Variant.Outlined" Margin="Margin.Dense" />
+                </MudItem>
+                <MudItem xs="4">
+                    <MudTextField @bind-Value="_model.Dv" Label="DV" Variant="Variant.Outlined" Margin="Margin.Dense" />
+                </MudItem>
+                <MudItem xs="12">
+                    <MudTextField @bind-Value="_model.Email" Label="Correo Electrónico" Variant="Variant.Outlined" Margin="Margin.Dense" />
+                </MudItem>
+                <MudItem xs="12">
+                    <MudTextField @bind-Value="_model.Phone" Label="Teléfono" Variant="Variant.Outlined" Margin="Margin.Dense" />
+                </MudItem>
+                <MudItem xs="12">
+                    <MudTextField @bind-Value="_model.Address" Label="Dirección Física" Lines="2" Variant="Variant.Outlined" Margin="Margin.Dense" />
+                </MudItem>
+            </MudGrid>
+        </MudForm>
+    </DialogContent>
+    <DialogActions>
+        <MudButton OnClick="Cancel">Cancelar</MudButton>
+        <MudButton Color="Color.Primary" Variant="Variant.Filled" OnClick="Submit" Disabled="@_processing">Guardar</MudButton>
+    </DialogActions>
+</MudDialog>
+
+@code {
+    [CascadingParameter] IMudDialogInstance MudDialog { get; set; } = null!;
+    [Parameter] public Customer? ExistingCustomer { get; set; }
+
+    private CustomerUpdate _model = new();
+    private MudForm _form = null!;
+    private bool _success;
+    private bool _processing;
+
+    protected override void OnInitialized()
+    {
+        if (ExistingCustomer != null)
+        {
+            _model = new CustomerUpdate
+            {
+                Name = ExistingCustomer.Name,
+                Ruc = ExistingCustomer.Ruc,
+                Dv = ExistingCustomer.Dv,
+                Email = ExistingCustomer.Email,
+                Phone = ExistingCustomer.Phone,
+                Address = ExistingCustomer.Address
+            };
+        }
+    }
+
+    private void Cancel() => MudDialog.Cancel();
+
+    private async Task Submit()
+    {
+        await _form.Validate();
+        if (_success)
+        {
+            _processing = true;
+            try
+            {
+                if (ExistingCustomer == null)
+                {
+                    await CustomerService.CreateCustomerAsync(_model);
+                    Snackbar.Add("Cliente registrado con éxito", Severity.Success);
+                }
+                else
+                {
+                    await CustomerService.UpdateCustomerAsync(ExistingCustomer.Id, _model);
+                    Snackbar.Add("Cliente actualizado con éxito", Severity.Success);
+                }
+                MudDialog.Close(DialogResult.Ok(true));
+            }
+            catch (Exception ex)
+            {
+                Snackbar.Add(ex.Message, Severity.Error);
+            }
+            finally
+            {
+                _processing = false;
+            }
+        }
+    }
+}

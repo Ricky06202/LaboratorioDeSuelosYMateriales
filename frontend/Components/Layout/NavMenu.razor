@@ -3,11 +3,18 @@
     
     <MudDivider Class="my-2" Style="background: rgba(255,255,255,0.05);" />
     
-    <MudNavGroup Title="Documentación Técnica" Icon="@Icons.Material.Filled.MenuBook" Expanded="true">
+    <MudNavGroup Title="Documentación Técnica" Icon="@Icons.Material.Filled.MenuBook" Expanded="false">
         <MudNavLink href="equipos" Icon="@Icons.Material.Filled.PrecisionManufacturing">Equipo</MudNavLink>
         <MudNavLink href="mantenimiento" Icon="@Icons.Material.Filled.BuildCircle">Mantenimiento</MudNavLink>
     </MudNavGroup>
     
+    <MudDivider Class="my-2" Style="background: rgba(255,255,255,0.05);" />
+    
+    <MudText Typo="Typo.caption" Class="px-4 py-2" Style="color: rgba(255,255,255,0.4); font-weight: 600; text-transform: uppercase; font-size: 0.65rem;">Catálogos y Agenda</MudText>
+    <MudNavLink href="clientes" Icon="@Icons.Material.Filled.People">Directorio de Clientes</MudNavLink>
+    <MudNavLink href="servicios" Icon="@Icons.Material.Filled.ListAlt">Catálogo de Servicios</MudNavLink>
+    <MudNavLink href="agenda" Icon="@Icons.Material.Filled.CalendarMonth">Agenda de Actividades</MudNavLink>
+
     <MudDivider Class="my-2" Style="background: rgba(255,255,255,0.05);" />
     
     <MudText Typo="Typo.caption" Class="px-4 py-2" Style="color: rgba(255,255,255,0.4); font-weight: 600; text-transform: uppercase; font-size: 0.65rem;">Operaciones</MudText>
@@ -27,4 +34,3 @@
         <MudNavLink href="usuarios" Icon="@Icons.Material.Filled.AdminPanelSettings">Gestión de Usuarios</MudNavLink>
     </AuthorizeView>
 </MudNavMenu>
-

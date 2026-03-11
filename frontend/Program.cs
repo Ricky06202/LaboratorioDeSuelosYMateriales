@@ -15,20 +15,38 @@ builder.Services.AddAuthorization();
 builder.Services.AddScoped<AuthenticationStateProvider, JwtAuthenticationStateProvider>();
 builder.Services.AddCascadingAuthenticationState();
 builder.Services.AddMudServices();
+
+// Base URL for development
+var apiBaseUrl = "http://localhost:8000/";
+
 builder.Services.AddHttpClient<EquipmentService>(client => {
-    client.BaseAddress = new Uri("http://localhost:8000/");
+    client.BaseAddress = new Uri(apiBaseUrl);
     client.Timeout = TimeSpan.FromSeconds(10);
 });
 builder.Services.AddHttpClient<QuotationService>(client => {
-    client.BaseAddress = new Uri("http://localhost:8000/");
+    client.BaseAddress = new Uri(apiBaseUrl);
     client.Timeout = TimeSpan.FromSeconds(10);
 });
 builder.Services.AddHttpClient<ServiceOrderService>(client => {
-    client.BaseAddress = new Uri("http://localhost:8000/");
+    client.BaseAddress = new Uri(apiBaseUrl);
     client.Timeout = TimeSpan.FromSeconds(10);
 });
 builder.Services.AddHttpClient<CustomerOrderService>(client => {
-    client.BaseAddress = new Uri("http://localhost:8000/");
+    client.BaseAddress = new Uri(apiBaseUrl);
+    client.Timeout = TimeSpan.FromSeconds(10);
+});
+
+// New Services
+builder.Services.AddHttpClient<CustomerService>(client => {
+    client.BaseAddress = new Uri(apiBaseUrl);
+    client.Timeout = TimeSpan.FromSeconds(10);
+});
+builder.Services.AddHttpClient<LabServiceService>(client => {
+    client.BaseAddress = new Uri(apiBaseUrl);
+    client.Timeout = TimeSpan.FromSeconds(10);
+});
+builder.Services.AddHttpClient<CalendarService>(client => {
+    client.BaseAddress = new Uri(apiBaseUrl);
     client.Timeout = TimeSpan.FromSeconds(10);
 });
 
@@ -43,7 +61,6 @@ var app = builder.Build();
 if (!app.Environment.IsDevelopment())
 {
     app.UseExceptionHandler("/Error", createScopeForErrors: true);
-    // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
     app.UseHsts();
 }
 app.UseStatusCodePagesWithReExecute("/not-found", createScopeForStatusCodePages: true);

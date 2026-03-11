@@ -1,0 +1,86 @@
+@using frontend.Models
+@using frontend.Services
+@inject LabServiceService ServiceCatalog
+@inject ISnackbar Snackbar
+
+<MudDialog>
+    <DialogContent>
+        <MudForm @ref="_form" @bind-IsValid="@_success">
+            <MudGrid>
+                <MudItem xs="4">
+                    <MudTextField @bind-Value="_model.Code" Label="Código" Required="true" RequiredError="Código es requerido" Variant="Variant.Outlined" Margin="Margin.Dense" />
+                </MudItem>
+                <MudItem xs="8">
+                    <MudTextField @bind-Value="_model.Name" Label="Nombre del Servicio" Required="true" RequiredError="Nombre es requerido" Variant="Variant.Outlined" Margin="Margin.Dense" />
+                </MudItem>
+                <MudItem xs="12">
+                    <MudTextField @bind-Value="_model.Description" Label="Descripción Detallada" Lines="3" Variant="Variant.Outlined" Margin="Margin.Dense" />
+                </MudItem>
+                <MudItem xs="12">
+                    <MudNumericField @bind-Value="_model.UnitPrice" Label="Precio Unitario" Format="N2" Culture="@System.Globalization.CultureInfo.GetCultureInfo("en-US")" Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.AttachMoney" Variant="Variant.Outlined" Margin="Margin.Dense" />
+                </MudItem>
+            </MudGrid>
+        </MudForm>
+    </DialogContent>
+    <DialogActions>
+        <MudButton OnClick="Cancel">Cancelar</MudButton>
+        <MudButton Color="Color.Primary" Variant="Variant.Filled" OnClick="Submit" Disabled="@_processing">Guardar</MudButton>
+    </DialogActions>
+</MudDialog>
+
+@code {
+    [CascadingParameter] IMudDialogInstance MudDialog { get; set; } = null!;
+    [Parameter] public LabService? ExistingService { get; set; }
+
+    private LabServiceUpdate _model = new();
+    private MudForm _form = null!;
+    private bool _success;
+    private bool _processing;
+
+    protected override void OnInitialized()
+    {
+        if (ExistingService != null)
+        {
+            _model = new LabServiceUpdate
+            {
+                Code = ExistingService.Code,
+                Name = ExistingService.Name,
+                Description = ExistingService.Description,
+                UnitPrice = ExistingService.UnitPrice
+            };
+        }
+    }
+
+    private void Cancel() => MudDialog.Cancel();
+
+    private async Task Submit()
+    {
+        await _form.Validate();
+        if (_success)
+        {
+            _processing = true;
+            try
+            {
+                if (ExistingService == null)
+                {
+                    await ServiceCatalog.CreateServiceAsync(_model);
+                    Snackbar.Add("Servicio registrado con éxito", Severity.Success);
+                }
+                else
+                {
+                    await ServiceCatalog.UpdateServiceAsync(ExistingService.Id, _model);
+                    Snackbar.Add("Servicio actualizado con éxito", Severity.Success);
+                }
+                MudDialog.Close(DialogResult.Ok(true));
+            }
+            catch (Exception ex)
+            {
+                Snackbar.Add(ex.Message, Severity.Error);
+            }
+            finally
+            {
+                _processing = false;
+            }
+        }
+    }
+}

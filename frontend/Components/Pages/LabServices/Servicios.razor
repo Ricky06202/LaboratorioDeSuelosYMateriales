@@ -1,0 +1,133 @@
+@page "/servicios"
+@using frontend.Models
+@using frontend.Services
+@inject LabServiceService ServiceCatalog
+@inject IDialogService DialogService
+@inject ISnackbar Snackbar
+
+<PageTitle>Catálogo de Servicios - LSMCH</PageTitle>
+
+<div class="animate__animated animate__fadeIn">
+    <div class="section-header d-flex align-center justify-space-between mb-8">
+        <div>
+            <MudText Typo="Typo.h4" Class="font-weight-black lsmch-title">CATÁLOGO DE SERVICIOS</MudText>
+            <MudText Typo="Typo.subtitle1" Class="text-secondary">Gestión de Ensayos, Muestreos y Tarifas</MudText>
+        </div>
+        <MudButton Variant="Variant.Filled" Color="Color.Primary" StartIcon="@Icons.Material.Filled.AddBusiness" 
+                   OnClick="OpenCreateDialog" Class="rounded-pill px-8 shadow-lg">Nuevo Servicio</MudButton>
+    </div>
+
+    <MudTable Items="@_services" Hover="true" Loading="@_loading" Elevation="0" Class="rounded-xl shadow-sm border border-solid border-light lsmch-glass"
+              Filter="new Func<LabService,bool>(FilterFunc1)">
+        <ToolBarContent>
+            <MudSpacer />
+            <MudTextField @bind-Value="_searchString" Placeholder="Buscar por código o nombre..." Adornment="Adornment.Start" 
+                          AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium" Class="mt-0" Immediate="true" />
+        </ToolBarContent>
+        <HeaderContent>
+            <MudTh>Código</MudTh>
+            <MudTh>Nombre del Servicio</MudTh>
+            <MudTh>Descripción</MudTh>
+            <MudTh>Precio Unitario</MudTh>
+            <MudTh>Acciones</MudTh>
+        </HeaderContent>
+        <RowTemplate>
+            <MudTd DataLabel="Código"><MudChip T="string" Color="Color.Info" Size="Size.Small" Variant="Variant.Text">@context.Code</MudChip></MudTd>
+            <MudTd DataLabel="Nombre">@context.Name</MudTd>
+            <MudTd DataLabel="Descripción">@context.Description</MudTd>
+            <MudTd DataLabel="Precio">@context.UnitPrice.ToString("C2")</MudTd>
+            <MudTd DataLabel="Acciones">
+                <MudIconButton Icon="@Icons.Material.Filled.Edit" Color="Color.Info" Size="Size.Small" OnClick="@(() => OpenEditDialog(context))" />
+                <MudIconButton Icon="@Icons.Material.Filled.Delete" Color="Color.Error" Size="Size.Small" OnClick="@(() => DeleteService(context))" />
+            </MudTd>
+        </RowTemplate>
+        <PagerContent>
+            <MudTablePager InfoFormat="Registros por página:" RowsPerPageString="Filas:" />
+        </PagerContent>
+    </MudTable>
+</div>
+
+@code {
+    private List<LabService> _services = new();
+    private bool _loading = true;
+    private string _searchString = "";
+
+    protected override async Task OnInitializedAsync()
+    {
+        await LoadDataAsync();
+    }
+
+    private async Task LoadDataAsync()
+    {
+        _loading = true;
+        try
+        {
+            _services = await ServiceCatalog.GetServicesAsync();
+        }
+        catch (Exception ex)
+        {
+            Snackbar.Add($"Error al cargar servicios: {ex.Message}", Severity.Error);
+        }
+        finally
+        {
+            _loading = false;
+        }
+    }
+
+    private bool FilterFunc1(LabService element) => FilterFunc(element, _searchString);
+
+    private bool FilterFunc(LabService element, string searchString)
+    {
+        if (string.IsNullOrWhiteSpace(searchString)) return true;
+        if (element.Name.Contains(searchString, StringComparison.OrdinalIgnoreCase)) return true;
+        if (element.Code.Contains(searchString, StringComparison.OrdinalIgnoreCase)) return true;
+        return false;
+    }
+
+    private async Task OpenCreateDialog()
+    {
+        var options = new DialogOptions { MaxWidth = MaxWidth.Small, FullWidth = true, CloseButton = true };
+        var dialog = await DialogService.ShowAsync<LabServiceDialog>("Registrar Nuevo Servicio", options);
+        var result = await dialog.Result;
+
+        if (result != null && !result.Canceled)
+        {
+            await LoadDataAsync();
+        }
+    }
+
+    private async Task OpenEditDialog(LabService service)
+    {
+        var parameters = new DialogParameters<LabServiceDialog> { { x => x.ExistingService, service } };
+        var options = new DialogOptions { MaxWidth = MaxWidth.Small, FullWidth = true, CloseButton = true };
+        var dialog = await DialogService.ShowAsync<LabServiceDialog>("Editar Servicio", parameters, options);
+        var result = await dialog.Result;
+
+        if (result != null && !result.Canceled)
+        {
+            await LoadDataAsync();
+        }
+    }
+
+    private async Task DeleteService(LabService service)
+    {
+        bool? result = await DialogService.ShowMessageBoxAsync(
+            "Eliminar Servicio",
+            $"¿Está seguro de eliminar {service.Name}?",
+            yesText: "Eliminar", cancelText: "Cancelar");
+
+        if (result == true)
+        {
+            try
+            {
+                await ServiceCatalog.DeleteServiceAsync(service.Id);
+                Snackbar.Add("Servicio eliminado", Severity.Success);
+                await LoadDataAsync();
+            }
+            catch (Exception ex)
+            {
+                Snackbar.Add($"Error: {ex.Message}", Severity.Error);
+            }
+        }
+    }
+}

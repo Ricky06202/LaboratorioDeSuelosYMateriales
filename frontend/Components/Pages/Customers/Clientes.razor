@@ -1,0 +1,135 @@
+@page "/clientes"
+@using frontend.Models
+@using frontend.Services
+@inject CustomerService CustomerService
+@inject IDialogService DialogService
+@inject ISnackbar Snackbar
+
+<PageTitle>Directorio de Clientes - LSMCH</PageTitle>
+
+<div class="animate__animated animate__fadeIn">
+    <div class="section-header d-flex align-center justify-space-between mb-8">
+        <div>
+            <MudText Typo="Typo.h4" Class="font-weight-black lsmch-title">DIRECTORIO DE CLIENTES</MudText>
+            <MudText Typo="Typo.subtitle1" Class="text-secondary">Base de Datos Centralizada de la Razón Social de Clientes</MudText>
+        </div>
+        <MudButton Variant="Variant.Filled" Color="Color.Primary" StartIcon="@Icons.Material.Filled.PersonAdd" 
+                   OnClick="OpenCreateDialog" Class="rounded-pill px-8 shadow-lg">Nuevo Cliente</MudButton>
+    </div>
+
+    <MudTable Items="@_customers" Hover="true" Loading="@_loading" Elevation="0" Class="rounded-xl shadow-sm border border-solid border-light lsmch-glass"
+              Filter="new Func<Customer,bool>(FilterFunc1)">
+        <ToolBarContent>
+            <MudSpacer />
+            <MudTextField @bind-Value="_searchString" Placeholder="Buscar por nombre o RUC..." Adornment="Adornment.Start" 
+                          AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium" Class="mt-0" Immediate="true" />
+        </ToolBarContent>
+        <HeaderContent>
+            <MudTh>Nombre / Razón Social</MudTh>
+            <MudTh>RUC / Cédula</MudTh>
+            <MudTh>DV</MudTh>
+            <MudTh>Correo</MudTh>
+            <MudTh>Teléfono</MudTh>
+            <MudTh>Acciones</MudTh>
+        </HeaderContent>
+        <RowTemplate>
+            <MudTd DataLabel="Nombre">@context.Name</MudTd>
+            <MudTd DataLabel="RUC">@context.Ruc</MudTd>
+            <MudTd DataLabel="DV">@context.Dv</MudTd>
+            <MudTd DataLabel="Correo">@context.Email</MudTd>
+            <MudTd DataLabel="Teléfono">@context.Phone</MudTd>
+            <MudTd DataLabel="Acciones">
+                <MudIconButton Icon="@Icons.Material.Filled.Edit" Color="Color.Info" Size="Size.Small" OnClick="@(() => OpenEditDialog(context))" />
+                <MudIconButton Icon="@Icons.Material.Filled.Delete" Color="Color.Error" Size="Size.Small" OnClick="@(() => DeleteCustomer(context))" />
+            </MudTd>
+        </RowTemplate>
+        <PagerContent>
+            <MudTablePager InfoFormat="Registros por página:" RowsPerPageString="Filas:" />
+        </PagerContent>
+    </MudTable>
+</div>
+
+@code {
+    private List<Customer> _customers = new();
+    private bool _loading = true;
+    private string _searchString = "";
+
+    protected override async Task OnInitializedAsync()
+    {
+        await LoadDataAsync();
+    }
+
+    private async Task LoadDataAsync()
+    {
+        _loading = true;
+        try
+        {
+            _customers = await CustomerService.GetCustomersAsync();
+        }
+        catch (Exception ex)
+        {
+            Snackbar.Add($"Error al cargar clientes: {ex.Message}", Severity.Error);
+        }
+        finally
+        {
+            _loading = false;
+        }
+    }
+
+    private bool FilterFunc1(Customer element) => FilterFunc(element, _searchString);
+
+    private bool FilterFunc(Customer element, string searchString)
+    {
+        if (string.IsNullOrWhiteSpace(searchString)) return true;
+        if (element.Name.Contains(searchString, StringComparison.OrdinalIgnoreCase)) return true;
+        if (element.Ruc?.Contains(searchString, StringComparison.OrdinalIgnoreCase) ?? false) return true;
+        return false;
+    }
+
+    private async Task OpenCreateDialog()
+    {
+        var options = new DialogOptions { MaxWidth = MaxWidth.Small, FullWidth = true, CloseButton = true };
+        var dialog = await DialogService.ShowAsync<CustomerDialog>("Registrar Nuevo Cliente", options);
+        var result = await dialog.Result;
+
+        if (result != null && !result.Canceled)
+        {
+            await LoadDataAsync();
+        }
+    }
+
+    private async Task OpenEditDialog(Customer customer)
+    {
+        var parameters = new DialogParameters<CustomerDialog> { { x => x.ExistingCustomer, customer } };
+        var options = new DialogOptions { MaxWidth = MaxWidth.Small, FullWidth = true, CloseButton = true };
+        var dialog = await DialogService.ShowAsync<CustomerDialog>("Editar Cliente", parameters, options);
+        var result = await dialog.Result;
+
+        if (result != null && !result.Canceled)
+        {
+            await LoadDataAsync();
+        }
+    }
+
+    private async Task DeleteCustomer(Customer customer)
+    {
+        bool? result = await DialogService.ShowMessageBoxAsync(
+            "Eliminar Cliente",
+            $"¿Está seguro de eliminar a {customer.Name}?",
+            yesText: "Eliminar", cancelText: "Cancelar");
+
+        if (result == true)
+        {
+            try
+            {
+                await CustomerService.DeleteCustomerAsync(customer.Id);
+                Snackbar.Add("Cliente eliminado", Severity.Success);
+                await LoadDataAsync();
+            }
+            catch (Exception ex)
+            {
+                Snackbar.Add($"Error: {ex.Message}", Severity.Error);
+            }
+        }
+    }
+}
