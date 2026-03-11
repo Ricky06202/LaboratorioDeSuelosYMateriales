@@ -95,3 +95,46 @@ def read_roles(
     Retrieve roles.
     """
     return UserService.get_roles(db)
+
+@router.post("/roles", response_model=Role)
+def create_role(
+    *,
+    db: Session = Depends(deps.get_db),
+    role_in: RoleCreate,
+    current_user: UserModel = Depends(get_current_admin_user),
+) -> Any:
+    """
+    Create new role.
+    """
+    return UserService.create_role(db, obj_in=role_in)
+
+@router.put("/roles/{role_id}", response_model=Role)
+def update_role(
+    *,
+    db: Session = Depends(deps.get_db),
+    role_id: int,
+    role_in: RoleUpdate,
+    current_user: UserModel = Depends(get_current_admin_user),
+) -> Any:
+    """
+    Update a role.
+    """
+    role = UserService.update_role(db, role_id=role_id, obj_in=role_in)
+    if not role:
+        raise HTTPException(status_code=404, detail="Role not found")
+    return role
+
+@router.delete("/roles/{role_id}", response_model=Role)
+def delete_role(
+    *,
+    db: Session = Depends(deps.get_db),
+    role_id: int,
+    current_user: UserModel = Depends(get_current_admin_user),
+) -> Any:
+    """
+    Delete a role.
+    """
+    role = UserService.delete_role(db, role_id=role_id)
+    if not role:
+        raise HTTPException(status_code=404, detail="Role not found")
+    return role

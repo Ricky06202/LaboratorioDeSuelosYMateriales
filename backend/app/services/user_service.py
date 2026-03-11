@@ -1,21 +1,21 @@
 from typing import Optional, List
-from sqlalchemy.orm import Session
+from sqlalchemy.orm import Session, joinedload
 from app.models.user import User, Role
-from app.schemas.user import UserCreate, UserUpdate
+from app.schemas.user import UserCreate, UserUpdate, RoleCreate, RoleUpdate
 from app.core.security import get_password_hash, verify_password
 
 class UserService:
     @staticmethod
     def get(db: Session, user_id: int) -> Optional[User]:
-        return db.query(User).filter(User.id == user_id).first()
+        return db.query(User).options(joinedload(User.role)).filter(User.id == user_id).first()
 
     @staticmethod
     def get_by_email(db: Session, email: str) -> Optional[User]:
-        return db.query(User).filter(User.email == email).first()
+        return db.query(User).options(joinedload(User.role)).filter(User.email == email).first()
 
     @staticmethod
     def get_multi(db: Session, skip: int = 0, limit: int = 100) -> List[User]:
-        return db.query(User).offset(skip).limit(limit).all()
+        return db.query(User).options(joinedload(User.role)).offset(skip).limit(limit).all()
 
     @staticmethod
     def create(db: Session, obj_in: UserCreate) -> User:
@@ -68,3 +68,29 @@ class UserService:
     @staticmethod
     def get_roles(db: Session) -> List[Role]:
         return db.query(Role).all()
+
+    @staticmethod
+    def create_role(db: Session, obj_in: RoleCreate) -> Role:
+        db_obj = Role(name=obj_in.name)
+        db.add(db_obj)
+        db.commit()
+        db.refresh(db_obj)
+        return db_obj
+
+    @staticmethod
+    def update_role(db: Session, role_id: int, obj_in: RoleUpdate) -> Optional[Role]:
+        db_obj = db.query(Role).filter(Role.id == role_id).first()
+        if db_obj:
+            db_obj.name = obj_in.name
+            db.add(db_obj)
+            db.commit()
+            db.refresh(db_obj)
+        return db_obj
+
+    @staticmethod
+    def delete_role(db: Session, role_id: int) -> Optional[Role]:
+        db_obj = db.query(Role).filter(Role.id == role_id).first()
+        if db_obj:
+            db.delete(db_obj)
+            db.commit()
+        return db_obj

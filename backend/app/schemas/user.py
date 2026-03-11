@@ -8,6 +8,12 @@ class Role(BaseModel):
     class Config:
         from_attributes = True
 
+class RoleCreate(BaseModel):
+    name: str
+
+class RoleUpdate(BaseModel):
+    name: str
+
 class UserBase(BaseModel):
     email: Optional[EmailStr] = None
     is_active: Optional[bool] = True

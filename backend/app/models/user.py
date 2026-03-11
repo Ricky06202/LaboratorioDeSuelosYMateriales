@@ -17,3 +17,9 @@ class User(Base):
     is_active = Column(Boolean, default=True)
     role_id = Column(Integer, ForeignKey("roles.id"))
     role = relationship("Role", back_populates="users")
+
+    @property
+    def role_name(self) -> str:
+        if self.role:
+            return self.role.name
+        return ""

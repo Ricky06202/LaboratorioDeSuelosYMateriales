@@ -55,6 +55,29 @@ namespace frontend.Services
             return await response.Content.ReadFromJsonAsync<List<Role>>() ?? new();
         }
 
+        public async Task<Role> CreateRoleAsync(string name)
+        {
+            await SetAuthorizationHeaderAsync();
+            var response = await _httpClient.PostAsJsonAsync("api/usuarios/roles", new { name });
+            await EnsureSuccessOrThrowAsync(response);
+            return await response.Content.ReadFromJsonAsync<Role>() ?? new();
+        }
+
+        public async Task<Role> UpdateRoleAsync(int roleId, string name)
+        {
+            await SetAuthorizationHeaderAsync();
+            var response = await _httpClient.PutAsJsonAsync($"api/usuarios/roles/{roleId}", new { name });
+            await EnsureSuccessOrThrowAsync(response);
+            return await response.Content.ReadFromJsonAsync<Role>() ?? new();
+        }
+
+        public async Task DeleteRoleAsync(int roleId)
+        {
+            await SetAuthorizationHeaderAsync();
+            var response = await _httpClient.DeleteAsync($"api/usuarios/roles/{roleId}");
+            await EnsureSuccessOrThrowAsync(response);
+        }
+
         private async Task SetAuthorizationHeaderAsync()
         {
             var token = await _jsRuntime.InvokeAsync<string>("localStorage.getItem", "authToken");
