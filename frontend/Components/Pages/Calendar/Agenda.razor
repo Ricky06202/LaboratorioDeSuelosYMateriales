@@ -3,6 +3,7 @@
 @using frontend.Services
 @inject CalendarService CalendarService
 @inject ISnackbar Snackbar
+@inject IDialogService DialogService
 
 <PageTitle>Agenda de Actividades - LSMCH</PageTitle>
 
@@ -20,62 +21,153 @@
         </div>
     </div>
 
-    <MudGrid>
-        @if (_loading)
-        {
-            <MudItem xs="12" Class="d-flex justify-center py-12">
-                <MudProgressCircular Color="Color.Primary" Indeterminate="true" Size="Size.Large" />
-            </MudItem>
-        }
-        else if (!_activities.Any())
-        {
+    @if (_loading)
+    {
+        <div class="d-flex justify-center py-12">
+            <MudProgressCircular Color="Color.Primary" Indeterminate="true" Size="Size.Large" />
+        </div>
+    }
+    else
+    {
+        <!-- Calendar Navigation -->
+        <div class="d-flex justify-space-between align-center mb-4">
+            <MudIconButton Icon="@Icons.Material.Filled.ChevronLeft" OnClick="PreviousMonth" />
+            <MudText Typo="Typo.h5" Class="font-weight-bold">
+                @_currentDate.ToString("MMMM yyyy")
+            </MudText>
+            <MudIconButton Icon="@Icons.Material.Filled.ChevronRight" OnClick="NextMonth" />
+        </div>
+
+        <!-- Calendar Grid -->
+        <MudGrid Spacing="1" Class="calendar-grid">
+            <!-- Header: Days of week -->
             <MudItem xs="12">
-                <MudAlert Severity="Severity.Info" Variant="Variant.Outlined" Class="rounded-xl lsmch-glass">No hay actividades programadas para los próximos días.</MudAlert>
+                <MudGrid Spacing="1">
+                    @foreach (var day in new[] { "Dom", "Lun", "Mar", "Mié", "Jue", "Vie", "Sáb" })
+                    {
+                        <MudItem xs="12/7">
+                            <div class="d-flex justify-center mud-text-secondary py-2 font-weight-bold">
+                                @day
+                            </div>
+                        </MudItem>
+                    }
+                </MudGrid>
             </MudItem>
-        }
-        else
+
+            <!-- Calendar Days -->
+            <MudItem xs="12">
+                <MudGrid Spacing="1">
+                    @foreach (var date in GetCalendarDays())
+                    {
+                        <MudItem xs="12/7">
+                            <div class="calendar-day @(date.Month != _currentDate.Month ? "other-month" : "") @(date.Date == DateTime.Today ? "today" : "") @(date.Date == _selectedDate?.Date ? "selected" : "")"
+                                 @onclick="() => SelectDate(date)">
+                                <div class="day-number">@date.Day</div>
+                                @if (HasActivities(date))
+                                {
+                                    <div class="activity-indicator"></div>
+                                }
+                            </div>
+                        </MudItem>
+                    }
+                </MudGrid>
+            </MudItem>
+        </MudGrid>
+
+        @if (_selectedDate != null && _selectedDateActivities.Any())
         {
-            @foreach (var group in _activities.GroupBy(a => a.StartDate.Date).OrderBy(g => g.Key))
-            {
-                <MudItem xs="12">
-                    <MudText Typo="Typo.h6" Class="mb-4 mt-2 font-weight-bold color-primary">
-                        @group.Key.ToString("dddd, dd 'de' MMMM yyyy")
-                    </MudText>
-                    <div class="d-flex flex-column gap-3">
-                        @foreach (var activity in group)
-                        {
-                            <MudPaper Elevation="0" Class="pa-4 rounded-xl border-l-4 border-solid lsmch-glass d-flex align-center justify-space-between shadow-sm" Style="@($"border-left-color: {activity.Color ?? "#594AE2"}")">
-                                <div class="d-flex flex-column">
-                                    <MudText Typo="Typo.subtitle1" Class="font-weight-bold">@activity.Title</MudText>
-                                    <MudText Typo="Typo.body2" Class="text-secondary">@activity.Description</MudText>
-                                    <div class="d-flex align-center gap-4 mt-1">
-                                         <MudText Typo="Typo.caption" Class="d-flex align-center gap-1">
-                                             <MudIcon Icon="@Icons.Material.Filled.AccessTime" Size="Size.Small" /> @activity.StartDate.ToString("hh:mm tt")
-                                         </MudText>
-                                         <MudChip T="string" Size="Size.Small" Color="Color.Secondary" Variant="Variant.Text">@activity.Type</MudChip>
-                                    </div>
+            <MudPaper Class="mt-6 pa-4 rounded-xl lsmch-glass">
+                <MudText Typo="Typo.h6" Class="mb-4">Actividades del @(_selectedDate?.ToString("dddd, dd 'de' MMMM yyyy"))</MudText>
+                <div class="d-flex flex-column gap-3">
+                    @foreach (var activity in _selectedDateActivities)
+                    {
+                        <MudPaper Elevation="0" Class="pa-3 rounded-lg border-l-4 border-solid d-flex align-center justify-space-between" 
+                                  Style="@($"border-left-color: {activity.Color ?? "#594AE2"}; background: rgba(255,255,255,0.05);")">
+                            <div class="d-flex flex-column">
+                                <MudText Typo="Typo.subtitle1" Class="font-weight-bold">@activity.Title</MudText>
+                                <MudText Typo="Typo.body2" Class="text-secondary">@activity.Description</MudText>
+                                <div class="d-flex align-center gap-4 mt-1">
+                                     <MudText Typo="Typo.caption" Class="d-flex align-center gap-1">
+                                         <MudIcon Icon="@Icons.Material.Filled.AccessTime" Size="Size.Small" /> @activity.StartDate.ToString("hh:mm tt")
+                                     </MudText>
+                                     <MudChip T="string" Size="Size.Small" Color="Color.Secondary" Variant="Variant.Text">@activity.Type</MudChip>
                                 </div>
-                                <div class="d-flex gap-2">
-                                     <MudIconButton Icon="@Icons.Material.Filled.Edit" Size="Size.Small" Color="Color.Info" />
-                                     <MudIconButton Icon="@Icons.Material.Filled.Delete" Size="Size.Small" Color="Color.Error" OnClick="@(() => DeleteActivity(activity))" />
-                                </div>
-                            </MudPaper>
-                        }
-                    </div>
-                </MudItem>
-            }
+                            </div>
+                            <div class="d-flex gap-2">
+                                 <MudIconButton Icon="@Icons.Material.Filled.Edit" Size="Size.Small" Color="Color.Info" OnClick="@(() => EditActivity(activity))" />
+                                 <MudIconButton Icon="@Icons.Material.Filled.Delete" Size="Size.Small" Color="Color.Error" OnClick="@(() => DeleteActivity(activity))" />
+                            </div>
+                        </MudPaper>
+                    }
+                </div>
+            </MudPaper>
         }
-    </MudGrid>
+    }
 </div>
 
 <style>
-    .border-l-4 { border-left-width: 8px !important; }
-    .color-primary { color: var(--mud-palette-primary); }
+    .calendar-grid {
+        background: rgba(255,255,255,0.05);
+        border-radius: 16px;
+        padding: 10px;
+        box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+    }
+    
+    .calendar-day {
+        height: 80px;
+        border: 1px solid rgba(255,255,255,0.1);
+        border-radius: 8px;
+        padding: 4px;
+        cursor: pointer;
+        transition: all 0.2s;
+        position: relative;
+    }
+    
+    .calendar-day:hover {
+        background: rgba(255,255,255,0.1);
+    }
+    
+    .calendar-day.other-month {
+        opacity: 0.3;
+    }
+    
+    .calendar-day.today {
+        background: var(--mud-palette-primary);
+        color: white;
+    }
+    
+    .calendar-day.selected {
+        border: 2px solid var(--mud-palette-primary);
+        background: rgba(89, 74, 226, 0.1);
+    }
+    
+    .day-number {
+        font-weight: bold;
+        font-size: 0.9rem;
+    }
+    
+    .activity-indicator {
+        position: absolute;
+        bottom: 4px;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 6px;
+        height: 6px;
+        background: var(--mud-palette-primary);
+        border-radius: 50%;
+    }
+    
+    .calendar-day.today .activity-indicator {
+        background: white;
+    }
 </style>
 
 @code {
     private List<CalendarActivity> _activities = new();
+    private List<CalendarActivity> _selectedDateActivities = new();
     private bool _loading = true;
+    private DateTime? _selectedDate;
+    private DateTime _currentDate = DateTime.Today;
 
     protected override async Task OnInitializedAsync()
     {
@@ -87,8 +179,10 @@
         _loading = true;
         try
         {
-            // Load activities from today onwards
-            _activities = await CalendarService.GetActivitiesAsync(DateTime.Today, DateTime.Today.AddDays(30));
+            // Load activities for the current month and surrounding days
+            var startDate = new DateTime(_currentDate.Year, _currentDate.Month, 1).AddDays(-7);
+            var endDate = startDate.AddDays(42); // 6 weeks
+            _activities = await CalendarService.GetActivitiesAsync(startDate, endDate);
         }
         catch (Exception ex)
         {
@@ -100,9 +194,45 @@
         }
     }
 
+    private IEnumerable<DateTime> GetCalendarDays()
+    {
+        var firstDayOfMonth = new DateTime(_currentDate.Year, _currentDate.Month, 1);
+        var startDate = firstDayOfMonth.AddDays(-(int)firstDayOfMonth.DayOfWeek);
+        
+        for (int i = 0; i < 42; i++) // 6 weeks
+        {
+            yield return startDate.AddDays(i);
+        }
+    }
+
+    private bool HasActivities(DateTime date)
+    {
+        return _activities.Any(a => a.StartDate.Date == date.Date);
+    }
+
+    private void SelectDate(DateTime date)
+    {
+        _selectedDate = date;
+        _selectedDateActivities = _activities
+            .Where(a => a.StartDate.Date == date.Date)
+            .OrderBy(a => a.StartDate)
+            .ToList();
+    }
+
+    private void PreviousMonth()
+    {
+        _currentDate = _currentDate.AddMonths(-1);
+        _ = LoadDataAsync();
+    }
+
+    private void NextMonth()
+    {
+        _currentDate = _currentDate.AddMonths(1);
+        _ = LoadDataAsync();
+    }
+
     private async Task DeleteActivity(CalendarActivity activity)
     {
-        // Fixing the Snackbar action logic for MudBlazor
         Snackbar.Add("¿Eliminar actividad?", Severity.Warning, config => 
         {
             config.Action = "ELIMINAR";
@@ -111,10 +241,14 @@
             {
                 return Task.Run(async () => {
                    try {
-                       await CalendarService.DeleteActivityAsync(activity.Id);
-                       await LoadDataAsync();
-                       Snackbar.Add("Actividad eliminada", Severity.Success);
-                   } catch {}
+                        await CalendarService.DeleteActivityAsync(activity.Id);
+                        await LoadDataAsync();
+                        if (_selectedDate != null)
+                        {
+                            SelectDate(_selectedDate.Value);
+                        }
+                        Snackbar.Add("Actividad eliminada", Severity.Success);
+                    } catch {}
                 });
             };
         });
@@ -123,5 +257,10 @@
     private void OpenAddActivity()
     {
         Snackbar.Add("Funcionalidad de creación en proceso de integración con órdenes", Severity.Info);
+    }
+    
+    private void EditActivity(CalendarActivity activity)
+    {
+        Snackbar.Add("Funcionalidad de edición en proceso", Severity.Info);
     }
 }
