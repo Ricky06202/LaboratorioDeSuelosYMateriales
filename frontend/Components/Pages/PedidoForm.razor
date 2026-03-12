@@ -8,7 +8,7 @@
 <MudDialog>
     <DialogContent>
         <MudForm @ref="_form" @bind-IsValid="@_success">
-            <MudTabs Elevation="1" Rounded="true" ApplyEffectsToContainer="true">
+            <MudTabs Elevation="1" Rounded="true" ApplyEffectsToContainer="true" ActivePanelIndex="@_activePanelIndex">
                 <MudTabPanel Text="Datos del Cliente y Proyecto">
                     <MudGrid>
                         <MudItem xs="12" sm="8">
@@ -109,7 +109,18 @@
     </DialogContent>
     <DialogActions>
         <MudButton OnClick="Cancel">Cancelar</MudButton>
-        <MudButton Color="Color.Primary" Variant="Variant.Filled" OnClick="Submit" Disabled="@_processing" Class="rounded-pill px-6">Guardar Pedido</MudButton>
+        @if (_activePanelIndex > 0)
+        {
+            <MudButton OnClick="GoToPreviousTab">Anterior</MudButton>
+        }
+        @if (_activePanelIndex < 2)
+        {
+            <MudButton Color="Color.Primary" OnClick="GoToNextTab">Siguiente</MudButton>
+        }
+        @if (_activePanelIndex == 2)
+        {
+            <MudButton Color="Color.Primary" Variant="Variant.Filled" OnClick="Submit" Disabled="@_processing" Class="rounded-pill px-6">Guardar Pedido</MudButton>
+        }
     </DialogActions>
 </MudDialog>
 
@@ -168,6 +179,26 @@
     private void Cancel()
     {
         MudDialog.Cancel();
+    }
+
+    private int _activePanelIndex = 0; // Initialize to the first tab
+
+    private void GoToNextTab()
+    {
+        if (_activePanelIndex < 2) // Max index for 3 tabs (0, 1, 2)
+        {
+            _activePanelIndex++;
+            StateHasChanged();
+        }
+    }
+
+    private void GoToPreviousTab()
+    {
+        if (_activePanelIndex > 0)
+        {
+            _activePanelIndex--;
+            StateHasChanged();
+        }
     }
 
     private async Task Submit()
