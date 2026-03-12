@@ -5,16 +5,16 @@
 @inject IDialogService DialogService
 @inject ISnackbar Snackbar
 
-<PageTitle>Catálogo de Servicios - LSMCH</PageTitle>
+<PageTitle>Catálogo de Ensayos - LSMCH</PageTitle>
 
 <div class="animate__animated animate__fadeIn">
     <div class="section-header d-flex align-center justify-space-between mb-8">
         <div>
-            <MudText Typo="Typo.h4" Class="font-weight-black lsmch-title">CATÁLOGO DE SERVICIOS</MudText>
+            <MudText Typo="Typo.h4" Class="font-weight-black lsmch-title">CATÁLOGO DE ENSAYOS</MudText>
             <MudText Typo="Typo.subtitle1" Class="text-secondary">Gestión de Ensayos, Muestreos y Tarifas</MudText>
         </div>
         <MudButton Variant="Variant.Filled" Color="Color.Primary" StartIcon="@Icons.Material.Filled.AddBusiness" 
-                   OnClick="OpenCreateDialog" Class="rounded-pill px-8 shadow-lg">Nuevo Servicio</MudButton>
+                   OnClick="OpenCreateDialog" Class="rounded-pill px-8 shadow-lg">Nuevo Ensayo</MudButton>
     </div>
 
     <MudTable Items="@_services" Hover="true" Loading="@_loading" Elevation="0" Class="rounded-xl shadow-sm border border-solid border-light lsmch-glass"
@@ -87,7 +87,7 @@
     private async Task OpenCreateDialog()
     {
         var options = new DialogOptions { MaxWidth = MaxWidth.Small, FullWidth = true, CloseButton = true };
-        var dialog = await DialogService.ShowAsync<LabServiceDialog>("Registrar Nuevo Servicio", options);
+        var dialog = await DialogService.ShowAsync<LabServiceDialog>("Registrar Nuevo Ensayo", options);
         var result = await dialog.Result;
 
         if (result != null && !result.Canceled)
@@ -100,7 +100,7 @@
     {
         var parameters = new DialogParameters<LabServiceDialog> { { x => x.ExistingService, service } };
         var options = new DialogOptions { MaxWidth = MaxWidth.Small, FullWidth = true, CloseButton = true };
-        var dialog = await DialogService.ShowAsync<LabServiceDialog>("Editar Servicio", parameters, options);
+        var dialog = await DialogService.ShowAsync<LabServiceDialog>("Editar Ensayo", parameters, options);
         var result = await dialog.Result;
 
         if (result != null && !result.Canceled)
@@ -112,7 +112,7 @@
     private async Task DeleteService(LabService service)
     {
         bool? result = await DialogService.ShowMessageBoxAsync(
-            "Eliminar Servicio",
+            "Eliminar Ensayo",
             $"¿Está seguro de eliminar {service.Name}?",
             yesText: "Eliminar", cancelText: "Cancelar");
 

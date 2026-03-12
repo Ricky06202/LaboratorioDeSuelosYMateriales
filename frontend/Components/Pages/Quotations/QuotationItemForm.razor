@@ -9,7 +9,7 @@
         <MudForm @ref="_form" @bind-IsValid="@_success">
             <MudGrid>
                 <MudItem xs="12">
-                    <ServiceSelector Label="Seleccionar Servicio del Catálogo" ValueChanged="@OnServiceSelected" Value="_selectedService" />
+                    <ServiceSelector Label="Seleccionar Ensayo del Catálogo" ValueChanged="@OnServiceSelected" Value="_selectedService" />
                 </MudItem>
                 <MudItem xs="12" sm="6">
                     <MudTextField @bind-Value="_item.ItemNorma" Label="Norma / Método" Margin="Margin.Dense" Variant="Variant.Outlined" Required="true" RequiredError="Norma es requerida" />
