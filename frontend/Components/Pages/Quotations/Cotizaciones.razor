@@ -167,6 +167,8 @@
 
         if (result != null && !result.Canceled)
         {
+            // The OrdenServicioForm already creates the calendar activity automatically
+            // But we can add a success message here
             Snackbar.Add("Orden de Servicio generada a partir de la cotización", Severity.Success);
         }
     }

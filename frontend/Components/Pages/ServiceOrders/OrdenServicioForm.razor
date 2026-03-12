@@ -154,6 +154,7 @@
 @code {
     [CascadingParameter] IMudDialogInstance MudDialog { get; set; } = null!;
     [Parameter] public ServiceOrderCreate? InitialData { get; set; }
+    [Parameter] public DateTime? ActivityDate { get; set; } // Fecha opcional para la actividad del calendario
 
     private ServiceOrderCreate _order = new();
     private Customer? _selectedCustomer;
@@ -203,11 +204,13 @@
                 // Automatic Calendar Activity
                 try
                 {
+                    var activityDate = ActivityDate ?? DateTime.Now.AddDays(1).Date.AddHours(8); // Usar fecha pasada o sugerir mañana a las 8 AM
+                    
                     await CalendarService.CreateActivityAsync(new CalendarActivityCreate
                     {
                         Title = $"Muestreo/Ensayo: {_order.ClientName}",
                         Description = $"Orden: {createdOrder.OrderNumber} - Proyecto: {_order.ProjectName}",
-                        StartDate = DateTime.Now.AddDays(1).Date.AddHours(8), // Suggest 8 AM next day
+                        StartDate = activityDate,
                         Type = "Muestreo",
                         RelatedId = createdOrder.Id,
                         Color = "#594AE2"
