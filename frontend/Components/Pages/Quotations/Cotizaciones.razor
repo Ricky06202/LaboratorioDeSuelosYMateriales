@@ -4,6 +4,7 @@
 @using frontend.Components.Pages.ServiceOrders
 @using Microsoft.JSInterop
 @inject QuotationService QuotationService
+@inject ServiceOrderService ServiceOrderService
 @inject IDialogService DialogService
 @inject ISnackbar Snackbar
 @inject IJSRuntime JS
@@ -41,7 +42,8 @@
         <MudTd DataLabel="Total">B/. @context.TotalAmount.ToString("F2")</MudTd>
         <MudTd DataLabel="Acciones">
             <MudIconButton Icon="@Icons.Material.Filled.PictureAsPdf" Color="Color.Error" Size="Size.Small" OnClick="@(() => DownloadPdf(context.Id, context.QuotationNumber))" title="Descargar PDF" />
-            <MudIconButton Icon="@Icons.Material.Filled.AssignmentTurnedIn" Color="Color.Success" Size="Size.Small" OnClick="@(() => ApproveAndGenerateOrder(context))" title="Aprobar y Generar Orden" />
+            <MudIconButton Icon="@Icons.Material.Filled.Edit" Color="Color.Primary" Size="Size.Small" OnClick="@(() => OpenEditQuotationDialog(context))" title="Editar" />
+            <MudIconButton Icon="@Icons.Material.Filled.AssignmentTurnedIn" Color="Color.Success" Size="Size.Small" OnClick="@(() => GenerateServiceOrder(context))" title="Generar Orden de Servicio" />
             <MudIconButton Icon="@Icons.Material.Filled.Delete" Color="Color.Default" Size="Size.Small" OnClick="@(() => DeleteQuotation(context))" title="Eliminar" />
         </MudTd>
     </RowTemplate>
@@ -142,8 +144,28 @@
         }
     }
 
-    private async Task ApproveAndGenerateOrder(Quotation quotation)
+    private async Task GenerateServiceOrder(Quotation quotation)
     {
+        // Verificar si ya existe una orden de servicio para esta cotización
+        try
+        {
+            // Aquí deberías verificar si ya existe una orden de servicio
+            // Por ahora, mostramos un mensaje de confirmación
+            var dialogResult = await DialogService.ShowMessageBoxAsync(
+                "Generar Orden de Servicio",
+                $"¿Desea generar una orden de servicio para la cotización {quotation.QuotationNumber}?",
+                yesText: "Sí, generar", cancelText: "Cancelar");
+            
+            if (dialogResult != true)
+            {
+                return;
+            }
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Error verificando órdenes existentes: {ex.Message}");
+        }
+
         var parameters = new DialogParameters<OrdenServicioForm>
         {
             { x => x.InitialData, new ServiceOrderCreate 
@@ -167,9 +189,47 @@
 
         if (result != null && !result.Canceled)
         {
-            // The OrdenServicioForm already creates the calendar activity automatically
-            // But we can add a success message here
             Snackbar.Add("Orden de Servicio generada a partir de la cotización", Severity.Success);
+        }
+    }
+
+    private async Task OpenEditQuotationDialog(Quotation quotation)
+    {
+        var parameters = new DialogParameters<CotizacionForm>
+        {
+            { x => x.InitialData, new QuotationCreate 
+                { 
+                    CustomerId = quotation.CustomerId,
+                    ClientName = quotation.ClientName,
+                    ClientRuc = quotation.ClientRuc,
+                    ClientDirection = quotation.ClientDirection,
+                    ClientPhone = quotation.ClientPhone,
+                    ClientEmail = quotation.ClientEmail,
+                    ProjectName = quotation.ProjectName,
+                    ProjectLocation = quotation.ProjectLocation,
+                    ProjectResponsable = quotation.ProjectResponsable,
+                    MobilizationCost = quotation.MobilizationCost,
+                    ViaticsCost = quotation.ViaticsCost,
+                    Note = quotation.Note,
+                    Items = quotation.Items.Select(i => new QuotationItemCreate
+                    {
+                        Description = i.Description,
+                        ItemNorma = i.ItemNorma,
+                        ItemSample = i.ItemSample,
+                        Amount = i.Amount,
+                        UnitPrice = i.UnitPrice
+                    }).ToList()
+                } 
+            }
+        };
+
+        var options = new DialogOptions { MaxWidth = MaxWidth.Medium, FullWidth = true, CloseButton = true };
+        var dialog = await DialogService.ShowAsync<CotizacionForm>("Editar Cotización", parameters, options);
+        var result = await dialog.Result;
+
+        if (result != null && !result.Canceled)
+        {
+            await LoadDataAsync();
         }
     }
 }

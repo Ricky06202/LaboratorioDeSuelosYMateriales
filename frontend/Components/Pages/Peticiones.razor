@@ -4,6 +4,7 @@
 @using frontend.Components.Pages.Quotations
 @using Microsoft.JSInterop
 @inject CustomerOrderService CustomerOrderService
+@inject QuotationService QuotationService
 @inject IDialogService DialogService
 @inject ISnackbar Snackbar
 @inject IJSRuntime JS
@@ -38,10 +39,10 @@
         <MudTd DataLabel="Cliente">@context.ClientName</MudTd>
         <MudTd DataLabel="Proyecto">@context.ProjectName</MudTd>
         <MudTd DataLabel="Acciones">
-            <MudIconButton Icon="@Icons.Material.Filled.PictureAsPdf" Color="Color.Error" Size="Size.Small" OnClick="@(() => DownloadPdf(context.Id, context.OrderNumber))" title="Descargar PDF" />
-            <MudIconButton Icon="@Icons.Material.Filled.Edit" Color="Color.Primary" Size="Size.Small" OnClick="@(() => OpenOrderDialog(context))" title="Editar" />
-            <MudIconButton Icon="@Icons.Material.Filled.SwapHoriz" Color="Color.Warning" Size="Size.Small" OnClick="@(() => ConvertToQuotation(context))" title="Convertir a Cotización" />
-            <MudIconButton Icon="@Icons.Material.Filled.Delete" Color="Color.Default" Size="Size.Small" OnClick="@(() => DeleteOrder(context))" title="Eliminar" />
+             <MudIconButton Icon="@Icons.Material.Filled.PictureAsPdf" Color="Color.Error" Size="Size.Small" OnClick="@(() => DownloadPdf(context.Id, context.OrderNumber))" title="Descargar PDF" />
+             <MudIconButton Icon="@Icons.Material.Filled.Edit" Color="Color.Primary" Size="Size.Small" OnClick="@(() => OpenOrderDialog(context))" title="Editar" />
+             <MudIconButton Icon="@Icons.Material.Filled.Calculate" Color="Color.Warning" Size="Size.Small" OnClick="@(() => GenerateQuotation(context))" title="Generar Cotización" />
+             <MudIconButton Icon="@Icons.Material.Filled.Delete" Color="Color.Default" Size="Size.Small" OnClick="@(() => DeleteOrder(context))" title="Eliminar" />
         </MudTd>
     </RowTemplate>
     <PagerContent>
@@ -105,8 +106,28 @@
         }
     }
 
-    private async Task ConvertToQuotation(CustomerOrder order)
+    private async Task GenerateQuotation(CustomerOrder order)
     {
+        // Verificar si ya existe una cotización para este pedido
+        try
+        {
+            var quotations = await QuotationService.GetQuotationsAsync();
+            var existingQuotation = quotations.FirstOrDefault(q => 
+                q.ProjectName == order.ProjectName && 
+                q.ClientName == order.ClientName &&
+                q.ProjectLocation == order.ProjectLocation);
+            
+            if (existingQuotation != null)
+            {
+                Snackbar.Add($"Ya existe una cotización ({existingQuotation.QuotationNumber}) para este pedido", Severity.Warning);
+                return;
+            }
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Error verificando cotizaciones existentes: {ex.Message}");
+        }
+
         var quotationCreate = new QuotationCreate
         {
             CustomerId = order.CustomerId,
@@ -131,12 +152,12 @@
 
         var parameters = new DialogParameters { [nameof(CotizacionForm.InitialData)] = quotationCreate };
         var options = new DialogOptions { MaxWidth = MaxWidth.Medium, FullWidth = true, CloseButton = true };
-        var dialog = await DialogService.ShowAsync<CotizacionForm>("Convertir Pedido a Cotización", parameters, options);
+        var dialog = await DialogService.ShowAsync<CotizacionForm>("Generar Cotización", parameters, options);
         var result = await dialog.Result;
 
         if (result != null && !result.Canceled)
         {
-            Snackbar.Add("Cotización creada exitosamente desde el pedido", Severity.Success);
+            Snackbar.Add("Cotización generada exitosamente desde el pedido", Severity.Success);
         }
     }
 
