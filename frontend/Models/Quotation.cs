@@ -48,6 +48,9 @@ namespace frontend.Models
         [JsonPropertyName("customer_id")]
         public Guid? CustomerId { get; set; }
 
+        [JsonPropertyName("customer_order_id")]
+        public Guid? CustomerOrderId { get; set; }
+
         [JsonPropertyName("client_name")]
         public string ClientName { get; set; } = string.Empty;
 
@@ -119,6 +122,9 @@ namespace frontend.Models
     {
         [JsonPropertyName("customer_id")]
         public Guid? CustomerId { get; set; }
+
+        [JsonPropertyName("customer_order_id")]
+        public Guid? CustomerOrderId { get; set; }
 
         [JsonPropertyName("client_name")]
         public string ClientName { get; set; } = string.Empty;

@@ -13,11 +13,15 @@ def read_quotations(
     db: Session = Depends(deps.get_db),
     skip: int = 0,
     limit: int = 100,
+    customer_order_id: uuid.UUID = None,
 ) -> Any:
     """
     Retrieve quotations.
     """
-    quotations = db.query(models.Quotation).offset(skip).limit(limit).all()
+    query = db.query(models.Quotation)
+    if customer_order_id:
+        query = query.filter(models.Quotation.customer_order_id == customer_order_id)
+    quotations = query.offset(skip).limit(limit).all()
     return quotations
 
 @router.post("/", response_model=schemas.Quotation)
@@ -42,6 +46,8 @@ def create_quotation(
     db_quotation = models.Quotation(
         quotation_number=quotation_number,
         year=year,
+        customer_id=quotation_in.customer_id,
+        customer_order_id=quotation_in.customer_order_id,
         client_name=quotation_in.client_name,
         client_direction=quotation_in.client_direction,
         client_phone=quotation_in.client_phone,

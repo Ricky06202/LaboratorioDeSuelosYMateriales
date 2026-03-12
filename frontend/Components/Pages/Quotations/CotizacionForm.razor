@@ -147,14 +147,10 @@
         {
             _quotation = InitialData;
             // Si viene de una orden de cliente, cargar el cliente
-            if (_quotation.CustomerId.HasValue)
+            if (_quotation.CustomerOrderId.HasValue)
             {
-                await LoadCustomerAsync(_quotation.CustomerId.Value);
+                // El cliente ya está en InitialData, no necesitamos cargarlo
             }
-        }
-        else if (CustomerId.HasValue)
-        {
-            await LoadCustomerAsync(CustomerId.Value);
         }
     }
 

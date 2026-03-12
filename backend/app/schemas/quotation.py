@@ -45,6 +45,8 @@ class QuotationBase(BaseModel):
     note: Optional[str] = None
 
 class QuotationCreate(QuotationBase):
+    customer_id: Optional[uuid.UUID] = None
+    customer_order_id: Optional[uuid.UUID] = None
     items: List[QuotationItemCreate] = []
 
 class QuotationUpdate(QuotationBase):
@@ -55,6 +57,7 @@ class QuotationInDBBase(QuotationBase):
     quotation_number: str
     year: int
     date: datetime.date
+    customer_order_id: Optional[uuid.UUID] = None
     created_by: Optional[str] = None
     subtotal_amount: float
     total_amount: float

@@ -17,13 +17,17 @@ namespace frontend.Services
             _httpClient = httpClient;
         }
 
-        public async Task<List<Quotation>> GetQuotationsAsync(int skip = 0, int limit = 100)
+        public async Task<List<Quotation>> GetQuotationsAsync(int skip = 0, int limit = 100, Guid? customerOrderId = null)
         {
             var query = new Dictionary<string, string?>
             {
                 ["skip"] = skip.ToString(),
                 ["limit"] = limit.ToString()
             };
+            if (customerOrderId.HasValue)
+            {
+                query["customer_order_id"] = customerOrderId.Value.ToString();
+            }
             var url = QueryHelpers.AddQueryString("api/cotizaciones/", query);
             return await _httpClient.GetFromJsonAsync<List<Quotation>>(url, AppJsonSerializerContext.Default.ListQuotation) ?? new List<Quotation>();
         }

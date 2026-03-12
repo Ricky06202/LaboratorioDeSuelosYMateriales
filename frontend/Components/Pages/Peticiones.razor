@@ -108,17 +108,13 @@
 
     private async Task GenerateQuotation(CustomerOrder order)
     {
-        // Verificar si ya existe una cotización para este pedido
+        // Verificar si ya existe una cotización para este pedido en la base de datos
         try
         {
-            var quotations = await QuotationService.GetQuotationsAsync();
-            var existingQuotation = quotations.FirstOrDefault(q => 
-                q.ProjectName == order.ProjectName && 
-                q.ClientName == order.ClientName &&
-                q.ProjectLocation == order.ProjectLocation);
-            
-            if (existingQuotation != null)
+            var quotations = await QuotationService.GetQuotationsAsync(customerOrderId: order.Id);
+            if (quotations.Any())
             {
+                var existingQuotation = quotations.First();
                 Snackbar.Add($"Ya existe una cotización ({existingQuotation.QuotationNumber}) para este pedido", Severity.Warning);
                 return;
             }
@@ -130,7 +126,7 @@
 
         var quotationCreate = new QuotationCreate
         {
-            CustomerId = order.CustomerId,
+            CustomerOrderId = order.Id,
             ClientName = order.ClientName,
             ClientRuc = order.ClientRuc,
             ClientDirection = order.ClientDirection,

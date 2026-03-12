@@ -13,6 +13,12 @@ class Quotation(Base):
     year = Column(Integer, default=lambda: datetime.datetime.now().year)
     date = Column(Date, default=datetime.date.today)
     
+    # Customer reference
+    customer_id = Column(UUID(as_uuid=True), ForeignKey("customers.id"), nullable=True)
+    
+    # Customer order reference (if created from a customer order)
+    customer_order_id = Column(UUID(as_uuid=True), ForeignKey("customer_orders.id"), nullable=True)
+    
     # Client info
     client_name = Column(String, nullable=False)
     client_ruc = Column(String)
