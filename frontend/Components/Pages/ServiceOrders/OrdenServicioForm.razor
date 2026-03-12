@@ -8,7 +8,7 @@
 <MudDialog>
     <DialogContent>
         <MudForm @ref="_form" @bind-IsValid="@_success">
-            <MudTabs Elevation="1" Rounded="true" ApplyEffectsToContainer="true">
+            <MudTabs Elevation="1" Rounded="true" ApplyEffectsToContainer="true" @bind-ActivePanelIndex="_activeTabIndex">
                 <MudTabPanel Text="Datos Generales">
                     <MudGrid>
                         <MudItem xs="12" sm="8">
@@ -147,7 +147,14 @@
     </DialogContent>
     <DialogActions>
         <MudButton OnClick="Cancel">Cancelar</MudButton>
-        <MudButton Color="Color.Primary" Variant="Variant.Filled" OnClick="Submit" Disabled="@_processing" Class="rounded-pill px-6">Guardar Orden</MudButton>
+        @if (_activeTabIndex == 2) // Last tab
+        {
+            <MudButton Color="Color.Primary" Variant="Variant.Filled" OnClick="Submit" Disabled="@_processing" Class="rounded-pill px-6">Guardar Orden</MudButton>
+        }
+        else
+        {
+            <MudButton Color="Color.Primary" Variant="Variant.Filled" OnClick="NextTab" Disabled="@_processing" Class="rounded-pill px-6">Siguiente</MudButton>
+        }
     </DialogActions>
 </MudDialog>
 
@@ -161,6 +168,7 @@
     private MudForm _form = null!;
     private bool _success;
     private bool _processing;
+    private int _activeTabIndex = 0;
 
     protected override void OnInitialized()
     {
@@ -189,6 +197,14 @@
     private void Cancel()
     {
         MudDialog.Cancel();
+    }
+
+    private void NextTab()
+    {
+        if (_activeTabIndex < 2)
+        {
+            _activeTabIndex++;
+        }
     }
 
     private async Task Submit()
