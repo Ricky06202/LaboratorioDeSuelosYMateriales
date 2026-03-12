@@ -1,0 +1,87 @@
+@using frontend.Models
+@using frontend.Services
+@using MudBlazor
+@inject IDialogService DialogService
+@inject ISnackbar Snackbar
+
+<MudDialog>
+    <DialogContent>
+        <MudForm @ref="_form" @bind-IsValid="@_success">
+            <MudGrid>
+                <MudItem xs="12">
+                    <ServiceSelector Label="Seleccionar Servicio del Catálogo" ValueChanged="@OnServiceSelected" Value="_selectedService" />
+                </MudItem>
+                <MudItem xs="12" sm="6">
+                    <MudTextField @bind-Value="_item.ItemNorma" Label="Norma / Método" Margin="Margin.Dense" Variant="Variant.Outlined" Required="true" RequiredError="Norma es requerida" />
+                </MudItem>
+                <MudItem xs="12" sm="6">
+                    <MudTextField @bind-Value="_item.ItemSample" Label="Muestra / Ítem" Margin="Margin.Dense" Variant="Variant.Outlined" />
+                </MudItem>
+                <MudItem xs="12">
+                    <MudTextField @bind-Value="_item.Description" Label="Descripción del Ensayo" Margin="Margin.Dense" Variant="Variant.Outlined" Required="true" RequiredError="Descripción es requerida" />
+                </MudItem>
+                <MudItem xs="12" sm="6">
+                    <MudNumericField @bind-Value="_item.Amount" Label="Cantidad" Margin="Margin.Dense" Min="1" Variant="Variant.Outlined" Required="true" RequiredError="Cantidad es requerida" />
+                </MudItem>
+                <MudItem xs="12" sm="6">
+                    <MudNumericField @bind-Value="_item.UnitPrice" Label="Precio Unitario (B/.)" Margin="Margin.Dense" Format="F2" Step="0.1M" Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.AttachMoney" Variant="Variant.Outlined" Required="true" RequiredError="Precio Unitario es requerido" />
+                </MudItem>
+            </MudGrid>
+        </MudForm>
+    </DialogContent>
+    <DialogActions>
+        <MudButton OnClick="Cancel">Cancelar</MudButton>
+        <MudButton Color="Color.Primary" Variant="Variant.Filled" OnClick="Submit" Disabled="@_processing" Class="rounded-pill px-6">Guardar Ítem</MudButton>
+    </DialogActions>
+</MudDialog>
+
+@code {
+    [CascadingParameter] IMudDialogInstance MudDialog { get; set; } = null!;
+    [Parameter] public QuotationItemCreate? InitialData { get; set; }
+
+    private QuotationItemCreate _item = new();
+    private LabService? _selectedService;
+    private MudForm _form = null!;
+    private bool _success;
+    private bool _processing;
+
+    protected override void OnInitialized()
+    {
+        if (InitialData != null)
+        {
+            _item = new QuotationItemCreate
+            {
+                ItemNorma = InitialData.ItemNorma,
+                ItemSample = InitialData.ItemSample,
+                Amount = InitialData.Amount,
+                Description = InitialData.Description,
+                UnitPrice = InitialData.UnitPrice
+            };
+        }
+    }
+
+    private void OnServiceSelected(LabService? service)
+    {
+        _selectedService = service;
+        if (service != null)
+        {
+            _item.Description = service.Name;
+            _item.UnitPrice = service.UnitPrice;
+            _item.ItemNorma = service.Code;
+        }
+    }
+
+    private void Cancel()
+    {
+        MudDialog.Cancel();
+    }
+
+    private async Task Submit()
+    {
+        await _form.Validate();
+        if (_success)
+        {
+            MudDialog.Close(DialogResult.Ok(_item));
+        }
+    }
+}

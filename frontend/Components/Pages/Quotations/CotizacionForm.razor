@@ -1,7 +1,9 @@
 @using frontend.Models
 @using frontend.Services
+@using frontend.Components.Pages.Quotations
 @using MudBlazor
 @inject QuotationService QuotationService
+@inject IDialogService DialogService
 @inject ISnackbar Snackbar
 
 <MudDialog>
@@ -80,8 +82,11 @@
                                     <MudItem xs="12" sm="4" Class="d-flex align-center">
                                         <MudText Typo="Typo.subtitle2" Class="font-weight-bold color-primary">Total: B/. @((item.Amount * item.UnitPrice).ToString("N2"))</MudText>
                                     </MudItem>
-                                    <MudItem xs="12" sm="1" Class="d-flex justify-end pt-2">
-                                        <MudIconButton Icon="@Icons.Material.Filled.Delete" Color="Color.Error" Size="Size.Small" OnClick="@(() => RemoveItem(item))" />
+                                     <MudItem xs="12" sm="1" Class="d-flex justify-end pt-2">
+                                        <MudIconButton Icon="@Icons.Material.Filled.Edit" Color="Color.Warning" Size="Size.Small" OnClick="@(() => EditItem(item))" title="Editar" />
+                                    </MudItem>
+                                     <MudItem xs="12" sm="1" Class="d-flex justify-end pt-2">
+                                        <MudIconButton Icon="@Icons.Material.Filled.Delete" Color="Color.Error" Size="Size.Small" OnClick="@(() => RemoveItem(item))" title="Eliminar" />
                                     </MudItem>
                                 </MudGrid>
                             </MudPaper>
@@ -200,6 +205,28 @@
     private void RemoveItem(QuotationItemCreate item)
     {
         _quotation.Items.Remove(item);
+    }
+
+    private async Task EditItem(QuotationItemCreate itemToEdit)
+    {
+        var parameters = new DialogParameters { [nameof(QuotationItemForm.InitialData)] = itemToEdit };
+        var options = new DialogOptions { MaxWidth = MaxWidth.Small, FullWidth = true, CloseButton = true };
+        var dialog = await DialogService.ShowAsync<QuotationItemForm>("Editar Ítem de Cotización", parameters, options);
+        var result = await dialog.Result;
+
+        if (result != null && !result.Canceled)
+        {
+            if (result.Data is QuotationItemCreate updatedItem)
+            {
+                var index = _quotation.Items.IndexOf(itemToEdit);
+                if (index != -1)
+                {
+                    _quotation.Items[index] = updatedItem;
+                    StateHasChanged();
+                    Snackbar.Add("Ítem de cotización actualizado", Severity.Success);
+                }
+            }
+        }
     }
 
     private void Cancel()

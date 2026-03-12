@@ -69,7 +69,15 @@
                                 <MudTextField @bind-Value="context.TestName" Margin="Margin.Dense" Variant="Variant.Outlined" />
                             </MudTd>
                             <MudTd DataLabel="Tipo de Muestra">
-                                <MudTextField @bind-Value="context.SampleType" Margin="Margin.Dense" Variant="Variant.Outlined" />
+                                <MudSelect @bind-Value="context.SampleType" Margin="Margin.Dense" Variant="Variant.Outlined" Label="Tipo de Muestra">
+                                    <MudSelectItem Value="@(string.Empty)">
+                                        Seleccione tipo
+                                    </MudSelectItem>
+                                    <MudSelectItem Value="@("Concreto")">Concreto</MudSelectItem>
+                                    <MudSelectItem Value="@("Suelo")">Suelo</MudSelectItem>
+                                    <MudSelectItem Value="@("Inspeccion")">Inspección</MudSelectItem>
+                                    <MudSelectItem Value="@("Agregado")">Agregado</MudSelectItem>
+                                </MudSelect>
                             </MudTd>
                             <MudTd DataLabel="Cantidad">
                                 <MudNumericField @bind-Value="context.TestCount" Margin="Margin.Dense" Variant="Variant.Outlined" Min="1" />
