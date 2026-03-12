@@ -20,8 +20,15 @@
 
     private async Task<IEnumerable<Customer>> SearchCustomers(string value, CancellationToken token)
     {
-        // if text is null or empty, show all or none? Let's show all available
-        return await CustomerService.GetCustomersAsync(value);
+        var customers = await CustomerService.GetCustomersAsync(value);
+        
+        // Si hay un valor seleccionado y no está en la lista, añadirlo al inicio
+        if (Value != null && !customers.Any(c => c.Id == Value.Id))
+        {
+            return new[] { Value }.Concat(customers).ToList();
+        }
+        
+        return customers;
     }
 
     private async Task OnValueChanged(Customer? customer)
