@@ -42,6 +42,12 @@ namespace frontend.Services
                    ?? throw new Exception("Error al crear el pedido");
         }
 
+        public async Task UpdateCustomerOrderAsync(Guid id, CustomerOrderCreate order)
+        {
+            var response = await _httpClient.PutAsJsonAsync($"api/pedidos/{id}", order, AppJsonSerializerContext.Default.CustomerOrderCreate);
+            await EnsureSuccessOrThrowAsync(response);
+        }
+
         public async Task DeleteCustomerOrderAsync(Guid id)
         {
             var response = await _httpClient.DeleteAsync($"api/pedidos/{id}");

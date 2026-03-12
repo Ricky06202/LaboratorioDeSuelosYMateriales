@@ -126,6 +126,7 @@
 
 @code {
     [CascadingParameter] IMudDialogInstance MudDialog { get; set; } = null!;
+    [Parameter] public CustomerOrder? Order { get; set; }
 
     private CustomerOrderCreate _order = new();
     private DateTime? _orderDate = DateTime.Today;
@@ -136,6 +137,45 @@
 
     protected override void OnInitialized()
     {
+        if (Order != null)
+        {
+            _order = new CustomerOrderCreate
+            {
+                CustomerId = Order.CustomerId ?? Guid.Empty,
+                ClientName = Order.ClientName,
+                ClientDirection = Order.ClientDirection,
+                ClientRuc = Order.ClientRuc,
+                ClientDv = Order.ClientDv,
+                ClientPhone = Order.ClientPhone,
+                ProjectName = Order.ProjectName,
+                ProjectLocation = Order.ProjectLocation,
+                ProjectResponsable = Order.ProjectResponsable,
+                ProjectResponsablePhone = Order.ProjectResponsablePhone,
+                ProjectResponsableEmail = Order.ProjectResponsableEmail,
+                Observations = Order.Observations,
+                AttendedBy = Order.AttendedBy,
+                ApprovedQuotationNumber = Order.ApprovedQuotationNumber,
+                Items = Order.Items.Select(item => new CustomerOrderItemCreate
+                {
+                    ItemNumber = item.ItemNumber,
+                    TestName = item.TestName,
+                    SampleType = item.SampleType,
+                    TestCount = item.TestCount,
+                    NormMethod = item.NormMethod
+                }).ToList()
+            };
+            _orderDate = Order.Date;
+            _selectedCustomer = new Customer // Assuming Customer model has similar properties
+            {
+                Id = Order.CustomerId ?? Guid.Empty,
+                Name = Order.ClientName,
+                Address = Order.ClientDirection,
+                Ruc = Order.ClientRuc,
+                Dv = Order.ClientDv,
+                Phone = Order.ClientPhone
+            };
+        }
+
         if (_order.Items.Count == 0)
         {
             AddItem();
@@ -213,27 +253,38 @@
                 {
                     _order.Date = _orderDate.Value;
                 }
-                var createdOrder = await CustomerOrderService.CreateCustomerOrderAsync(_order);
 
-                // Automatic Calendar Activity
-                try
+                if (Order != null)
                 {
-                    await CalendarService.CreateActivityAsync(new CalendarActivityCreate
+                    // Update existing order
+                    await CustomerOrderService.UpdateCustomerOrderAsync(Order.Id, _order);
+                    Snackbar.Add("Pedido actualizado exitosamente", Severity.Success);
+                }
+                else
+                {
+                    // Create new order
+                    var createdOrder = await CustomerOrderService.CreateCustomerOrderAsync(_order);
+
+                    // Automatic Calendar Activity
+                    try
                     {
-                        Title = $"Petición: {_order.ClientName}",
-                        Description = $"Pedido: {createdOrder.OrderNumber} - Proyecto: {_order.ProjectName}",
-                        StartDate = DateTime.Now.AddDays(1).Date.AddHours(9), // Suggest 9 AM next day
-                        Type = "Petición",
-                        RelatedId = createdOrder.Id,
-                        Color = "#FF9800"
-                    });
-                }
-                catch (Exception calEx)
-                {
-                    Console.WriteLine($"Error al sincronizar calendario: {calEx.Message}");
-                }
+                        await CalendarService.CreateActivityAsync(new CalendarActivityCreate
+                        {
+                            Title = $"Petición: {_order.ClientName}",
+                            Description = $"Pedido: {createdOrder.OrderNumber} - Proyecto: {_order.ProjectName}",
+                            StartDate = DateTime.Now.AddDays(1).Date.AddHours(9), // Suggest 9 AM next day
+                            Type = "Petición",
+                            RelatedId = createdOrder.Id,
+                            Color = "#FF9800"
+                        });
+                    }
+                    catch (Exception calEx)
+                    {
+                        Console.WriteLine($"Error al sincronizar calendario: {calEx.Message}");
+                    }
 
-                Snackbar.Add("Pedido creado exitosamente y agendada", Severity.Success);
+                    Snackbar.Add("Pedido creado exitosamente y agendada", Severity.Success);
+                }
                 MudDialog.Close(DialogResult.Ok(true));
             }
             catch (Exception ex)

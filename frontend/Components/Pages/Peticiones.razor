@@ -16,7 +16,7 @@
             <MudText Typo="Typo.subtitle1" Class="text-secondary">Gestión de solicitudes y RA-LSMCH-037</MudText>
         </div>
         <MudButton Variant="Variant.Filled" Color="Color.Primary" StartIcon="@Icons.Material.Filled.Add" 
-                   OnClick="OpenNewOrderDialog" Class="rounded-pill px-8 shadow-lg">Nuevo Pedido</MudButton>
+                   OnClick="@(() => OpenOrderDialog())" Class="rounded-pill px-8 shadow-lg">Nuevo Pedido</MudButton>
     </div>
 
 <MudTable Items="@_orders" Hover="true" Loading="@_loading" LoadingProgressColor="Color.Info" Filter="new Func<CustomerOrder,bool>(FilterFunc1)">
@@ -38,6 +38,8 @@
         <MudTd DataLabel="Proyecto">@context.ProjectName</MudTd>
         <MudTd DataLabel="Acciones">
             <MudIconButton Icon="@Icons.Material.Filled.PictureAsPdf" Color="Color.Error" Size="Size.Small" OnClick="@(() => DownloadPdf(context.Id, context.OrderNumber))" title="Descargar PDF" />
+            <MudIconButton Icon="@Icons.Material.Filled.Edit" Color="Color.Primary" Size="Size.Small" OnClick="@(() => OpenOrderDialog(context))" title="Editar" />
+            <MudIconButton Icon="@Icons.Material.Filled.SwapHoriz" Color="Color.Warning" Size="Size.Small" OnClick="@(() => ConvertToQuotation(context))" title="Convertir a Cotización" />
             <MudIconButton Icon="@Icons.Material.Filled.Delete" Color="Color.Default" Size="Size.Small" OnClick="@(() => DeleteOrder(context))" title="Eliminar" />
         </MudTd>
     </RowTemplate>
@@ -89,16 +91,23 @@
         return false;
     }
 
-    private async Task OpenNewOrderDialog()
+    private async Task OpenOrderDialog(CustomerOrder? order = null)
     {
         var options = new DialogOptions { MaxWidth = MaxWidth.Medium, FullWidth = true, CloseButton = true };
-        var dialog = await DialogService.ShowAsync<PedidoForm>("Crear Pedido de Cliente (RA-LSMCH-037)", options);
+        var parameters = new DialogParameters { [nameof(PedidoForm.Order)] = order };
+        var dialog = await DialogService.ShowAsync<PedidoForm>(order == null ? "Crear Pedido de Cliente (RA-LSMCH-037)" : "Editar Pedido de Cliente (RA-LSMCH-037)", parameters, options);
         var result = await dialog.Result;
 
         if (result != null && !result.Canceled)
         {
             await LoadDataAsync();
         }
+    }
+
+    private Task ConvertToQuotation(CustomerOrder order)
+    {
+        Snackbar.Add($"Implementar conversión a cotización para pedido {order.OrderNumber}", Severity.Info);
+        return Task.CompletedTask;
     }
 
     private async Task DeleteOrder(CustomerOrder order)
