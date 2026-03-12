@@ -54,40 +54,34 @@
         </div>
 
         <!-- Calendar Grid -->
-        <MudGrid Spacing="1" Class="calendar-grid">
+        <div class="calendar-grid">
             <!-- Header: Days of week -->
-            <MudItem xs="12">
-                <MudGrid Spacing="1">
-                    @foreach (var day in new[] { "Dom", "Lun", "Mar", "Mié", "Jue", "Vie", "Sáb" })
-                    {
-                        <MudItem xs="12/7">
-                            <div class="d-flex justify-center mud-text-secondary py-2 font-weight-bold">
-                                @day
-                            </div>
-                        </MudItem>
-                    }
-                </MudGrid>
-            </MudItem>
+            <div class="d-flex">
+                @foreach (var day in new[] { "Dom", "Lun", "Mar", "Mié", "Jue", "Vie", "Sáb" })
+                {
+                    <div class="calendar-header-day">
+                        <div class="d-flex justify-center mud-text-secondary py-2 font-weight-bold">
+                            @day
+                        </div>
+                    </div>
+                }
+            </div>
 
             <!-- Calendar Days -->
-            <MudItem xs="12">
-                <MudGrid Spacing="1">
-                    @foreach (var date in GetCalendarDays())
-                    {
-                        <MudItem xs="12/7">
-                            <div class="calendar-day @(date.Month != _currentDate.Month ? "other-month" : "") @(date.Date == DateTime.Today ? "today" : "") @(date.Date == _selectedDate?.Date ? "selected" : "")"
-                                 @onclick="() => SelectDate(date)">
-                                <div class="day-number">@date.Day</div>
-                                @if (HasActivities(date))
-                                {
-                                    <div class="activity-indicator"></div>
-                                }
-                            </div>
-                        </MudItem>
-                    }
-                </MudGrid>
-            </MudItem>
-        </MudGrid>
+            <div class="d-flex flex-wrap">
+                @foreach (var date in GetCalendarDays())
+                {
+                    <div class="calendar-day @(date.Month != _currentDate.Month ? "other-month" : "") @(date.Date == DateTime.Today ? "today" : "") @(date.Date == _selectedDate?.Date ? "selected" : "")"
+                         @onclick="() => SelectDate(date)">
+                        <div class="day-number">@date.Day</div>
+                        @if (HasActivities(date))
+                        {
+                            <div class="activity-indicator"></div>
+                        }
+                    </div>
+                }
+            </div>
+        </div>
 
         @if (_selectedDate != null && _selectedDateActivities.Any())
         {
@@ -133,7 +127,15 @@
         margin: 0 auto;
     }
     
+    .calendar-header-day {
+        flex: 1 0 calc(100% / 7);
+        max-width: calc(100% / 7);
+        text-align: center;
+    }
+    
     .calendar-day {
+        flex: 1 0 calc(100% / 7);
+        max-width: calc(100% / 7);
         aspect-ratio: 1;
         min-height: 60px;
         border: 1px solid rgba(255,255,255,0.1);
