@@ -1,0 +1,78 @@
+@using frontend.Models
+@using MudBlazor
+@inject ISnackbar Snackbar
+
+<MudDialog>
+    <TitleContent>
+        <MudText Typo="Typo.h6">
+            <MudIcon Icon="@Icons.Material.Filled.Event" Class="mr-2" />
+            Nueva Actividad
+        </MudText>
+    </TitleContent>
+    <DialogContent>
+        <MudForm @ref="_form" @bind-IsValid="@_success">
+            <MudGrid>
+                <MudItem xs="12">
+                    <MudTextField @bind-Value="_model.Title" Label="Título" Variant="Variant.Outlined" Required="true" RequiredError="El título es requerido" />
+                </MudItem>
+                <MudItem xs="12">
+                    <MudTextField @bind-Value="_model.Description" Label="Descripción" Variant="Variant.Outlined" Lines="3" />
+                </MudItem>
+                <MudItem xs="12" sm="6">
+                    <MudDatePicker @bind-Value="_model.StartDate" Label="Fecha" Variant="Variant.Outlined" Required="true" RequiredError="La fecha es requerida" />
+                </MudItem>
+                <MudItem xs="12" sm="6">
+                    <MudTimePicker @bind-Value="_startTime" Label="Hora" Variant="Variant.Outlined" />
+                </MudItem>
+                <MudItem xs="12" sm="6">
+                    <MudSelect @bind-Value="_model.Type" Label="Tipo" Variant="Variant.Outlined">
+                        <MudSelectItem Value="@(string.Empty)">Seleccionar tipo</MudSelectItem>
+                        <MudSelectItem Value="@("Prueba de Campo")">Prueba de Campo</MudSelectItem>
+                        <MudSelectItem Value="@("Muestreo")">Muestreo</MudSelectItem>
+                        <MudSelectItem Value="@("Reunión")">Reunión</MudSelectItem>
+                        <MudSelectItem Value="@("Visita")">Visita</MudSelectItem>
+                        <MudSelectItem Value="@("Otro")">Otro</MudSelectItem>
+                    </MudSelect>
+                </MudItem>
+                <MudItem xs="12" sm="6">
+                    <MudTextField @bind-Value="_model.Color" Label="Color" Variant="Variant.Outlined" />
+                </MudItem>
+            </MudGrid>
+        </MudForm>
+    </DialogContent>
+    <DialogActions>
+        <MudButton OnClick="Cancel">Cancelar</MudButton>
+        <MudButton Color="Color.Primary" Variant="Variant.Filled" OnClick="Submit" Disabled="@(!_success)" Class="rounded-pill px-6">Guardar</MudButton>
+    </DialogActions>
+</MudDialog>
+
+@code {
+    [CascadingParameter] IMudDialogInstance MudDialog { get; set; } = null!;
+    [Parameter] public DateTime InitialDate { get; set; } = DateTime.Today;
+
+    private CalendarActivityCreate _model = new();
+    private MudForm _form = null!;
+    private bool _success;
+    private TimeSpan? _startTime;
+
+    protected override void OnInitialized()
+    {
+        _model.StartDate = InitialDate;
+        _startTime = InitialDate.TimeOfDay;
+    }
+
+    private void Cancel()
+    {
+        MudDialog.Cancel();
+    }
+
+    private void Submit()
+    {
+        if (_startTime.HasValue)
+        {
+            _model.StartDate = _model.StartDate.Date + _startTime.Value;
+        }
+
+        MudDialog.Close(DialogResult.Ok(_model));
+    }
+}

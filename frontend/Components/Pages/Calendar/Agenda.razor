@@ -298,9 +298,34 @@
         });
     }
 
-    private void OpenAddActivity()
+    private async Task OpenAddActivity()
     {
-        Snackbar.Add("Funcionalidad de creación en proceso de integración con órdenes", Severity.Info);
+        var date = _selectedDate ?? DateTime.Today;
+        var parameters = new DialogParameters { ["InitialDate"] = date };
+        var options = new DialogOptions { MaxWidth = MaxWidth.Small, FullWidth = true, CloseButton = true };
+        var dialog = await DialogService.ShowAsync<AddActivityDialog>("Nueva Actividad", parameters, options);
+        var result = await dialog.Result;
+
+        if (result != null && !result.Canceled)
+        {
+            if (result.Data is CalendarActivityCreate newActivity)
+            {
+                try
+                {
+                    await CalendarService.CreateActivityAsync(newActivity);
+                    Snackbar.Add("Actividad creada exitosamente", Severity.Success);
+                    await LoadActivitiesForMonthAsync();
+                    if (_selectedDate != null)
+                    {
+                        SelectDate(_selectedDate.Value);
+                    }
+                }
+                catch (Exception ex)
+                {
+                    Snackbar.Add($"Error al crear actividad: {ex.Message}", Severity.Error);
+                }
+            }
+        }
     }
     
     private void EditActivity(CalendarActivity activity)
