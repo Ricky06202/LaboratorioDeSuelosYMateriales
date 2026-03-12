@@ -31,11 +31,20 @@
     {
         <!-- Calendar Navigation -->
         <div class="d-flex justify-space-between align-center mb-4">
-            <MudIconButton Icon="@Icons.Material.Filled.ChevronLeft" OnClick="PreviousMonth" />
-            <MudText Typo="Typo.h5" Class="font-weight-bold">
-                @_currentDate.ToString("MMMM yyyy")
-            </MudText>
-            <MudIconButton Icon="@Icons.Material.Filled.ChevronRight" OnClick="NextMonth" />
+            <div class="d-flex gap-2 align-center">
+                <MudIconButton Icon="@Icons.Material.Filled.ChevronLeft" OnClick="PreviousMonth" />
+                <MudTextField T="DateTime" 
+                              Value="_currentDate" 
+                              ValueChanged="OnDateChanged"
+                              Label="Mes/Año" 
+                              Format="MMMM yyyy"
+                              Variant="Variant.Outlined" 
+                              Style="width: 180px;" />
+                <MudIconButton Icon="@Icons.Material.Filled.ChevronRight" OnClick="NextMonth" />
+            </div>
+            <MudButton Variant="Variant.Outlined" OnClick="GoToToday" StartIcon="@Icons.Material.Filled.Today">
+                Hoy
+            </MudButton>
         </div>
 
         <!-- Calendar Grid -->
@@ -194,6 +203,21 @@
         }
     }
 
+    private async Task LoadActivitiesForMonthAsync()
+    {
+        try
+        {
+            // Load activities for the current month and surrounding days without showing loader
+            var startDate = new DateTime(_currentDate.Year, _currentDate.Month, 1).AddDays(-7);
+            var endDate = startDate.AddDays(42); // 6 weeks
+            _activities = await CalendarService.GetActivitiesAsync(startDate, endDate);
+        }
+        catch (Exception ex)
+        {
+            Snackbar.Add($"Error: {ex.Message}", Severity.Error);
+        }
+    }
+
     private IEnumerable<DateTime> GetCalendarDays()
     {
         var firstDayOfMonth = new DateTime(_currentDate.Year, _currentDate.Month, 1);
@@ -219,16 +243,35 @@
             .ToList();
     }
 
-    private void PreviousMonth()
+    private async Task PreviousMonth()
     {
         _currentDate = _currentDate.AddMonths(-1);
-        _ = LoadDataAsync();
+        await LoadActivitiesForMonthAsync();
+        // Select first day of the month
+        SelectDate(new DateTime(_currentDate.Year, _currentDate.Month, 1));
     }
 
-    private void NextMonth()
+    private async Task NextMonth()
     {
         _currentDate = _currentDate.AddMonths(1);
-        _ = LoadDataAsync();
+        await LoadActivitiesForMonthAsync();
+        // Select first day of the month
+        SelectDate(new DateTime(_currentDate.Year, _currentDate.Month, 1));
+    }
+
+    private async Task OnDateChanged(DateTime date)
+    {
+        _currentDate = date;
+        await LoadActivitiesForMonthAsync();
+        // Select first day of the month
+        SelectDate(new DateTime(_currentDate.Year, _currentDate.Month, 1));
+    }
+
+    private async Task GoToToday()
+    {
+        _currentDate = DateTime.Today;
+        await LoadActivitiesForMonthAsync();
+        SelectDate(DateTime.Today);
     }
 
     private async Task DeleteActivity(CalendarActivity activity)
@@ -242,7 +285,7 @@
                 return Task.Run(async () => {
                    try {
                         await CalendarService.DeleteActivityAsync(activity.Id);
-                        await LoadDataAsync();
+                        await LoadActivitiesForMonthAsync();
                         if (_selectedDate != null)
                         {
                             SelectDate(_selectedDate.Value);
