@@ -417,8 +417,37 @@
         }
     }
     
-    private void EditActivity(CalendarActivity activity)
+    private async Task EditActivity(CalendarActivity activity)
     {
-        Snackbar.Add("Funcionalidad de edición en proceso", Severity.Info);
+        var parameters = new DialogParameters
+        {
+            ["ExistingActivity"] = activity,
+            ["IsEditMode"] = true
+        };
+        
+        var options = new DialogOptions { MaxWidth = MaxWidth.Small, FullWidth = true, CloseButton = true };
+        var dialog = await DialogService.ShowAsync<AddActivityDialog>("Editar Actividad", parameters, options);
+        var result = await dialog.Result;
+
+        if (result != null && !result.Canceled)
+        {
+            if (result.Data is CalendarActivityCreate updatedActivity)
+            {
+                try
+                {
+                    await CalendarService.UpdateActivityAsync(activity.Id, updatedActivity);
+                    Snackbar.Add("Actividad actualizada exitosamente", Severity.Success);
+                    await LoadActivitiesForMonthAsync();
+                    if (_selectedDate != null)
+                    {
+                        SelectDate(_selectedDate.Value);
+                    }
+                }
+                catch (Exception ex)
+                {
+                    Snackbar.Add($"Error al actualizar actividad: {ex.Message}", Severity.Error);
+                }
+            }
+        }
     }
 }

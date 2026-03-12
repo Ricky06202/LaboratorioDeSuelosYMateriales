@@ -201,11 +201,12 @@
             {
                 var createdOrder = await ServiceOrderService.CreateServiceOrderAsync(_order);
                 
-                // Automatic Calendar Activity
+                // Automatic Calendar Activity with configurable date/time
                 try
                 {
-                    var activityDate = ActivityDate ?? DateTime.Now.AddDays(1).Date.AddHours(8); // Usar fecha pasada o sugerir mañana a las 8 AM
-                    
+                    // Use provided date or default to tomorrow at 8 AM
+                    var activityDate = ActivityDate ?? DateTime.Now.AddDays(1).Date.AddHours(8);
+
                     await CalendarService.CreateActivityAsync(new CalendarActivityCreate
                     {
                         Title = $"Muestreo/Ensayo: {_order.ClientName}",

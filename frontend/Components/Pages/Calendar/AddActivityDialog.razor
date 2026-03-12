@@ -6,7 +6,7 @@
     <TitleContent>
         <MudText Typo="Typo.h6">
             <MudIcon Icon="@Icons.Material.Filled.Event" Class="mr-2" />
-            Nueva Actividad
+            @(IsEditMode ? "Editar Actividad" : "Nueva Actividad")
         </MudText>
     </TitleContent>
     <DialogContent>
@@ -35,30 +35,94 @@
                     </MudSelect>
                 </MudItem>
                 <MudItem xs="12" sm="6">
-                    <MudTextField @bind-Value="_model.Color" Label="Color" Variant="Variant.Outlined" />
+                    <MudText Typo="Typo.subtitle2" Class="mb-2">Color</MudText>
+                    <div class="d-flex gap-2 flex-wrap">
+                        @foreach (var color in _availableColors)
+                        {
+                            <div class="color-option @(color == _model.Color ? "selected" : "")" 
+                                 style="background-color: @color;"
+                                 @onclick="() => _model.Color = color">
+                            </div>
+                        }
+                    </div>
+                    <MudTextField @bind-Value="_model.Color" Label="Color personalizado (hex)" Variant="Variant.Outlined" Class="mt-2" />
                 </MudItem>
             </MudGrid>
         </MudForm>
     </DialogContent>
     <DialogActions>
         <MudButton OnClick="Cancel">Cancelar</MudButton>
-        <MudButton Color="Color.Primary" Variant="Variant.Filled" OnClick="Submit" Disabled="@(!_success)" Class="rounded-pill px-6">Guardar</MudButton>
+        <MudButton Color="Color.Primary" Variant="Variant.Filled" OnClick="Submit" Disabled="@(!_success)" Class="rounded-pill px-6">
+            @(IsEditMode ? "Actualizar" : "Guardar")
+        </MudButton>
     </DialogActions>
 </MudDialog>
+
+<style>
+    .color-option {
+        width: 32px;
+        height: 32px;
+        border-radius: 50%;
+        cursor: pointer;
+        border: 2px solid transparent;
+        transition: all 0.2s;
+    }
+    
+    .color-option:hover {
+        transform: scale(1.1);
+    }
+    
+    .color-option.selected {
+        border-color: white;
+        box-shadow: 0 0 0 2px var(--mud-palette-primary);
+    }
+</style>
 
 @code {
     [CascadingParameter] IMudDialogInstance MudDialog { get; set; } = null!;
     [Parameter] public DateTime InitialDate { get; set; } = DateTime.Today;
+    [Parameter] public CalendarActivity? ExistingActivity { get; set; }
+    [Parameter] public bool IsEditMode { get; set; }
 
     private CalendarActivityCreate _model = new();
     private MudForm _form = null!;
     private bool _success;
     private TimeSpan? _startTime;
 
+    private readonly string[] _availableColors = new[]
+    {
+        "#594AE2", // Morado principal
+        "#2196F3", // Azul
+        "#4CAF50", // Verde
+        "#FF9800", // Naranja
+        "#F44336", // Rojo
+        "#9C27B0", // Violeta
+        "#00BCD4", // Cian
+        "#FFEB3B", // Amarillo
+        "#795548", // Marrón
+        "#607D8B"  // Gris
+    };
+
     protected override void OnInitialized()
     {
-        _model.StartDate = InitialDate;
-        _startTime = InitialDate.TimeOfDay;
+        if (IsEditMode && ExistingActivity != null)
+        {
+            _model = new CalendarActivityCreate
+            {
+                Title = ExistingActivity.Title,
+                Description = ExistingActivity.Description,
+                StartDate = ExistingActivity.StartDate,
+                Type = ExistingActivity.Type,
+                Color = ExistingActivity.Color
+            };
+            _startTime = ExistingActivity.StartDate.TimeOfDay;
+        }
+        else
+        {
+            _model.StartDate = InitialDate;
+            _startTime = InitialDate.TimeOfDay;
+            _model.Color = _availableColors[0]; // Color por defecto
+        }
     }
 
     private void Cancel()
