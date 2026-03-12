@@ -33,13 +33,14 @@
         <div class="d-flex justify-space-between align-center mb-4">
             <div class="d-flex gap-2 align-center">
                 <MudIconButton Icon="@Icons.Material.Filled.ChevronLeft" OnClick="PreviousMonth" />
-                <MudTextField T="DateTime" 
-                              Value="_currentDate" 
-                              ValueChanged="OnDateChanged"
-                              Label="Mes/Año" 
-                              Format="MMMM yyyy"
-                              Variant="Variant.Outlined" 
-                              Style="width: 180px;" />
+                <MudDatePicker 
+                    Date="_currentDate" 
+                    DateChanged="@(async (DateTime? d) => { if(d.HasValue) await OnDateChanged(d.Value); })"
+                    Label="Seleccionar Mes"
+                    OpenTo="OpenTo.Month"
+                    AutoClose="true"
+                    Variant="Variant.Outlined"
+                    Style="width: 180px;" />
                 <MudIconButton Icon="@Icons.Material.Filled.ChevronRight" OnClick="NextMonth" />
             </div>
             <MudButton Variant="Variant.Outlined" OnClick="GoToToday" StartIcon="@Icons.Material.Filled.Today">
