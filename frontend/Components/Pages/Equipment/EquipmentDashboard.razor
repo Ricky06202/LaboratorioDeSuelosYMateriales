@@ -1,6 +1,8 @@
 @page "/dashboard-equipos"
 @using frontend.Models
 @using frontend.Services
+@using Microsoft.AspNetCore.Authorization
+@attribute [Authorize(Roles = "Admin")]
 @inject EquipmentService EquipmentService
 
 <MudText Typo="Typo.h4" GutterBottom="true">Panel de Alertas de Calibración</MudText>
