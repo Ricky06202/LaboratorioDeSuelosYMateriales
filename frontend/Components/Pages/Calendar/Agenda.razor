@@ -1,9 +1,11 @@
 @page "/agenda"
 @using frontend.Models
 @using frontend.Services
+@using System.Security.Claims
 @inject CalendarService CalendarService
 @inject ISnackbar Snackbar
 @inject IDialogService DialogService
+@inject AuthenticationStateProvider AuthStateProvider
 
 <PageTitle>Agenda de Actividades - LSMCH</PageTitle>
 
@@ -16,8 +18,11 @@
         <div class="d-flex gap-4">
              <MudButton Variant="Variant.Outlined" Color="Color.Primary" StartIcon="@Icons.Material.Filled.Refresh" 
                    OnClick="LoadDataAsync" Class="rounded-pill px-6">Actualizar</MudButton>
-             <MudButton Variant="Variant.Filled" Color="Color.Primary" StartIcon="@Icons.Material.Filled.Event" 
-                   OnClick="OpenAddActivity" Class="rounded-pill px-8 shadow-lg">Nueva Actividad</MudButton>
+             @if (_hasCalendarPermission)
+             {
+                 <MudButton Variant="Variant.Filled" Color="Color.Primary" StartIcon="@Icons.Material.Filled.Event" 
+                       OnClick="OpenAddActivity" Class="rounded-pill px-8 shadow-lg">Nueva Actividad</MudButton>
+             }
         </div>
     </div>
 
@@ -104,8 +109,11 @@
                                 </div>
                             </div>
                             <div class="d-flex gap-2">
-                                 <MudIconButton Icon="@Icons.Material.Filled.Edit" Size="Size.Small" Color="Color.Info" OnClick="@(() => EditActivity(activity))" />
-                                 <MudIconButton Icon="@Icons.Material.Filled.Delete" Size="Size.Small" Color="Color.Error" OnClick="@(() => DeleteActivity(activity))" />
+                                 @if (_hasCalendarPermission)
+                                 {
+                                     <MudIconButton Icon="@Icons.Material.Filled.Edit" Size="Size.Small" Color="Color.Info" OnClick="@(() => EditActivity(activity))" />
+                                     <MudIconButton Icon="@Icons.Material.Filled.Delete" Size="Size.Small" Color="Color.Error" OnClick="@(() => DeleteActivity(activity))" />
+                                 }
                             </div>
                         </MudPaper>
                     }
@@ -210,12 +218,31 @@
     private List<CalendarActivity> _activities = new();
     private List<CalendarActivity> _selectedDateActivities = new();
     private bool _loading = true;
+    private bool _hasCalendarPermission;
     private DateTime? _selectedDate;
     private DateTime _currentDate = DateTime.Today;
 
     protected override async Task OnInitializedAsync()
     {
+        await CheckPermissions();
         await LoadDataAsync();
+    }
+
+    private async Task CheckPermissions()
+    {
+        var authState = await AuthStateProvider.GetAuthenticationStateAsync();
+        var user = authState.User;
+        
+        // Admins have all permissions
+        if (user.IsInRole("Admin"))
+        {
+            _hasCalendarPermission = true;
+        }
+        else
+        {
+            // Check for calendar permission
+            _hasCalendarPermission = user.HasClaim(c => c.Type == "permission" && c.Value == "calendar");
+        }
     }
 
     private async Task LoadDataAsync()
