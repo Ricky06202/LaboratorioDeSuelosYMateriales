@@ -137,12 +137,33 @@
 
 @code {
     [CascadingParameter] IMudDialogInstance MudDialog { get; set; } = null!;
+    [Parameter] public QuotationCreate? InitialData { get; set; }
 
     private QuotationCreate _quotation = new() { Items = new() };
     private Customer? _selectedCustomer;
     private MudForm _form = null!;
     private bool _success;
     private bool _processing;
+
+    protected override void OnInitialized()
+    {
+        if (InitialData != null)
+        {
+            _quotation = InitialData;
+            if (_quotation.CustomerId.HasValue)
+            {
+                _selectedCustomer = new Customer
+                {
+                    Id = _quotation.CustomerId.Value,
+                    Name = _quotation.ClientName,
+                    Ruc = _quotation.ClientRuc,
+                    Address = _quotation.ClientDirection,
+                    Phone = _quotation.ClientPhone,
+                    Email = _quotation.ClientEmail
+                };
+            }
+        }
+    }
 
     private decimal SubtotalItems => _quotation.Items.Sum(x => x.Amount * x.UnitPrice);
     private decimal GrandTotal => SubtotalItems + _quotation.MobilizationCost + _quotation.ViaticsCost;

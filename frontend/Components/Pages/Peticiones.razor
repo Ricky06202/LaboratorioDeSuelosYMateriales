@@ -1,6 +1,7 @@
 @page "/peticiones"
 @using frontend.Models
 @using frontend.Services
+@using frontend.Components.Pages.Quotations
 @using Microsoft.JSInterop
 @inject CustomerOrderService CustomerOrderService
 @inject IDialogService DialogService
@@ -104,10 +105,39 @@
         }
     }
 
-    private Task ConvertToQuotation(CustomerOrder order)
+    private async Task ConvertToQuotation(CustomerOrder order)
     {
-        Snackbar.Add($"Implementar conversión a cotización para pedido {order.OrderNumber}", Severity.Info);
-        return Task.CompletedTask;
+        var quotationCreate = new QuotationCreate
+        {
+            CustomerId = order.CustomerId,
+            ClientName = order.ClientName,
+            ClientRuc = order.ClientRuc,
+            ClientDirection = order.ClientDirection,
+            ClientPhone = order.ClientPhone,
+            ClientEmail = order.ProjectResponsableEmail,
+            ProjectName = order.ProjectName,
+            ProjectLocation = order.ProjectLocation,
+            ProjectResponsable = order.ProjectResponsable,
+            Note = $"Generado desde Pedido Nº {order.OrderNumber}. {order.Observations}",
+            Items = order.Items.Select(i => new QuotationItemCreate
+            {
+                Description = i.TestName,
+                ItemNorma = i.NormMethod,
+                ItemSample = i.SampleType,
+                Amount = i.TestCount,
+                UnitPrice = 0 
+            }).ToList()
+        };
+
+        var parameters = new DialogParameters { [nameof(CotizacionForm.InitialData)] = quotationCreate };
+        var options = new DialogOptions { MaxWidth = MaxWidth.Medium, FullWidth = true, CloseButton = true };
+        var dialog = await DialogService.ShowAsync<CotizacionForm>("Convertir Pedido a Cotización", parameters, options);
+        var result = await dialog.Result;
+
+        if (result != null && !result.Canceled)
+        {
+            Snackbar.Add("Cotización creada exitosamente desde el pedido", Severity.Success);
+        }
     }
 
     private async Task DeleteOrder(CustomerOrder order)
