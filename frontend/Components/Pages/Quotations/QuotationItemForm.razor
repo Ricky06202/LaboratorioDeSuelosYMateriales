@@ -29,7 +29,7 @@
                     <MudNumericField @bind-Value="_item.Amount" Label="Cantidad" Margin="Margin.Dense" Min="1" Variant="Variant.Outlined" Required="true" RequiredError="Cantidad es requerida" />
                 </MudItem>
                 <MudItem xs="12" sm="6">
-                    <MudNumericField @bind-Value="_item.UnitPrice" Label="Precio Unitario (B/.)" Margin="Margin.Dense" Format="F2" Step="0.1M" Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.AttachMoney" Variant="Variant.Outlined" Required="true" RequiredError="Precio Unitario es requerido" />
+                    <MudNumericField @bind-Value="_item.UnitPrice" Label="Precio Unitario (B/.)" Margin="Margin.Dense" Format="F2" Step="0.1M" Adornment="Adornment.Start" AdornmentText="B/." Variant="Variant.Outlined" Required="true" RequiredError="Precio Unitario es requerido" />
                 </MudItem>
                 <MudItem xs="12">
                     <MudTextField @bind-Value="_item.ItemNote" Label="Nota / Observación del Ítem" Margin="Margin.Dense" Variant="Variant.Outlined" />

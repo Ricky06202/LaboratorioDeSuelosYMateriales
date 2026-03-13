@@ -162,7 +162,7 @@
                                     <MudNumericField @bind-Value="item.Amount" Label="Cantidad" Margin="Margin.Dense" Min="1" Variant="Variant.Outlined" />
                                 </MudItem>
                                 <MudItem xs="12" sm="3">
-                                    <MudNumericField @bind-Value="item.UnitPrice" Label="Precio Unitario (B/.)" Margin="Margin.Dense" Format="F2" Step="0.1M" Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.AttachMoney" Variant="Variant.Outlined" ReadOnly="@(item.SelectedService != null)" />
+                                    <MudNumericField @bind-Value="item.UnitPrice" Label="Precio Unitario (B/.)" Margin="Margin.Dense" Format="F2" Step="0.1M" Adornment="Adornment.Start" AdornmentText="B/." Variant="Variant.Outlined" ReadOnly="@(item.SelectedService != null)" />
                                 </MudItem>
                                 <MudItem xs="12">
                                     <MudTextField @bind-Value="item.ItemNote" Label="Nota / Observación del Ítem" Margin="Margin.Dense" Variant="Variant.Outlined" />
@@ -181,10 +181,10 @@
                 <!-- Costs Section -->
                 <MudItem xs="12"><MudDivider Class="my-4" /></MudItem>
                 <MudItem xs="12" sm="6">
-                    <MudNumericField @bind-Value="_quotation.MobilizationCost" Label="Costo de Movilización (B/.)" Margin="Margin.Dense" Format="F2" Step="0.1M" Variant="Variant.Outlined" />
+                    <MudNumericField @bind-Value="_quotation.MobilizationCost" Label="Costo de Movilización (B/.)" Margin="Margin.Dense" Format="F2" Step="0.1M" Adornment="Adornment.Start" AdornmentText="B/." Variant="Variant.Outlined" />
                 </MudItem>
                 <MudItem xs="12" sm="6">
-                    <MudNumericField @bind-Value="_quotation.ViaticsCost" Label="Viáticos (B/.)" Margin="Margin.Dense" Format="F2" Step="0.1M" Variant="Variant.Outlined" />
+                    <MudNumericField @bind-Value="_quotation.ViaticsCost" Label="Viáticos (B/.)" Margin="Margin.Dense" Format="F2" Step="0.1M" Adornment="Adornment.Start" AdornmentText="B/." Variant="Variant.Outlined" />
                 </MudItem>
 
                 <!-- Totals -->

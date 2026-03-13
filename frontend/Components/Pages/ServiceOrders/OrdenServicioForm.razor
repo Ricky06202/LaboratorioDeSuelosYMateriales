@@ -204,7 +204,7 @@
                         <MudItem xs="12"><MudDivider /></MudItem>
 
                         <MudItem xs="12" sm="6">
-                            <MudNumericField @bind-Value="_order.TotalCost" Label="Costo Total (B/.)" Format="F2" Step="0.1M" Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.AttachMoney" Variant="Variant.Outlined" Margin="Margin.Dense" />
+                            <MudNumericField @bind-Value="_order.TotalCost" Label="Costo Total (B/.)" Format="F2" Step="0.1M" Adornment="Adornment.Start" AdornmentText="B/." Variant="Variant.Outlined" Margin="Margin.Dense" />
                         </MudItem>
                         <MudItem xs="12" sm="6">
                             <MudCheckBox @bind-Value="_order.Paid100Percent" Label="Cancela (100%)" Color="Color.Primary" />

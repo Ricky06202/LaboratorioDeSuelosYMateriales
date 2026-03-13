@@ -20,7 +20,7 @@
                     <MudTextField @bind-Value="_model.Norm" Label="Norma / Método" Placeholder="Ej: ASTM D-422, NTP 339.123" Variant="Variant.Outlined" Margin="Margin.Dense" />
                 </MudItem>
                 <MudItem xs="12">
-                    <MudNumericField @bind-Value="_model.UnitPrice" Label="Precio Unitario (B/.)" Format="N2" Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.AttachMoney" Variant="Variant.Outlined" Margin="Margin.Dense" />
+                    <MudNumericField @bind-Value="_model.UnitPrice" Label="Precio Unitario (B/.)" Format="F2" Adornment="Adornment.Start" AdornmentText="B/." Variant="Variant.Outlined" Margin="Margin.Dense" />
                 </MudItem>
             </MudGrid>
         </MudForm>
