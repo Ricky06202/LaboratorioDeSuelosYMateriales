@@ -54,6 +54,7 @@ class QuotationItem(Base):
     amount = Column(Integer, default=1)
     description = Column(String)
     unit_price = Column(Float, default=0.0)
+    item_note = Column(String)
     total_price = Column(Float, default=0.0)
 
     quotation = relationship("Quotation", back_populates="items")

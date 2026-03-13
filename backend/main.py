@@ -73,6 +73,11 @@ def init_db():
         except Exception as e:
             print(f"Error checking column norm in lab_services: {e}")
         
+        try:
+            conn.execute(text("ALTER TABLE quotation_items ADD COLUMN IF NOT EXISTS item_note VARCHAR"))
+        except Exception as e:
+            print(f"Error checking column item_note in quotation_items: {e}")
+        
         conn.commit()
 
 # Call initialization directly

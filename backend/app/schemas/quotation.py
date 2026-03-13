@@ -10,6 +10,7 @@ class QuotationItemBase(BaseModel):
     amount: int = 1
     description: Optional[str] = None
     unit_price: float = 0.0
+    item_note: Optional[str] = None
 
 class QuotationItemCreate(QuotationItemBase):
     pass
