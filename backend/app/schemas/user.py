@@ -35,11 +35,14 @@ class UserBase(BaseModel):
     birth_date: Optional[date] = None
     cedula: Optional[str] = None
     linkedin: Optional[str] = None
+    photo_url: Optional[str] = None
 
-class UserCreate(UserBase):
+class UserCreate(BaseModel):
     email: EmailStr
     password: str
+    full_name: Optional[str] = None
     role_ids: List[int] = []
+    photo_url: Optional[str] = None
 
 class UserUpdate(UserBase):
     password: Optional[str] = None

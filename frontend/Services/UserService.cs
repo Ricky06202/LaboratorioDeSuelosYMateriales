@@ -1,10 +1,16 @@
 using System.Net.Http.Json;
 using System.Net.Http.Headers;
+using Microsoft.AspNetCore.Components.Forms;
 using Microsoft.JSInterop;
 using frontend.Models;
 
 namespace frontend.Services
 {
+    public class PhotoUploadResult
+    {
+        public string? PhotoUrl { get; set; }
+    }
+    
     public class UserService
     {
         private readonly HttpClient _httpClient;
@@ -98,6 +104,29 @@ namespace frontend.Services
         {
             await SetAuthorizationHeaderAsync();
             var response = await _httpClient.PostAsJsonAsync("api/usuarios/me/password", passwordChange);
+            await EnsureSuccessOrThrowAsync(response);
+        }
+
+        public async Task<string> UploadPhotoAsync(IBrowserFile file)
+        {
+            await SetAuthorizationHeaderAsync();
+            
+            var content = new MultipartFormDataContent();
+            var fileContent = new StreamContent(file.OpenReadStream(maxAllowedSize: 5 * 1024 * 1024));
+            fileContent.Headers.ContentType = new System.Net.Http.Headers.MediaTypeHeaderValue(file.ContentType);
+            content.Add(fileContent, "file", file.Name);
+            
+            var response = await _httpClient.PostAsync("api/usuarios/me/photo", content);
+            await EnsureSuccessOrThrowAsync(response);
+            
+            var result = await response.Content.ReadFromJsonAsync<PhotoUploadResult>();
+            return result?.PhotoUrl ?? string.Empty;
+        }
+
+        public async Task DeletePhotoAsync()
+        {
+            await SetAuthorizationHeaderAsync();
+            var response = await _httpClient.DeleteAsync("api/usuarios/me/photo");
             await EnsureSuccessOrThrowAsync(response);
         }
 

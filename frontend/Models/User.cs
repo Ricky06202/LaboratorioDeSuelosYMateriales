@@ -52,6 +52,9 @@ namespace frontend.Models
         [JsonPropertyName("linkedin")]
         public string? Linkedin { get; set; }
 
+        [JsonPropertyName("photo_url")]
+        public string? PhotoUrl { get; set; }
+
         [JsonPropertyName("is_active")]
         public bool IsActive { get; set; } = true;
 

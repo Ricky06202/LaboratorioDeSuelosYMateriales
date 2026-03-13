@@ -29,6 +29,7 @@
                                   AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium" Class="mt-0" Immediate="true" />
                 </ToolBarContent>
                 <HeaderContent>
+                    <MudTh>Foto</MudTh>
                     <MudTh>Nombre</MudTh>
                     <MudTh>Correo Electrónico</MudTh>
                     <MudTh>Rol</MudTh>
@@ -36,6 +37,22 @@
                     <MudTh>Acciones</MudTh>
                 </HeaderContent>
                 <RowTemplate>
+                    <MudTd DataLabel="Foto">
+                        <MudAvatar Size="Size.Medium" Color="Color.Primary">
+                            @if (!string.IsNullOrEmpty(context.PhotoUrl))
+                            {
+                                <MudImage Src="@context.PhotoUrl" ObjectFit="ObjectFit.Cover" Style="width: 100%; height: 100%;" />
+                            }
+                            else if (!string.IsNullOrEmpty(context.FullName))
+                            {
+                                @GetInitials(context.FullName)
+                            }
+                            else
+                            {
+                                <MudIcon Icon="@Icons.Material.Filled.Person" />
+                            }
+                        </MudAvatar>
+                    </MudTd>
                     <MudTd DataLabel="Nombre">@context.FullName</MudTd>
                     <MudTd DataLabel="Email">@context.Email</MudTd>
                     <MudTd DataLabel="Rol">
@@ -172,5 +189,16 @@
             }
             catch (Exception ex) { Snackbar.Add($"Error: {ex.Message}", Severity.Error); }
         }
+    }
+
+    private string GetInitials(string name)
+    {
+        if (string.IsNullOrWhiteSpace(name)) return "?";
+        var parts = name.Split(' ', StringSplitOptions.RemoveEmptyEntries);
+        if (parts.Length >= 2)
+        {
+            return $"{parts[0][0]}{parts[^1][0]}".ToUpper();
+        }
+        return name.Length >= 2 ? name[..2].ToUpper() : name.ToUpper();
     }
 }

@@ -1,6 +1,7 @@
 from contextlib import asynccontextmanager
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.staticfiles import StaticFiles
 from app.api.endpoints import auth, equipment, quotation, service_order, customer_order, customer, lab_service, calendar, users
 from app.db.session import engine, SessionLocal
 from app.db.base import Base
@@ -103,6 +104,11 @@ def init_db():
         except Exception as e:
             print(f"Error checking column linkedin in users: {e}")
         
+        try:
+            conn.execute(text("ALTER TABLE users ADD COLUMN IF NOT EXISTS photo_url VARCHAR"))
+        except Exception as e:
+            print(f"Error checking column photo_url in users: {e}")
+        
         conn.commit()
 
 # Call initialization directly
@@ -113,6 +119,13 @@ async def lifespan(app: FastAPI):
     yield
 
 app = FastAPI(title="Laboratorio de Suelos API", lifespan=lifespan)
+
+# Serve static files for user photos
+import pathlib
+static_dir = pathlib.Path("static/uploads/user_photos")
+static_dir.mkdir(parents=True, exist_ok=True)
+app.mount("/static", StaticFiles(directory="static"), name="static")
+app.mount("/uploads", StaticFiles(directory="static/uploads"), name="uploads")
 
 # --- Error Hunter ---
 @app.exception_handler(Exception)

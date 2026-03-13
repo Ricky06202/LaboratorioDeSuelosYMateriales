@@ -43,6 +43,7 @@ class User(Base):
     birth_date = Column(Date)
     cedula = Column(String)
     linkedin = Column(String)
+    photo_url = Column(String)
     is_active = Column(Boolean, default=True)
     
     roles = relationship("Role", secondary=user_roles, back_populates="users")

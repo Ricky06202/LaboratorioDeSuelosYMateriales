@@ -2,8 +2,10 @@
 @using frontend.Models
 @using frontend.Services
 @using MudBlazor
+@using Microsoft.AspNetCore.Components.Forms
 @inject UserService UserService
 @inject ISnackbar Snackbar
+@inject NavigationManager Navigation
 
 <PageTitle>Mi Perfil - LSMCH</PageTitle>
 
@@ -12,16 +14,31 @@
         <MudItem xs="12" md="4">
             <MudPaper Class="pa-6 rounded-xl" Elevation="2">
                 <div class="d-flex flex-column align-center">
-                    <MudAvatar Size="Size.Large" Color="Color.Primary" Class="mb-4" Style="width: 120px; height: 120px; font-size: 3rem;">
-                        @if (!string.IsNullOrEmpty(_user.FullName))
-                        {
-                            @GetInitials(_user.FullName)
-                        }
-                        else
-                        {
-                            <MudIcon Icon="@Icons.Material.Filled.Person" Size="Size.Large" />
-                        }
-                    </MudAvatar>
+                    <div class="position-relative">
+                        <MudAvatar Size="Size.Large" Color="Color.Primary" Class="mb-4" Style="width: 120px; height: 120px; font-size: 3rem;">
+                            @if (!string.IsNullOrEmpty(_user.PhotoUrl))
+                            {
+                                <MudImage Src="@_user.PhotoUrl" ObjectFit="ObjectFit.Cover" Style="width: 100%; height: 100%;" />
+                            }
+                            else if (!string.IsNullOrEmpty(_user.FullName))
+                            {
+                                @GetInitials(_user.FullName)
+                            }
+                            else
+                            {
+                                <MudIcon Icon="@Icons.Material.Filled.Person" Size="Size.Large" />
+                            }
+                        </MudAvatar>
+                        <MudFileUpload T="IBrowserFile" FilesChanged="OnFilesChanged" Accept=".jpg,.jpeg,.png,.webp,.gif">
+                            <ActivatorContent>
+                                <MudIconButton Icon="@Icons.Material.Filled.CameraAlt" 
+                                             Color="Color.Primary" 
+                                             Size="Size.Small"
+                                             Class="position-absolute" 
+                                             Style="bottom: 8px; right: 8px; background: white; box-shadow: 0 2px 4px rgba(0,0,0,0.2);" />
+                            </ActivatorContent>
+                        </MudFileUpload>
+                    </div>
                     <MudText Typo="Typo.h5" Class="font-weight-bold">@_user.FullName</MudText>
                     <MudText Typo="Typo.body2" Color="Color.Secondary">@_user.Email</MudText>
                     <MudChip T="string" Color="Color.Primary" Size="Size.Small" Class="mt-2">@_user.RoleNames</MudChip>
@@ -153,10 +170,12 @@
     private bool _passwordValid;
     private bool _savingProfile;
     private bool _changingPassword;
+    private bool _uploadingPhoto;
     private string _passwordError = string.Empty;
     private bool _showCurrentPassword;
     private bool _showNewPassword;
     private bool _showConfirmPassword;
+    private IBrowserFile? _selectedFile;
 
     protected override async Task OnInitializedAsync()
     {
@@ -181,6 +200,50 @@
         catch (Exception ex)
         {
             Snackbar.Add($"Error al cargar perfil: {ex.Message}", Severity.Error);
+        }
+    }
+
+    private async Task OnFilesChanged(IBrowserFile? file)
+    {
+        if (file == null) return;
+        
+        _selectedFile = file;
+        await UploadPhoto();
+    }
+
+    private async Task UploadPhoto()
+    {
+        if (_selectedFile == null) return;
+        
+        _uploadingPhoto = true;
+        try
+        {
+            var photoUrl = await UserService.UploadPhotoAsync(_selectedFile);
+            _user.PhotoUrl = photoUrl;
+            _selectedFile = null;
+            Snackbar.Add("Foto de perfil actualizada", Severity.Success);
+        }
+        catch (Exception ex)
+        {
+            Snackbar.Add($"Error al subir foto: {ex.Message}", Severity.Error);
+        }
+        finally
+        {
+            _uploadingPhoto = false;
+        }
+    }
+
+    private async Task DeletePhoto()
+    {
+        try
+        {
+            await UserService.DeletePhotoAsync();
+            _user.PhotoUrl = null;
+            Snackbar.Add("Foto de perfil eliminada", Severity.Success);
+        }
+        catch (Exception ex)
+        {
+            Snackbar.Add($"Error al eliminar foto: {ex.Message}", Severity.Error);
         }
     }
 

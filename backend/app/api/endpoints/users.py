@@ -208,3 +208,86 @@ def delete_role(
     if not role:
         raise HTTPException(status_code=404, detail="Role not found")
     return role
+
+@router.post("/me/photo")
+async def upload_photo(
+    file: UploadFile = File(...),
+    db: Session = Depends(deps.get_db),
+    current_user: UserModel = Depends(get_current_active_user),
+) -> Any:
+    """
+    Upload user profile photo.
+    """
+    import os
+    import uuid
+    from pathlib import Path
+    
+    # Validar tipo de archivo
+    allowed_types = ["image/jpeg", "image/png", "image/webp", "image/gif"]
+    if file.content_type not in allowed_types:
+        raise HTTPException(
+            status_code=400,
+            detail="Tipo de archivo no permitido. Use JPG, PNG, WebP o GIF.",
+        )
+    
+    # Validar tamaño (max 5MB)
+    contents = await file.read()
+    if len(contents) > 5 * 1024 * 1024:
+        raise HTTPException(
+            status_code=400,
+            detail="El archivo no puede superar los 5MB.",
+        )
+    
+    # Crear directorio de uploads si no existe
+    upload_dir = Path("static/uploads/user_photos")
+    upload_dir.mkdir(parents=True, exist_ok=True)
+    
+    # Eliminar foto anterior si existe
+    old_photo = current_user.photo_url
+    if old_photo:
+        old_path = upload_dir / Path(old_photo).name
+        if old_path.exists():
+            try:
+                old_path.unlink()
+            except Exception:
+                pass
+    
+    # Generar nombre único
+    ext = file.filename.split(".")[-1] if "." in file.filename else "jpg"
+    filename = f"{uuid.uuid4()}.{ext}"
+    file_path = upload_dir / filename
+    
+    # Guardar archivo
+    with open(file_path, "wb") as f:
+        f.write(contents)
+    
+    # Actualizar usuario
+    photo_url = f"/uploads/user_photos/{filename}"
+    current_user.photo_url = photo_url
+    db.commit()
+    db.refresh(current_user)
+    
+    return {"photo_url": photo_url}
+
+@router.delete("/me/photo")
+def delete_photo(
+    db: Session = Depends(deps.get_db),
+    current_user: UserModel = Depends(get_current_active_user),
+) -> Any:
+    """
+    Delete user profile photo.
+    """
+    from pathlib import Path
+    
+    if current_user.photo_url:
+        photo_path = Path("static") / current_user.photo_url.lstrip("/")
+        if photo_path.exists():
+            try:
+                photo_path.unlink()
+            except Exception:
+                pass
+        
+        current_user.photo_url = None
+        db.commit()
+    
+    return {"message": "Foto eliminada correctamente"}
