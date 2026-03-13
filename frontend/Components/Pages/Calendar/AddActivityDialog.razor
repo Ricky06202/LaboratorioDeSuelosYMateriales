@@ -19,10 +19,12 @@
                     <MudTextField @bind-Value="_model.Description" Label="Descripción" Variant="Variant.Outlined" Lines="3" />
                 </MudItem>
                 <MudItem xs="12" sm="6">
-                    <MudDatePicker @bind-Value="_model.StartDate" Label="Fecha" Variant="Variant.Outlined" Required="true" RequiredError="La fecha es requerida" />
+                    <MudDatePicker Label="Fecha" Variant="Variant.Outlined" Required="true" RequiredError="La fecha es requerida" 
+                                Date="_model.StartDate" DateChanged="OnStartDateChanged" />
                 </MudItem>
                 <MudItem xs="12" sm="6">
-                    <MudTimePicker @bind-Value="_selectedTime" Label="Hora" Variant="Variant.Outlined" />
+                    <MudTimePicker Label="Hora" Variant="Variant.Outlined" 
+                                Value="_selectedTime" ValueChanged="OnTimeChanged" />
                 </MudItem>
                 <MudItem xs="12" sm="6">
                     <MudSelect @bind-Value="_model.Type" Label="Tipo" Variant="Variant.Outlined">
@@ -120,6 +122,19 @@
             _selectedTime = InitialDate.TimeOfDay;
             _model.Color = _availableColors[0];
         }
+    }
+
+    private void OnStartDateChanged(DateTime? date)
+    {
+        if (date.HasValue)
+        {
+            _model.StartDate = date.Value;
+        }
+    }
+
+    private void OnTimeChanged(TimeSpan? time)
+    {
+        _selectedTime = time;
     }
 
     private void Cancel()

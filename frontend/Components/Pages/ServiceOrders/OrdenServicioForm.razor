@@ -244,10 +244,12 @@
                             </MudAlert>
                         </MudItem>
                         <MudItem xs="12" sm="6">
-                            <MudDatePicker @bind-Date="_activityDate" Label="Fecha de la Agenda" Variant="Variant.Outlined" Margin="Margin.Dense" />
+                            <MudDatePicker Label="Fecha de la Agenda" Variant="Variant.Outlined" Margin="Margin.Dense" 
+                                        Date="_activityDate" DateChanged="OnActivityDateChanged" />
                         </MudItem>
                         <MudItem xs="12" sm="6">
-                            <MudTimePicker @bind-Value="_activityTime" Label="Hora de la Agenda" Variant="Variant.Outlined" Margin="Margin.Dense" />
+                            <MudTimePicker Label="Hora de la Agenda" Variant="Variant.Outlined" Margin="Margin.Dense" 
+                                        Value="_activityTime" ValueChanged="OnActivityTimeChanged" />
                         </MudItem>
                         <MudItem xs="12">
                             <MudText Typo="Typo.subtitle2" Color="Color.Primary">
@@ -340,6 +342,16 @@
             return _activityDate.Value.Date + _activityTime.Value;
         }
         return null;
+    }
+
+    private void OnActivityDateChanged(DateTime? date)
+    {
+        _activityDate = date;
+    }
+
+    private void OnActivityTimeChanged(TimeSpan? time)
+    {
+        _activityTime = time;
     }
 
     private void OnCustomerChanged(Customer? customer)
