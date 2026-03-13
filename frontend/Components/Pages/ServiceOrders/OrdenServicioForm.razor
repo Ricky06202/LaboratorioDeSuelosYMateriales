@@ -245,11 +245,11 @@
                         </MudItem>
                         <MudItem xs="12" sm="6">
                             <MudDatePicker Label="Fecha de la Agenda" Variant="Variant.Outlined" Margin="Margin.Dense" 
-                                        Date="_activityDate" DateChanged="OnActivityDateChanged" />
+                                        @bind-PickerDate="_activityDate" />
                         </MudItem>
                         <MudItem xs="12" sm="6">
                             <MudTimePicker Label="Hora de la Agenda" Variant="Variant.Outlined" Margin="Margin.Dense" 
-                                        Value="_activityTime" ValueChanged="OnActivityTimeChanged" />
+                                        @bind-PickerValue="_activityTime" />
                         </MudItem>
                         <MudItem xs="12">
                             <MudText Typo="Typo.subtitle2" Color="Color.Primary">
@@ -291,8 +291,8 @@
     private bool _success;
     private bool _processing;
     private int _activeTabIndex = 0;
-    private DateTime? _activityDate = DateTime.Today.AddDays(1);
-    private TimeSpan? _activityTime = new TimeSpan(8, 0, 0);
+    private DateTime _activityDate = DateTime.Today.AddDays(1);
+    private TimeSpan _activityTime = new TimeSpan(8, 0, 0);
     private bool _isFromQuotation;
 
     protected override async Task OnInitializedAsync()
@@ -327,9 +327,9 @@
 
     private string GetActivityDateTimeDisplay()
     {
-        if (_activityDate.HasValue && _activityTime.HasValue)
+        if (_activityDate != default && _activityTime != TimeSpan.Zero)
         {
-            var dateTime = _activityDate.Value.Date + _activityTime.Value;
+            var dateTime = _activityDate.Date + _activityTime;
             return dateTime.ToString("dd/MM/yyyy HH:mm");
         }
         return "No configurada";
@@ -337,21 +337,27 @@
 
     private DateTime? GetActivityDateTime()
     {
-        if (_activityDate.HasValue && _activityTime.HasValue)
+        if (_activityDate != default && _activityTime != TimeSpan.Zero)
         {
-            return _activityDate.Value.Date + _activityTime.Value;
+            return _activityDate.Date + _activityTime;
         }
         return null;
     }
 
     private void OnActivityDateChanged(DateTime? date)
     {
-        _activityDate = date;
+        if (date.HasValue)
+        {
+            _activityDate = date.Value;
+        }
     }
 
     private void OnActivityTimeChanged(TimeSpan? time)
     {
-        _activityTime = time;
+        if (time.HasValue)
+        {
+            _activityTime = time.Value;
+        }
     }
 
     private void OnCustomerChanged(Customer? customer)

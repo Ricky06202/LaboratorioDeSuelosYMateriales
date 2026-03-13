@@ -24,7 +24,7 @@
                 </MudItem>
                 <MudItem xs="12" sm="6">
                     <MudTimePicker Label="Hora" Variant="Variant.Outlined" 
-                                Value="_selectedTime" ValueChanged="OnTimeChanged" />
+                                @bind-PickerValue="_selectedTime" />
                 </MudItem>
                 <MudItem xs="12" sm="6">
                     <MudSelect @bind-Value="_model.Type" Label="Tipo" Variant="Variant.Outlined">
@@ -89,7 +89,7 @@
     private CalendarActivityCreate _model = new();
     private MudForm _form = null!;
     private bool _success;
-    private TimeSpan? _selectedTime;
+    private TimeSpan _selectedTime = TimeSpan.Zero;
 
     private readonly string[] _availableColors = new[]
     {
@@ -134,7 +134,10 @@
 
     private void OnTimeChanged(TimeSpan? time)
     {
-        _selectedTime = time;
+        if (time.HasValue)
+        {
+            _selectedTime = time.Value;
+        }
     }
 
     private void Cancel()
@@ -144,9 +147,9 @@
 
     private void Submit()
     {
-        if (_selectedTime.HasValue)
+        if (_selectedTime != TimeSpan.Zero)
         {
-            _model.StartDate = _model.StartDate.Date + _selectedTime.Value;
+            _model.StartDate = _model.StartDate.Date + _selectedTime;
         }
 
         MudDialog.Close(DialogResult.Ok(_model));
