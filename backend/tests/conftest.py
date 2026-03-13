@@ -61,3 +61,83 @@ def client(db):
     with TestClient(app) as c:
         yield c
     app.dependency_overrides.clear()
+
+
+# ==================== SHARED FIXTURES ====================
+
+@pytest.fixture(scope="function")
+def test_user(db):
+    """Create a test user"""
+    from app.models.user import User
+    from app.core.security import get_password_hash
+    
+    user = User(
+        email="testuser@test.com",
+        full_name="Test User",
+        hashed_password=get_password_hash("testpassword123"),
+        phone="12345678",
+        cell_phone="67890123",
+        cedula="8-123-456",
+        is_active=True
+    )
+    db.add(user)
+    db.commit()
+    db.refresh(user)
+    return user
+
+@pytest.fixture(scope="function")
+def admin_user(db):
+    """Create an admin user with admin role"""
+    from app.models.user import User, Role
+    from app.core.security import get_password_hash
+    
+    role = Role(name="Admin", id=1)
+    db.add(role)
+    db.commit()
+    
+    user = User(
+        email="admin@test.com",
+        full_name="Admin User",
+        hashed_password=get_password_hash("adminpass123"),
+        is_active=True
+    )
+    user.roles.append(role)
+    db.add(user)
+    db.commit()
+    db.refresh(user)
+    return user
+
+@pytest.fixture(scope="function")
+def test_customer(db):
+    """Create a test customer"""
+    from app.models.customer import Customer
+    
+    customer = Customer(
+        name="Test Customer",
+        ruc="12345678901",
+        dv="1",
+        phone="12345678",
+        email="customer@test.com",
+        address="Test Address"
+    )
+    db.add(customer)
+    db.commit()
+    db.refresh(customer)
+    return customer
+
+@pytest.fixture(scope="function")
+def test_lab_service(db):
+    """Create a test lab service"""
+    from app.models.lab_service import LabService
+    
+    service = LabService(
+        code="TEST001",
+        name="Test Service",
+        description="Test Description",
+        norm="ASTM D-422",
+        unit_price=100.0
+    )
+    db.add(service)
+    db.commit()
+    db.refresh(service)
+    return service
