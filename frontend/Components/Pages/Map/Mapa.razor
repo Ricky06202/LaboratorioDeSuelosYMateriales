@@ -1,0 +1,48 @@
+@page "/mapa"
+@using frontend.Services
+@using frontend.Models
+@inject IJSRuntime JS
+@inject ServiceOrderService ServiceOrderService
+
+<PageTitle>Mapa de Proyectos - LSMCH</PageTitle>
+
+<MudText Typo="Typo.h4" Class="mb-4">Mapa de Proyectos</MudText>
+
+<MudPaper Class="pa-0" Style="height: calc(100vh - 180px); min-height: 500px;">
+    <div id="map" style="width: 100%; height: 100%;"></div>
+</MudPaper>
+
+@code {
+    private List<ServiceOrder> serviceOrders = new();
+    private bool isLoading = true;
+
+    protected override async Task OnInitializedAsync()
+    {
+        try
+        {
+            serviceOrders = await ServiceOrderService.GetServiceOrdersAsync(0, 500);
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Error loading service orders: {ex.Message}");
+        }
+        isLoading = false;
+    }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender && !isLoading)
+        {
+            await InitializeMap();
+        }
+    }
+
+    private async Task InitializeMap()
+    {
+        var ordersWithCoords = serviceOrders
+            .Where(o => o.ProjectLatitude.HasValue && o.ProjectLongitude.HasValue)
+            .ToList();
+
+        await JS.InvokeVoidAsync("initMap", ordersWithCoords);
+    }
+}

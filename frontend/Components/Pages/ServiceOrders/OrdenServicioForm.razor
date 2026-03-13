@@ -134,6 +134,12 @@
                         <MudItem xs="12" sm="6">
                             <MudTextField @bind-Value="_order.ProjectLocation" Label="Ubicación del Proyecto" Margin="Margin.Dense" Variant="Variant.Outlined" />
                         </MudItem>
+                        <MudItem xs="12" sm="3">
+                            <MudTextField @bind-Value="_order.ProjectLatitude" Label="Latitud" Margin="Margin.Dense" Variant="Variant.Outlined" Placeholder="ej. 8.4328" />
+                        </MudItem>
+                        <MudItem xs="12" sm="3">
+                            <MudTextField @bind-Value="_order.ProjectLongitude" Label="Longitud" Margin="Margin.Dense" Variant="Variant.Outlined" Placeholder="ej. -82.4310" />
+                        </MudItem>
                         <MudItem xs="12" sm="6">
                             <MudTextField @bind-Value="_order.ProjectResponsable" Label="Responsable (Encargado)" Margin="Margin.Dense" Variant="Variant.Outlined" />
                         </MudItem>

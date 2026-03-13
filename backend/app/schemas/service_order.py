@@ -14,6 +14,8 @@ class ServiceOrderBase(BaseModel):
     
     project_name: Optional[str] = None
     project_location: Optional[str] = None
+    project_latitude: Optional[float] = None  # Latitud para el mapa
+    project_longitude: Optional[float] = None  # Longitud para el mapa
     project_responsable: Optional[str] = None
     project_phone: Optional[str] = None
     

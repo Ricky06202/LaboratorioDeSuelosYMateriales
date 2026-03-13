@@ -47,6 +47,12 @@ namespace frontend.Models
         [JsonPropertyName("project_location")]
         public string? ProjectLocation { get; set; }
 
+        [JsonPropertyName("project_latitude")]
+        public double? ProjectLatitude { get; set; }
+
+        [JsonPropertyName("project_longitude")]
+        public double? ProjectLongitude { get; set; }
+
         [JsonPropertyName("project_responsable")]
         public string? ProjectResponsable { get; set; }
 
@@ -172,6 +178,12 @@ namespace frontend.Models
 
         [JsonPropertyName("project_location")]
         public string? ProjectLocation { get; set; }
+
+        [JsonPropertyName("project_latitude")]
+        public double? ProjectLatitude { get; set; }
+
+        [JsonPropertyName("project_longitude")]
+        public double? ProjectLongitude { get; set; }
 
         [JsonPropertyName("project_responsable")]
         public string? ProjectResponsable { get; set; }

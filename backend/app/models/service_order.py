@@ -24,6 +24,8 @@ class ServiceOrder(Base):
     # Project info
     project_name = Column(String)
     project_location = Column(String)
+    project_latitude = Column(Float)  # Latitud para el mapa
+    project_longitude = Column(Float)  # Longitud para el mapa
     project_responsable = Column(String)
     project_phone = Column(String) # Celular
     
