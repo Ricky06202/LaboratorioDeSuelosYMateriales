@@ -41,41 +41,22 @@ namespace frontend.Services
         public async Task<Quotation> CreateQuotationAsync(QuotationCreate quotation)
         {
             var response = await _httpClient.PostAsJsonAsync("api/cotizaciones/", quotation, AppJsonSerializerContext.Default.QuotationCreate);
-            await EnsureSuccessOrThrowAsync(response);
+            await HttpResponseHelper.EnsureSuccessOrThrowAsync(response);
             return await response.Content.ReadFromJsonAsync<Quotation>(AppJsonSerializerContext.Default.Quotation) 
-                   ?? throw new Exception("Error al crear la cotización");
+                   ?? throw new Exception("Error al crear la cotización. No se recibió respuesta del servidor.");
         }
 
         public async Task DeleteQuotationAsync(Guid id)
         {
             var response = await _httpClient.DeleteAsync($"api/cotizaciones/{id}");
-            await EnsureSuccessOrThrowAsync(response);
+            await HttpResponseHelper.EnsureSuccessOrThrowAsync(response);
         }
 
         public async Task<byte[]> GetQuotationPdfAsync(Guid id)
         {
             var response = await _httpClient.GetAsync($"api/cotizaciones/{id}/pdf");
-            await EnsureSuccessOrThrowAsync(response);
+            await HttpResponseHelper.EnsureSuccessOrThrowAsync(response);
             return await response.Content.ReadAsByteArrayAsync();
-        }
-
-        private async Task EnsureSuccessOrThrowAsync(HttpResponseMessage response)
-        {
-            if (!response.IsSuccessStatusCode)
-            {
-                var content = await response.Content.ReadAsStringAsync();
-                try
-                {
-                    var error = System.Text.Json.JsonSerializer.Deserialize<ApiError>(content, AppJsonSerializerContext.Default.ApiError);
-                    if (error != null && !string.IsNullOrEmpty(error.Detail))
-                    {
-                        throw new Exception(error.Detail);
-                    }
-                }
-                catch { } // Fallback
-                
-                throw new Exception($"Error {response.StatusCode}: No se pudo completar la operación.");
-            }
         }
     }
 }

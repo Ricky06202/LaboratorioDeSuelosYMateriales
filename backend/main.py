@@ -67,6 +67,12 @@ def init_db():
                 conn.execute(text(f"ALTER TABLE calibraciones ADD COLUMN IF NOT EXISTS {col_name} {col_type}"))
             except Exception:
                 pass
+        
+        try:
+            conn.execute(text("ALTER TABLE lab_services ADD COLUMN IF NOT EXISTS norm VARCHAR"))
+        except Exception as e:
+            print(f"Error checking column norm in lab_services: {e}")
+        
         conn.commit()
 
 # Call initialization directly

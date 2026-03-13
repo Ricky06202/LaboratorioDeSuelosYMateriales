@@ -17,7 +17,10 @@
                     <MudTextField @bind-Value="_model.Description" Label="Descripción Detallada" Lines="3" Variant="Variant.Outlined" Margin="Margin.Dense" />
                 </MudItem>
                 <MudItem xs="12">
-                    <MudNumericField @bind-Value="_model.UnitPrice" Label="Precio Unitario" Format="N2" Culture="@System.Globalization.CultureInfo.GetCultureInfo("en-US")" Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.AttachMoney" Variant="Variant.Outlined" Margin="Margin.Dense" />
+                    <MudTextField @bind-Value="_model.Norm" Label="Norma / Método" Placeholder="Ej: ASTM D-422, NTP 339.123" Variant="Variant.Outlined" Margin="Margin.Dense" />
+                </MudItem>
+                <MudItem xs="12">
+                    <MudNumericField @bind-Value="_model.UnitPrice" Label="Precio Unitario (B/.)" Format="N2" Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.AttachMoney" Variant="Variant.Outlined" Margin="Margin.Dense" />
                 </MudItem>
             </MudGrid>
         </MudForm>
@@ -46,6 +49,7 @@
                 Code = ExistingService.Code,
                 Name = ExistingService.Name,
                 Description = ExistingService.Description,
+                Norm = ExistingService.Norm,
                 UnitPrice = ExistingService.UnitPrice
             };
         }

@@ -5,6 +5,7 @@ class LabServiceBase(BaseModel):
     code: str
     name: str
     description: Optional[str] = None
+    norm: Optional[str] = None
     unit_price: float = 0.0
 
 class LabServiceCreate(LabServiceBase):

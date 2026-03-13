@@ -37,41 +37,22 @@ namespace frontend.Services
         public async Task<ServiceOrder> CreateServiceOrderAsync(ServiceOrderCreate serviceOrder)
         {
             var response = await _httpClient.PostAsJsonAsync("api/ordenes-servicio/", serviceOrder, AppJsonSerializerContext.Default.ServiceOrderCreate);
-            await EnsureSuccessOrThrowAsync(response);
+            await HttpResponseHelper.EnsureSuccessOrThrowAsync(response);
             return await response.Content.ReadFromJsonAsync<ServiceOrder>(AppJsonSerializerContext.Default.ServiceOrder) 
-                   ?? throw new Exception("Error al crear la orden de servicio");
+                   ?? throw new Exception("Error al crear la orden de servicio. No se recibió respuesta del servidor.");
         }
 
         public async Task DeleteServiceOrderAsync(Guid id)
         {
             var response = await _httpClient.DeleteAsync($"api/ordenes-servicio/{id}");
-            await EnsureSuccessOrThrowAsync(response);
+            await HttpResponseHelper.EnsureSuccessOrThrowAsync(response);
         }
 
         public async Task<byte[]> GetServiceOrderPdfAsync(Guid id)
         {
             var response = await _httpClient.GetAsync($"api/ordenes-servicio/{id}/pdf");
-            await EnsureSuccessOrThrowAsync(response);
+            await HttpResponseHelper.EnsureSuccessOrThrowAsync(response);
             return await response.Content.ReadAsByteArrayAsync();
-        }
-
-        private async Task EnsureSuccessOrThrowAsync(HttpResponseMessage response)
-        {
-            if (!response.IsSuccessStatusCode)
-            {
-                var content = await response.Content.ReadAsStringAsync();
-                try
-                {
-                    var error = System.Text.Json.JsonSerializer.Deserialize<ApiError>(content, AppJsonSerializerContext.Default.ApiError);
-                    if (error != null && !string.IsNullOrEmpty(error.Detail))
-                    {
-                        throw new Exception(error.Detail);
-                    }
-                }
-                catch { } // Fallback
-                
-                throw new Exception($"Error {response.StatusCode}: No se pudo completar la operación.");
-            }
         }
     }
 }

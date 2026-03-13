@@ -170,6 +170,7 @@
         {
             { x => x.InitialData, new ServiceOrderCreate 
                 { 
+                    CustomerId = quotation.CustomerId,
                     ClientName = quotation.ClientName,
                     ClientRuc = quotation.ClientRuc,
                     ClientDirection = quotation.ClientDirection,

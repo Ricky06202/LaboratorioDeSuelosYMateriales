@@ -27,12 +27,31 @@ namespace frontend.Auth
                     return new AuthenticationState(new ClaimsPrincipal(new ClaimsIdentity()));
                 }
 
-                return new AuthenticationState(new ClaimsPrincipal(new ClaimsIdentity(ParseClaimsFromJwt(token), "jwt")));
+                var claims = ParseClaimsFromJwt(token);
+                
+                if (IsTokenExpired(claims))
+                {
+                    await _jsRuntime.InvokeVoidAsync("localStorage.removeItem", TokenKey);
+                    return new AuthenticationState(new ClaimsPrincipal(new ClaimsIdentity()));
+                }
+
+                return new AuthenticationState(new ClaimsPrincipal(new ClaimsIdentity(claims, "jwt")));
             }
             catch (InvalidOperationException)
             {
                 return new AuthenticationState(new ClaimsPrincipal(new ClaimsIdentity()));
             }
+        }
+
+        private bool IsTokenExpired(IEnumerable<Claim> claims)
+        {
+            var expClaim = claims.FirstOrDefault(c => c.Type == "exp");
+            if (expClaim != null && long.TryParse(expClaim.Value, out var expValue))
+            {
+                var expirationTime = DateTimeOffset.FromUnixTimeSeconds(expValue);
+                return expirationTime.LocalDateTime < DateTime.Now;
+            }
+            return false;
         }
 
         public async Task MarkUserAsAuthenticated(string token)
@@ -49,6 +68,11 @@ namespace frontend.Auth
             var anonymousUser = new ClaimsPrincipal(new ClaimsIdentity());
             var authState = Task.FromResult(new AuthenticationState(anonymousUser));
             NotifyAuthenticationStateChanged(authState);
+        }
+
+        public async Task CheckAndRefreshAuthState()
+        {
+            NotifyAuthenticationStateChanged(GetAuthenticationStateAsync());
         }
 
         private IEnumerable<Claim> ParseClaimsFromJwt(string jwt)

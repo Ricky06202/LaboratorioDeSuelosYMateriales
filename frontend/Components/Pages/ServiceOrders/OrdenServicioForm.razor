@@ -2,6 +2,7 @@
 @using frontend.Services
 @using MudBlazor
 @inject ServiceOrderService ServiceOrderService
+@inject CustomerService CustomerService
 @inject CalendarService CalendarService
 @inject ISnackbar Snackbar
 
@@ -142,18 +143,45 @@
                         </MudItem>
                     </MudGrid>
                 </MudTabPanel>
+
+                <MudTabPanel Text="Agenda">
+                    <MudGrid>
+                        <MudItem xs="12">
+                            <MudAlert Severity="Severity.Info" Class="mb-4">
+                                Configure la fecha y hora para agendar automáticamente esta orden de servicio en la agenda del laboratorio.
+                            </MudAlert>
+                        </MudItem>
+                        <MudItem xs="12" sm="6">
+                            <MudDatePicker @bind-Date="_activityDate" Label="Fecha de la Agenda" Variant="Variant.Outlined" Margin="Margin.Dense" />
+                        </MudItem>
+                        <MudItem xs="12" sm="6">
+                            <MudTimePicker @bind-Value="_activityTime" Label="Hora de la Agenda" Variant="Variant.Outlined" Margin="Margin.Dense" />
+                        </MudItem>
+                        <MudItem xs="12">
+                            <MudText Typo="Typo.subtitle2" Color="Color.Primary">
+                                Fecha programada: @GetActivityDateTimeDisplay()
+                            </MudText>
+                        </MudItem>
+                    </MudGrid>
+                </MudTabPanel>
             </MudTabs>
         </MudForm>
     </DialogContent>
     <DialogActions>
         <MudButton OnClick="Cancel">Cancelar</MudButton>
-        @if (_activeTabIndex == 2) // Last tab
-        {
-            <MudButton Color="Color.Primary" Variant="Variant.Filled" OnClick="Submit" Disabled="@_processing" Class="rounded-pill px-6">Guardar Orden</MudButton>
-        }
-        else
+        @if (_activeTabIndex == 0 || _activeTabIndex == 1)
         {
             <MudButton Color="Color.Primary" Variant="Variant.Filled" OnClick="NextTab" Disabled="@_processing" Class="rounded-pill px-6">Siguiente</MudButton>
+        }
+        @if (_activeTabIndex == 2)
+        {
+            <MudButton OnClick="PreviousTab">Anterior</MudButton>
+            <MudButton Color="Color.Primary" Variant="Variant.Filled" OnClick="Submit" Disabled="@_processing" Class="rounded-pill px-6">Guardar Orden</MudButton>
+        }
+        @if (_activeTabIndex == 3)
+        {
+            <MudButton OnClick="PreviousTab">Anterior</MudButton>
+            <MudButton Color="Color.Primary" Variant="Variant.Filled" OnClick="Submit" Disabled="@_processing" Class="rounded-pill px-6">Guardar Orden</MudButton>
         }
     </DialogActions>
 </MudDialog>
@@ -161,7 +189,7 @@
 @code {
     [CascadingParameter] IMudDialogInstance MudDialog { get; set; } = null!;
     [Parameter] public ServiceOrderCreate? InitialData { get; set; }
-    [Parameter] public DateTime? ActivityDate { get; set; } // Fecha opcional para la actividad del calendario
+    [Parameter] public DateTime? ActivityDate { get; set; }
 
     private ServiceOrderCreate _order = new();
     private Customer? _selectedCustomer;
@@ -169,14 +197,55 @@
     private bool _success;
     private bool _processing;
     private int _activeTabIndex = 0;
+    private DateTime? _activityDate = DateTime.Today.AddDays(1);
+    private TimeSpan? _activityTime = new TimeSpan(8, 0, 0);
 
-    protected override void OnInitialized()
+    protected override async Task OnInitializedAsync()
     {
         if (InitialData != null)
         {
             _order = InitialData;
-            // Attempt to pre-select customer if mapping exists (optional improvement)
+            if (_order.CustomerId.HasValue && _order.CustomerId != Guid.Empty)
+            {
+                await LoadCustomerAsync(_order.CustomerId.Value);
+            }
         }
+    }
+
+    private async Task LoadCustomerAsync(Guid customerId)
+    {
+        try
+        {
+            var customer = await CustomerService.GetCustomerAsync(customerId);
+            if (customer != null)
+            {
+                _selectedCustomer = customer;
+                OnCustomerChanged(customer);
+            }
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Error loading customer: {ex.Message}");
+        }
+    }
+
+    private string GetActivityDateTimeDisplay()
+    {
+        if (_activityDate.HasValue && _activityTime.HasValue)
+        {
+            var dateTime = _activityDate.Value.Date + _activityTime.Value;
+            return dateTime.ToString("dd/MM/yyyy HH:mm");
+        }
+        return "No configurada";
+    }
+
+    private DateTime? GetActivityDateTime()
+    {
+        if (_activityDate.HasValue && _activityTime.HasValue)
+        {
+            return _activityDate.Value.Date + _activityTime.Value;
+        }
+        return null;
     }
 
     private void OnCustomerChanged(Customer? customer)
@@ -201,9 +270,17 @@
 
     private void NextTab()
     {
-        if (_activeTabIndex < 2)
+        if (_activeTabIndex < 3)
         {
             _activeTabIndex++;
+        }
+    }
+
+    private void PreviousTab()
+    {
+        if (_activeTabIndex > 0)
+        {
+            _activeTabIndex--;
         }
     }
 
@@ -217,11 +294,9 @@
             {
                 var createdOrder = await ServiceOrderService.CreateServiceOrderAsync(_order);
                 
-                // Automatic Calendar Activity with configurable date/time
                 try
                 {
-                    // Use provided date or default to tomorrow at 8 AM
-                    var activityDate = ActivityDate ?? DateTime.Now.AddDays(1).Date.AddHours(8);
+                    var activityDate = GetActivityDateTime() ?? DateTime.Now.AddDays(1).Date.AddHours(8);
 
                     await CalendarService.CreateActivityAsync(new CalendarActivityCreate
                     {

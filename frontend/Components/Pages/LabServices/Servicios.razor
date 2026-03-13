@@ -28,6 +28,7 @@
             <MudTh>Código</MudTh>
             <MudTh>Nombre del Servicio</MudTh>
             <MudTh>Descripción</MudTh>
+            <MudTh>Norma</MudTh>
             <MudTh>Precio Unitario</MudTh>
             <MudTh>Acciones</MudTh>
         </HeaderContent>
@@ -35,7 +36,8 @@
             <MudTd DataLabel="Código"><MudChip T="string" Color="Color.Info" Size="Size.Small" Variant="Variant.Text">@context.Code</MudChip></MudTd>
             <MudTd DataLabel="Nombre">@context.Name</MudTd>
             <MudTd DataLabel="Descripción">@context.Description</MudTd>
-            <MudTd DataLabel="Precio">@context.UnitPrice.ToString("C2")</MudTd>
+            <MudTd DataLabel="Norma">@context.Norm</MudTd>
+            <MudTd DataLabel="Precio">B/. @context.UnitPrice.ToString("N2")</MudTd>
             <MudTd DataLabel="Acciones">
                 <MudIconButton Icon="@Icons.Material.Filled.Edit" Color="Color.Info" Size="Size.Small" OnClick="@(() => OpenEditDialog(context))" />
                 <MudIconButton Icon="@Icons.Material.Filled.Delete" Color="Color.Error" Size="Size.Small" OnClick="@(() => DeleteService(context))" />

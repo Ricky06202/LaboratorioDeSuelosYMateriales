@@ -14,6 +14,8 @@ namespace frontend.Models
         public string Name { get; set; } = string.Empty;
         [JsonPropertyName("description")]
         public string? Description { get; set; }
+        [JsonPropertyName("norm")]
+        public string? Norm { get; set; }
         [JsonPropertyName("unit_price")]
         public decimal UnitPrice { get; set; }
     }
@@ -30,6 +32,10 @@ namespace frontend.Models
         
         [JsonPropertyName("description")]
         public string? Description { get; set; }
+        
+        [JsonPropertyName("norm")]
+        public string? Norm { get; set; }
+        
         [JsonPropertyName("unit_price")]
         public decimal UnitPrice { get; set; }
     }

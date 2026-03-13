@@ -8,4 +8,5 @@ class LabService(Base):
     code = Column(String, unique=True, index=True, nullable=False)
     name = Column(String, nullable=False, index=True)
     description = Column(Text)
+    norm = Column(String)
     unit_price = Column(Float, default=0.0)
