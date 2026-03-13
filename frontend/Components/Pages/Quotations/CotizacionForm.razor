@@ -92,14 +92,15 @@
                             <MudGrid>
                                 <MudItem xs="12" sm="4">
                                     <MudAutocomplete T="LabService" Label="Seleccionar Ensayo del Catálogo" 
-                                                    @bind-Value="item.SelectedService" 
+                                                    Value="item.SelectedService" 
                                                     SearchFunc="@(SearchServices)"
                                                     ToStringFunc="@(s => s == null ? "" : $"{s.Code} - {s.Name}")"
                                                     ResetValueOnEmptyText="true"
-                                                    Margin="Margin.Dense" Variant="Variant.Outlined" />
+                                                    Margin="Margin.Dense" Variant="Variant.Outlined" 
+                                                    ValueChanged="@(service => OnServiceSelected(item, service))" />
                                 </MudItem>
                                 <MudItem xs="12" sm="8">
-                                    <MudTextField @bind-Value="item.Description" Label="Descripción del Ensayo" Margin="Margin.Dense" Variant="Variant.Outlined" />
+                                    <MudTextField @bind-Value="item.Description" Label="Descripción del Ensayo" Margin="Margin.Dense" Variant="Variant.Outlined" ReadOnly="@(item.SelectedService != null)" />
                                 </MudItem>
                                 <MudItem xs="12" sm="3">
                                     <MudSelect @bind-Value="item.ItemSample" Label="Tipo de Muestra" Margin="Margin.Dense" Variant="Variant.Outlined">
@@ -110,13 +111,13 @@
                                     </MudSelect>
                                 </MudItem>
                                 <MudItem xs="12" sm="3">
-                                    <MudTextField @bind-Value="item.ItemNorma" Label="Norma / Método" Margin="Margin.Dense" Variant="Variant.Outlined" />
+                                    <MudTextField @bind-Value="item.ItemNorma" Label="Norma / Método" Margin="Margin.Dense" Variant="Variant.Outlined" ReadOnly="@(item.SelectedService != null)" />
                                 </MudItem>
                                 <MudItem xs="12" sm="3">
                                     <MudNumericField @bind-Value="item.Amount" Label="Cantidad" Margin="Margin.Dense" Min="1" Variant="Variant.Outlined" />
                                 </MudItem>
                                 <MudItem xs="12" sm="3">
-                                    <MudNumericField @bind-Value="item.UnitPrice" Label="Precio Unitario (B/.)" Margin="Margin.Dense" Format="F2" Step="0.1M" Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.AttachMoney" Variant="Variant.Outlined" />
+                                    <MudNumericField @bind-Value="item.UnitPrice" Label="Precio Unitario (B/.)" Margin="Margin.Dense" Format="F2" Step="0.1M" Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.AttachMoney" Variant="Variant.Outlined" ReadOnly="@(item.SelectedService != null)" />
                                 </MudItem>
                                 <MudItem xs="12">
                                     <MudTextField @bind-Value="item.ItemNote" Label="Nota / Observación del Ítem" Margin="Margin.Dense" Variant="Variant.Outlined" />
