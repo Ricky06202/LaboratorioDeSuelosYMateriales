@@ -1,5 +1,5 @@
 from typing import Any, List
-from fastapi import APIRouter, Depends, HTTPException, status
+from fastapi import APIRouter, Depends, HTTPException, status, UploadFile, File
 from sqlalchemy.orm import Session
 from app.api import deps
 from app.schemas.user import User, UserCreate, UserUpdate, Role, RoleCreate, RoleUpdate, Permission, ProfileUpdate, PasswordChange
