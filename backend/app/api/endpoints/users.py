@@ -2,11 +2,18 @@ from typing import Any, List
 from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.orm import Session
 from app.api import deps
-from app.schemas.user import User, UserCreate, UserUpdate, Role, RoleCreate, RoleUpdate, Permission
+from app.schemas.user import User, UserCreate, UserUpdate, Role, RoleCreate, RoleUpdate, Permission, ProfileUpdate, PasswordChange
 from app.services.user_service import UserService
 from app.models.user import User as UserModel
 
 router = APIRouter()
+
+# Dependency to get current user (any logged in user)
+def get_current_active_user(
+    db: Session = Depends(deps.get_db),
+    current_user: UserModel = Depends(deps.get_current_user),
+) -> UserModel:
+    return current_user
 
 # Dependency override or check to ensure ADMIN only
 def get_current_admin_user(
@@ -19,6 +26,59 @@ def get_current_admin_user(
             detail="The user doesn't have enough privileges",
         )
     return current_user
+
+@router.get("/me", response_model=User)
+def read_current_user(
+    current_user: UserModel = Depends(get_current_active_user),
+) -> Any:
+    """
+    Get current user profile.
+    """
+    return current_user
+
+@router.put("/me", response_model=User)
+def update_current_user(
+    *,
+    db: Session = Depends(deps.get_db),
+    profile_in: ProfileUpdate,
+    current_user: UserModel = Depends(get_current_active_user),
+) -> Any:
+    """
+    Update current user profile.
+    """
+    user = UserService.update_profile(db, db_obj=current_user, obj_in=profile_in)
+    return user
+
+@router.post("/me/password")
+def change_password(
+    *,
+    db: Session = Depends(deps.get_db),
+    password_change: PasswordChange,
+    current_user: UserModel = Depends(get_current_active_user),
+) -> Any:
+    """
+    Change current user password.
+    """
+    if password_change.new_password != password_change.confirm_password:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="Las contraseñas no coinciden",
+        )
+    
+    if len(password_change.new_password) < 6:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="La contraseña debe tener al menos 6 caracteres",
+        )
+    
+    if not UserService.verify_password(password_change.current_password, current_user.hashed_password):
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="La contraseña actual es incorrecta",
+        )
+    
+    UserService.update_password(db, db_obj=current_user, new_password=password_change.new_password)
+    return {"message": "Contraseña actualizada correctamente"}
 
 @router.get("/", response_model=List[User])
 def read_users(

@@ -37,6 +37,21 @@ namespace frontend.Models
         [JsonPropertyName("full_name")]
         public string FullName { get; set; } = string.Empty;
 
+        [JsonPropertyName("phone")]
+        public string? Phone { get; set; }
+
+        [JsonPropertyName("cell_phone")]
+        public string? CellPhone { get; set; }
+
+        [JsonPropertyName("birth_date")]
+        public DateTime? BirthDate { get; set; }
+
+        [JsonPropertyName("cedula")]
+        public string? Cedula { get; set; }
+
+        [JsonPropertyName("linkedin")]
+        public string? Linkedin { get; set; }
+
         [JsonPropertyName("is_active")]
         public bool IsActive { get; set; } = true;
 
@@ -77,11 +92,59 @@ namespace frontend.Models
         [JsonPropertyName("full_name")]
         public string? FullName { get; set; }
 
+        [JsonPropertyName("phone")]
+        public string? Phone { get; set; }
+
+        [JsonPropertyName("cell_phone")]
+        public string? CellPhone { get; set; }
+
+        [JsonPropertyName("birth_date")]
+        public DateTime? BirthDate { get; set; }
+
+        [JsonPropertyName("cedula")]
+        public string? Cedula { get; set; }
+
+        [JsonPropertyName("linkedin")]
+        public string? Linkedin { get; set; }
+
         [JsonPropertyName("role_ids")]
         public List<int>? RoleIds { get; set; }
 
         [JsonPropertyName("is_active")]
         public bool? IsActive { get; set; }
+    }
+
+    public class ProfileUpdate
+    {
+        [JsonPropertyName("full_name")]
+        public string? FullName { get; set; }
+
+        [JsonPropertyName("phone")]
+        public string? Phone { get; set; }
+
+        [JsonPropertyName("cell_phone")]
+        public string? CellPhone { get; set; }
+
+        [JsonPropertyName("birth_date")]
+        public DateTime? BirthDate { get; set; }
+
+        [JsonPropertyName("cedula")]
+        public string? Cedula { get; set; }
+
+        [JsonPropertyName("linkedin")]
+        public string? Linkedin { get; set; }
+    }
+
+    public class PasswordChange
+    {
+        [JsonPropertyName("current_password")]
+        public string CurrentPassword { get; set; } = string.Empty;
+
+        [JsonPropertyName("new_password")]
+        public string NewPassword { get; set; } = string.Empty;
+
+        [JsonPropertyName("confirm_password")]
+        public string ConfirmPassword { get; set; } = string.Empty;
     }
 
     public class RoleCreate

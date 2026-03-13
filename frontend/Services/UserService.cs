@@ -80,6 +80,27 @@ namespace frontend.Services
             await EnsureSuccessOrThrowAsync(response);
         }
 
+        public async Task<User> GetCurrentUserAsync()
+        {
+            await SetAuthorizationHeaderAsync();
+            return await _httpClient.GetFromJsonAsync<User>("api/usuarios/me", AppJsonSerializerContext.Default.User) ?? new();
+        }
+
+        public async Task<User> UpdateProfileAsync(ProfileUpdate profile)
+        {
+            await SetAuthorizationHeaderAsync();
+            var response = await _httpClient.PutAsJsonAsync("api/usuarios/me", profile);
+            await EnsureSuccessOrThrowAsync(response);
+            return await response.Content.ReadFromJsonAsync<User>(AppJsonSerializerContext.Default.User) ?? new();
+        }
+
+        public async Task ChangePasswordAsync(PasswordChange passwordChange)
+        {
+            await SetAuthorizationHeaderAsync();
+            var response = await _httpClient.PostAsJsonAsync("api/usuarios/me/password", passwordChange);
+            await EnsureSuccessOrThrowAsync(response);
+        }
+
         private async Task SetAuthorizationHeaderAsync()
         {
             var token = await _jsRuntime.InvokeAsync<string>("localStorage.getItem", "authToken");

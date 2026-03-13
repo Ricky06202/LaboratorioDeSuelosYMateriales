@@ -45,7 +45,7 @@
                             <MudText Typo="Typo.caption" Class="text-secondary">@context.User.FindFirst(System.Security.Claims.ClaimTypes.Role)?.Value</MudText>
                         </div>
                         <MudDivider />
-                        <MudMenuItem Icon="@Icons.Material.Filled.Person" IconColor="Color.Primary">Mi Perfil</MudMenuItem>
+                        <MudMenuItem Icon="@Icons.Material.Filled.Person" IconColor="Color.Primary" OnClick="NavigateToProfile">Mi Perfil</MudMenuItem>
                         <MudMenuItem Icon="@Icons.Material.Filled.Settings" IconColor="Color.Secondary">Ajustes</MudMenuItem>
                         <MudDivider />
                         <MudMenuItem Icon="@Icons.Material.Filled.Logout" IconColor="Color.Error" OnClick="HandleLogout">Cerrar Sesión</MudMenuItem>
@@ -89,6 +89,11 @@
 
     private void DrawerToggle() => _drawerOpen = !_drawerOpen;
     private void DarkModeToggle() => _isDarkMode = !_isDarkMode;
+    
+    private void NavigateToProfile()
+    {
+        Navigation.NavigateTo("/perfil");
+    }
 
     private async Task HandleLogout()
     {

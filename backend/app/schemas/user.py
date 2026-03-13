@@ -1,5 +1,6 @@
 from typing import Optional, List
 from pydantic import BaseModel, EmailStr
+from datetime import date
 
 class Permission(BaseModel):
     id: int
@@ -29,6 +30,11 @@ class UserBase(BaseModel):
     email: Optional[EmailStr] = None
     is_active: Optional[bool] = True
     full_name: Optional[str] = None
+    phone: Optional[str] = None
+    cell_phone: Optional[str] = None
+    birth_date: Optional[date] = None
+    cedula: Optional[str] = None
+    linkedin: Optional[str] = None
 
 class UserCreate(UserBase):
     email: EmailStr
@@ -45,6 +51,19 @@ class User(UserBase):
 
     class Config:
         from_attributes = True
+
+class ProfileUpdate(BaseModel):
+    full_name: Optional[str] = None
+    phone: Optional[str] = None
+    cell_phone: Optional[str] = None
+    birth_date: Optional[date] = None
+    cedula: Optional[str] = None
+    linkedin: Optional[str] = None
+
+class PasswordChange(BaseModel):
+    current_password: str
+    new_password: str
+    confirm_password: str
 
 class Token(BaseModel):
     access_token: str

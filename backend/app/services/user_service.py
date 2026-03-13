@@ -1,7 +1,7 @@
 from typing import Optional, List
 from sqlalchemy.orm import Session, joinedload
 from app.models.user import User, Role, Permission
-from app.schemas.user import UserCreate, UserUpdate, RoleCreate, RoleUpdate, Permission as PermissionSchema
+from app.schemas.user import UserCreate, UserUpdate, RoleCreate, RoleUpdate, Permission as PermissionSchema, ProfileUpdate
 from app.core.security import get_password_hash, verify_password
 
 class UserService:
@@ -51,6 +51,38 @@ class UserService:
         db.commit()
         db.refresh(db_obj)
         return db_obj
+
+    @staticmethod
+    def update_profile(db: Session, db_obj: User, obj_in: ProfileUpdate) -> User:
+        if obj_in.full_name is not None:
+            db_obj.full_name = obj_in.full_name
+        if obj_in.phone is not None:
+            db_obj.phone = obj_in.phone
+        if obj_in.cell_phone is not None:
+            db_obj.cell_phone = obj_in.cell_phone
+        if obj_in.birth_date is not None:
+            db_obj.birth_date = obj_in.birth_date
+        if obj_in.cedula is not None:
+            db_obj.cedula = obj_in.cedula
+        if obj_in.linkedin is not None:
+            db_obj.linkedin = obj_in.linkedin
+        
+        db.add(db_obj)
+        db.commit()
+        db.refresh(db_obj)
+        return db_obj
+
+    @staticmethod
+    def update_password(db: Session, db_obj: User, new_password: str) -> User:
+        db_obj.hashed_password = get_password_hash(new_password)
+        db.add(db_obj)
+        db.commit()
+        db.refresh(db_obj)
+        return db_obj
+
+    @staticmethod
+    def verify_password(plain_password: str, hashed_password: str) -> bool:
+        return verify_password(plain_password, hashed_password)
 
     @staticmethod
     def delete(db: Session, user_id: int) -> Optional[User]:

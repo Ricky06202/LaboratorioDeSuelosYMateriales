@@ -78,6 +78,31 @@ def init_db():
         except Exception as e:
             print(f"Error checking column item_note in quotation_items: {e}")
         
+        try:
+            conn.execute(text("ALTER TABLE users ADD COLUMN IF NOT EXISTS phone VARCHAR"))
+        except Exception as e:
+            print(f"Error checking column phone in users: {e}")
+        
+        try:
+            conn.execute(text("ALTER TABLE users ADD COLUMN IF NOT EXISTS cell_phone VARCHAR"))
+        except Exception as e:
+            print(f"Error checking column cell_phone in users: {e}")
+        
+        try:
+            conn.execute(text("ALTER TABLE users ADD COLUMN IF NOT EXISTS birth_date DATE"))
+        except Exception as e:
+            print(f"Error checking column birth_date in users: {e}")
+        
+        try:
+            conn.execute(text("ALTER TABLE users ADD COLUMN IF NOT EXISTS cedula VARCHAR"))
+        except Exception as e:
+            print(f"Error checking column cedula in users: {e}")
+        
+        try:
+            conn.execute(text("ALTER TABLE users ADD COLUMN IF NOT EXISTS linkedin VARCHAR"))
+        except Exception as e:
+            print(f"Error checking column linkedin in users: {e}")
+        
         conn.commit()
 
 # Call initialization directly

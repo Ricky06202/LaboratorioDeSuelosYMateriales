@@ -1,0 +1,262 @@
+@page "/perfil"
+@using frontend.Models
+@using frontend.Services
+@using MudBlazor
+@inject UserService UserService
+@inject ISnackbar Snackbar
+
+<PageTitle>Mi Perfil - LSMCH</PageTitle>
+
+<div class="animate__animated animate__fadeIn">
+    <MudGrid>
+        <MudItem xs="12" md="4">
+            <MudPaper Class="pa-6 rounded-xl" Elevation="2">
+                <div class="d-flex flex-column align-center">
+                    <MudAvatar Size="Size.Large" Color="Color.Primary" Class="mb-4" Style="width: 120px; height: 120px; font-size: 3rem;">
+                        @if (!string.IsNullOrEmpty(_user.FullName))
+                        {
+                            @GetInitials(_user.FullName)
+                        }
+                        else
+                        {
+                            <MudIcon Icon="@Icons.Material.Filled.Person" Size="Size.Large" />
+                        }
+                    </MudAvatar>
+                    <MudText Typo="Typo.h5" Class="font-weight-bold">@_user.FullName</MudText>
+                    <MudText Typo="Typo.body2" Color="Color.Secondary">@_user.Email</MudText>
+                    <MudChip T="string" Color="Color.Primary" Size="Size.Small" Class="mt-2">@_user.RoleNames</MudChip>
+                </div>
+                
+                <MudDivider Class="my-4" />
+                
+                <MudList T="string" Dense="true">
+                    <MudListItem Icon="@Icons.Material.Filled.Phone">
+                        <MudText Typo="Typo.body2">@(_user.Phone ?? "No registrado")</MudText>
+                        <MudText Typo="Typo.caption" Color="Color.Secondary">Teléfono</MudText>
+                    </MudListItem>
+                    <MudListItem Icon="@Icons.Material.Filled.Smartphone">
+                        <MudText Typo="Typo.body2">@(_user.CellPhone ?? "No registrado")</MudText>
+                        <MudText Typo="Typo.caption" Color="Color.Secondary">Celular</MudText>
+                    </MudListItem>
+                    <MudListItem Icon="@Icons.Material.Filled.Cake">
+                        <MudText Typo="Typo.body2">@(_user.BirthDate?.ToString("dd/MM/yyyy") ?? "No registrado")</MudText>
+                        <MudText Typo="Typo.caption" Color="Color.Secondary">Fecha de Nacimiento</MudText>
+                    </MudListItem>
+                    <MudListItem Icon="@Icons.Material.Filled.Badge">
+                        <MudText Typo="Typo.body2">@(_user.Cedula ?? "No registrado")</MudText>
+                        <MudText Typo="Typo.caption" Color="Color.Secondary">Cédula</MudText>
+                    </MudListItem>
+                    @if (!string.IsNullOrEmpty(_user.Linkedin))
+                    {
+                        <MudListItem Icon="@Icons.Material.Filled.Link">
+                            <MudLink Href="@_user.Linkedin" Target="_blank">Perfil LinkedIn</MudLink>
+                        </MudListItem>
+                    }
+                </MudList>
+            </MudPaper>
+        </MudItem>
+
+        <MudItem xs="12" md="8">
+            <MudPaper Class="pa-6 rounded-xl" Elevation="2">
+                <MudTabs Elevation="2" Rounded="true" ApplyEffectsToContainer="true">
+                    <MudTabPanel Text="Información Personal" Icon="@Icons.Material.Filled.Person">
+                        <MudForm @ref="_formProfile" @bind-IsValid="_profileValid">
+                            <MudGrid Class="mt-4">
+                                <MudItem xs="12" sm="6">
+                                    <MudTextField @bind-Value="_profile.FullName" Label="Nombre Completo" Variant="Variant.Outlined" Margin="Margin.Dense" Required="true" RequiredError="El nombre es requerido" />
+                                </MudItem>
+                                <MudItem xs="12" sm="6">
+                                    <MudTextField @bind-Value="_profile.Phone" Label="Teléfono" Variant="Variant.Outlined" Margin="Margin.Dense" />
+                                </MudItem>
+                                <MudItem xs="12" sm="6">
+                                    <MudTextField @bind-Value="_profile.CellPhone" Label="Celular" Variant="Variant.Outlined" Margin="Margin.Dense" />
+                                </MudItem>
+                                <MudItem xs="12" sm="6">
+                                    <MudDatePicker Label="Fecha de Nacimiento" Variant="Variant.Outlined" Margin="Margin.Dense" 
+                                                Date="_profile.BirthDate" DateChanged="OnBirthDateChanged" />
+                                </MudItem>
+                                <MudItem xs="12" sm="6">
+                                    <MudTextField @bind-Value="_profile.Cedula" Label="Cédula" Variant="Variant.Outlined" Margin="Margin.Dense" />
+                                </MudItem>
+                                <MudItem xs="12" sm="6">
+                                    <MudTextField @bind-Value="_profile.Linkedin" Label="Perfil LinkedIn" Variant="Variant.Outlined" Margin="Margin.Dense" 
+                                                Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.Link" Placeholder="https://linkedin.com/in/..." />
+                                </MudItem>
+                                <MudItem xs="12">
+                                    <MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="SaveProfile" Disabled="@(!_profileValid || _savingProfile)" Class="rounded-pill px-6">
+                                        @if (_savingProfile)
+                                        {
+                                            <MudProgressCircular Size="Size.Small" Indeterminate="true" Class="mr-2" />
+                                        }
+                                        Guardar Cambios
+                                    </MudButton>
+                                </MudItem>
+                            </MudGrid>
+                        </MudForm>
+                    </MudTabPanel>
+
+                    <MudTabPanel Text="Cambiar Contraseña" Icon="@Icons.Material.Filled.Lock">
+                        <MudForm @ref="_formPassword" @bind-IsValid="_passwordValid" Class="mt-4">
+                            <MudGrid>
+                                <MudItem xs="12">
+                                    <MudText Typo="Typo.subtitle2" Class="mb-4">Para cambiar su contraseña, ingrese la contraseña actual y luego la nueva contraseña.</MudText>
+                                </MudItem>
+                                <MudItem xs="12" sm="4">
+                                    <MudTextField @bind-Value="_password.CurrentPassword" Label="Contraseña Actual" Variant="Variant.Outlined" Margin="Margin.Dense" 
+                                                InputType="@(_showCurrentPassword ? InputType.Text : InputType.Password)" 
+                                                Adornment="Adornment.End" AdornmentIcon="@(_showCurrentPassword ? Icons.Material.Filled.VisibilityOff : Icons.Material.Filled.Visibility)" 
+                                                OnAdornmentClick="() => _showCurrentPassword = !_showCurrentPassword" Required="true" RequiredError="La contraseña actual es requerida" />
+                                </MudItem>
+                                <MudItem xs="12" sm="4">
+                                    <MudTextField @bind-Value="_password.NewPassword" Label="Nueva Contraseña" Variant="Variant.Outlined" Margin="Margin.Dense" 
+                                                InputType="@(_showNewPassword ? InputType.Text : InputType.Password)" 
+                                                Adornment="Adornment.End" AdornmentIcon="@(_showNewPassword ? Icons.Material.Filled.VisibilityOff : Icons.Material.Filled.Visibility)" 
+                                                OnAdornmentClick="() => _showNewPassword = !_showNewPassword" Required="true" RequiredError="La nueva contraseña es requerida" />
+                                </MudItem>
+                                <MudItem xs="12" sm="4">
+                                    <MudTextField @bind-Value="_password.ConfirmPassword" Label="Confirmar Contraseña" Variant="Variant.Outlined" Margin="Margin.Dense" 
+                                                InputType="@(_showConfirmPassword ? InputType.Text : InputType.Password)" 
+                                                Adornment="Adornment.End" AdornmentIcon="@(_showConfirmPassword ? Icons.Material.Filled.VisibilityOff : Icons.Material.Filled.Visibility)" 
+                                                OnAdornmentClick="() => _showConfirmPassword = !_showConfirmPassword" Required="true" RequiredError="Debe confirmar la contraseña" />
+                                </MudItem>
+                                @if (!string.IsNullOrEmpty(_passwordError))
+                                {
+                                    <MudItem xs="12">
+                                        <MudAlert Severity="Severity.Error" Dense="true" Class="mb-3">@_passwordError</MudAlert>
+                                    </MudItem>
+                                }
+                                <MudItem xs="12">
+                                    <MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="ChangePassword" Disabled="@(!_passwordValid || _changingPassword)" Class="rounded-pill px-6">
+                                        @if (_changingPassword)
+                                        {
+                                            <MudProgressCircular Size="Size.Small" Indeterminate="true" Class="mr-2" />
+                                        }
+                                        Cambiar Contraseña
+                                    </MudButton>
+                                </MudItem>
+                            </MudGrid>
+                        </MudForm>
+                    </MudTabPanel>
+                </MudTabs>
+            </MudPaper>
+        </MudItem>
+    </MudGrid>
+</div>
+
+@code {
+    private User _user = new();
+    private ProfileUpdate _profile = new();
+    private PasswordChange _password = new();
+    private MudForm _formProfile = null!;
+    private MudForm _formPassword = null!;
+    private bool _profileValid;
+    private bool _passwordValid;
+    private bool _savingProfile;
+    private bool _changingPassword;
+    private string _passwordError = string.Empty;
+    private bool _showCurrentPassword;
+    private bool _showNewPassword;
+    private bool _showConfirmPassword;
+
+    protected override async Task OnInitializedAsync()
+    {
+        await LoadProfile();
+    }
+
+    private async Task LoadProfile()
+    {
+        try
+        {
+            _user = await UserService.GetCurrentUserAsync();
+            _profile = new ProfileUpdate
+            {
+                FullName = _user.FullName,
+                Phone = _user.Phone,
+                CellPhone = _user.CellPhone,
+                BirthDate = _user.BirthDate,
+                Cedula = _user.Cedula,
+                Linkedin = _user.Linkedin
+            };
+        }
+        catch (Exception ex)
+        {
+            Snackbar.Add($"Error al cargar perfil: {ex.Message}", Severity.Error);
+        }
+    }
+
+    private void OnBirthDateChanged(DateTime? date)
+    {
+        _profile.BirthDate = date;
+    }
+
+    private async Task SaveProfile()
+    {
+        await _formProfile.Validate();
+        if (_profileValid)
+        {
+            _savingProfile = true;
+            try
+            {
+                _user = await UserService.UpdateProfileAsync(_profile);
+                Snackbar.Add("Perfil actualizado exitosamente", Severity.Success);
+            }
+            catch (Exception ex)
+            {
+                Snackbar.Add(ex.Message, Severity.Error);
+            }
+            finally
+            {
+                _savingProfile = false;
+            }
+        }
+    }
+
+    private async Task ChangePassword()
+    {
+        await _formPassword.Validate();
+        
+        if (_password.NewPassword != _password.ConfirmPassword)
+        {
+            _passwordError = "Las contraseñas no coinciden";
+            return;
+        }
+
+        if (_password.NewPassword.Length < 6)
+        {
+            _passwordError = "La contraseña debe tener al menos 6 caracteres";
+            return;
+        }
+
+        _passwordError = string.Empty;
+
+        if (_passwordValid)
+        {
+            _changingPassword = true;
+            try
+            {
+                await UserService.ChangePasswordAsync(_password);
+                Snackbar.Add("Contraseña cambiada exitosamente", Severity.Success);
+                _password = new PasswordChange();
+            }
+            catch (Exception ex)
+            {
+                Snackbar.Add(ex.Message, Severity.Error);
+            }
+            finally
+            {
+                _changingPassword = false;
+            }
+        }
+    }
+
+    private string GetInitials(string name)
+    {
+        if (string.IsNullOrWhiteSpace(name)) return "?";
+        var parts = name.Split(' ', StringSplitOptions.RemoveEmptyEntries);
+        if (parts.Length >= 2)
+        {
+            return $"{parts[0][0]}{parts[^1][0]}".ToUpper();
+        }
+        return name.Length >= 2 ? name[..2].ToUpper() : name.ToUpper();
+    }
+}

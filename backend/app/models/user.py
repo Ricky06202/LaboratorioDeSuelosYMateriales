@@ -1,4 +1,4 @@
-from sqlalchemy import Column, Integer, String, Boolean, ForeignKey, Table
+from sqlalchemy import Column, Integer, String, Boolean, ForeignKey, Table, Date
 from sqlalchemy.orm import relationship
 from app.db.base_class import Base
 
@@ -38,6 +38,11 @@ class User(Base):
     email = Column(String, unique=True, index=True, nullable=False)
     hashed_password = Column(String, nullable=False)
     full_name = Column(String)
+    phone = Column(String)
+    cell_phone = Column(String)
+    birth_date = Column(Date)
+    cedula = Column(String)
+    linkedin = Column(String)
     is_active = Column(Boolean, default=True)
     
     roles = relationship("Role", secondary=user_roles, back_populates="users")
