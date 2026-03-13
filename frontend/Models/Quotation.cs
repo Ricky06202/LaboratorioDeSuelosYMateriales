@@ -116,6 +116,12 @@ namespace frontend.Models
 
         [JsonPropertyName("unit_price")]
         public decimal UnitPrice { get; set; }
+
+        [JsonPropertyName("item_note")]
+        public string? ItemNote { get; set; }
+
+        [JsonIgnore]
+        public LabService? SelectedService { get; set; }
     }
 
     public class QuotationCreate
