@@ -12,27 +12,65 @@
             <MudTabs Elevation="1" Rounded="true" ApplyEffectsToContainer="true" @bind-ActivePanelIndex="_activeTabIndex">
                 <MudTabPanel Text="Datos Generales">
                     <MudGrid>
-                        <MudItem xs="12" sm="8">
-                            <CustomerSelector Label="Nombre del Cliente (Buscador)" Value="_selectedCustomer" ValueChanged="OnCustomerChanged" Required="true" />
-                        </MudItem>
-                        <MudItem xs="12" sm="4">
-                            <MudTextField @bind-Value="_order.ClientRuc" Label="RUC" Margin="Margin.Dense" Variant="Variant.Outlined" />
-                        </MudItem>
-                        <MudItem xs="12" sm="2">
-                            <MudTextField @bind-Value="_order.ClientDv" Label="D.V." Margin="Margin.Dense" Variant="Variant.Outlined" />
-                        </MudItem>
-                        <MudItem xs="12" sm="6">
-                            <MudTextField @bind-Value="_order.QuotationRef" Label="Cotización aprobada LSMCH No." Margin="Margin.Dense" Variant="Variant.Outlined" />
-                        </MudItem>
-                        <MudItem xs="12" sm="4">
-                            <MudTextField @bind-Value="_order.ClientPhone" Label="Teléfono" Margin="Margin.Dense" Variant="Variant.Outlined" />
-                        </MudItem>
-                        <MudItem xs="12" sm="12">
-                            <MudTextField @bind-Value="_order.ClientEmail" Label="Correo Electrónico" Margin="Margin.Dense" Variant="Variant.Outlined" />
-                        </MudItem>
-                        <MudItem xs="12">
-                            <MudTextField @bind-Value="_order.ClientDirection" Label="Dirección" Lines="2" Margin="Margin.Dense" Variant="Variant.Outlined" />
-                        </MudItem>
+                        @if (_isFromQuotation || _selectedCustomer != null)
+                        {
+                            <MudItem xs="12">
+                                <MudPaper Class="pa-3 rounded-lg" Style="background-color: var(--mud-palette-primary-lighten);">
+                                    <MudText Typo="Typo.subtitle1" Class="font-weight-bold" Color="Color.Primary">
+                                        <MudIcon Icon="@Icons.Material.Filled.Business" Class="mr-2" />
+                                        @_order.ClientName
+                                    </MudText>
+                                    <MudText Typo="Typo.body2">
+                                        RUC: @_order.ClientRuc @if (!string.IsNullOrEmpty(_order.ClientDv)) { <text>-@_order.ClientDv</text> } | Tel: @_order.ClientPhone
+                                    </MudText>
+                                    @if (!string.IsNullOrEmpty(_order.ClientDirection))
+                                    {
+                                        <MudText Typo="Typo.body2">Dirección: @_order.ClientDirection</MudText>
+                                    }
+                                    @if (!string.IsNullOrEmpty(_order.ClientEmail))
+                                    {
+                                        <MudText Typo="Typo.body2">Email: @_order.ClientEmail</MudText>
+                                    }
+                                </MudPaper>
+                            </MudItem>
+                        }
+                        else
+                        {
+                            <MudItem xs="12" sm="8">
+                                <CustomerSelector Label="Nombre del Cliente (Buscador)" Value="_selectedCustomer" ValueChanged="OnCustomerChanged" Required="true" />
+                            </MudItem>
+                            <MudItem xs="12" sm="4">
+                                <MudTextField @bind-Value="_order.ClientRuc" Label="RUC" Margin="Margin.Dense" Variant="Variant.Outlined" />
+                            </MudItem>
+                            <MudItem xs="12" sm="2">
+                                <MudTextField @bind-Value="_order.ClientDv" Label="D.V." Margin="Margin.Dense" Variant="Variant.Outlined" />
+                            </MudItem>
+                            <MudItem xs="12" sm="6">
+                                <MudTextField @bind-Value="_order.QuotationRef" Label="Cotización aprobada LSMCH No." Margin="Margin.Dense" Variant="Variant.Outlined" />
+                            </MudItem>
+                            <MudItem xs="12" sm="4">
+                                <MudTextField @bind-Value="_order.ClientPhone" Label="Teléfono" Margin="Margin.Dense" Variant="Variant.Outlined" />
+                            </MudItem>
+                            <MudItem xs="12" sm="12">
+                                <MudTextField @bind-Value="_order.ClientEmail" Label="Correo Electrónico" Margin="Margin.Dense" Variant="Variant.Outlined" />
+                            </MudItem>
+                            <MudItem xs="12">
+                                <MudTextField @bind-Value="_order.ClientDirection" Label="Dirección" Lines="2" Margin="Margin.Dense" Variant="Variant.Outlined" />
+                            </MudItem>
+                        }
+
+                        @if (_selectedCustomer == null || _isFromQuotation)
+                        {
+                            <MudItem xs="12" sm="@(_isFromQuotation ? 6 : 12)">
+                                <MudTextField @bind-Value="_order.QuotationRef" Label="Cotización aprobada LSMCH No." Margin="Margin.Dense" Variant="Variant.Outlined" />
+                            </MudItem>
+                        }
+                        @if (!_isFromQuotation && _selectedCustomer != null)
+                        {
+                            <MudItem xs="12" sm="6">
+                                <MudTextField @bind-Value="_order.QuotationRef" Label="Cotización aprobada LSMCH No." Margin="Margin.Dense" Variant="Variant.Outlined" />
+                            </MudItem>
+                        }
 
                         <MudItem xs="12"><MudDivider /></MudItem>
                         
@@ -199,12 +237,14 @@
     private int _activeTabIndex = 0;
     private DateTime? _activityDate = DateTime.Today.AddDays(1);
     private TimeSpan? _activityTime = new TimeSpan(8, 0, 0);
+    private bool _isFromQuotation;
 
     protected override async Task OnInitializedAsync()
     {
         if (InitialData != null)
         {
             _order = InitialData;
+            _isFromQuotation = !string.IsNullOrEmpty(_order.QuotationRef);
             if (_order.CustomerId.HasValue && _order.CustomerId != Guid.Empty)
             {
                 await LoadCustomerAsync(_order.CustomerId.Value);

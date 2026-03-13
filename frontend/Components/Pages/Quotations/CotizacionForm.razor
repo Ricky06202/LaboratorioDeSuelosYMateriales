@@ -14,10 +14,38 @@
                 <!-- Cliente Section -->
                 <MudItem xs="12">
                     <MudText Typo="Typo.subtitle1" Class="font-weight-bold mb-2">Información del Cliente</MudText>
-                    <CustomerSelector Label="Seleccionar Cliente" Value="_selectedCustomer" ValueChanged="OnCustomerChanged" Required="true" />
                 </MudItem>
                 
-                @if (_selectedCustomer != null)
+                @if (_isFromOrder || _selectedCustomer != null)
+                {
+                    <MudItem xs="12">
+                        <MudPaper Class="pa-3 rounded-lg" Style="background-color: var(--mud-palette-primary-lighten);">
+                            <MudText Typo="Typo.subtitle1" Class="font-weight-bold" Color="Color.Primary">
+                                <MudIcon Icon="@Icons.Material.Filled.Business" Class="mr-2" />
+                                @_quotation.ClientName
+                            </MudText>
+                            <MudText Typo="Typo.body2">
+                                RUC: @_quotation.ClientRuc | Tel: @_quotation.ClientPhone
+                            </MudText>
+                            @if (!string.IsNullOrEmpty(_quotation.ClientDirection))
+                            {
+                                <MudText Typo="Typo.body2">Dirección: @_quotation.ClientDirection</MudText>
+                            }
+                            @if (!string.IsNullOrEmpty(_quotation.ClientEmail))
+                            {
+                                <MudText Typo="Typo.body2">Email: @_quotation.ClientEmail</MudText>
+                            }
+                        </MudPaper>
+                    </MudItem>
+                }
+                else
+                {
+                    <MudItem xs="12">
+                        <CustomerSelector Label="Seleccionar Cliente" Value="_selectedCustomer" ValueChanged="OnCustomerChanged" Required="true" />
+                    </MudItem>
+                }
+                
+                @if (_selectedCustomer != null && !_isFromOrder)
                 {
                     <MudItem xs="12" sm="6">
                         <MudTextField @bind-Value="_quotation.ClientRuc" Label="RUC" Margin="Margin.Dense" Variant="Variant.Outlined" />
@@ -140,12 +168,14 @@
     private MudForm _form = null!;
     private bool _success;
     private bool _processing;
+    private bool _isFromOrder;
 
     protected override async Task OnInitializedAsync()
     {
         if (InitialData != null)
         {
             _quotation = InitialData;
+            _isFromOrder = _quotation.CustomerOrderId.HasValue;
             if (_quotation.CustomerId.HasValue && _quotation.CustomerId != Guid.Empty)
             {
                 await LoadCustomerAsync(_quotation.CustomerId.Value);
